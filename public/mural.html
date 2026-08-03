@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <!-- TAG DE RESPONSIVIDADE ADICIONADA: Ajusta o tamanho da tela e das fontes no celular -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mural de Avisos</title>
     <link rel="stylesheet" href="style.css">
@@ -23,7 +22,7 @@
             <h3>Publicar Novo Aviso</h3>
             <form action="/api/avisos" method="POST" enctype="multipart/form-data">
                 <input type="text" name="titulo" placeholder="Título do Aviso" required>
-                <textarea name="conteudo" placeholder="Conteúdo do aviso..." rows="4" required></textarea>
+                <textarea name="conteudo" placeholder="Contents do aviso..." rows="4" required></textarea>
                 <label style="font-weight: 600; font-size: 14px; color: #475569;">Imagem de Referência (Opcional):</label>
                 <input type="file" name="imagem" accept="image/*">
                 <button type="submit">Publicar Aviso</button>
@@ -48,7 +47,7 @@
         async function carregarUsuario() {
             const res = await fetch('/api/usuario-atual');
             if (!res.ok) {
-                window.location.href = '/index.html';
+                window.location.href = '/login'; // Atualizado para a rota limpa
                 return;
             }
             usuarioAtual = await res.json();

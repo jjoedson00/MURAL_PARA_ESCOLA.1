@@ -30,8 +30,13 @@ app.use(session({
     }
 }));
 
-// Redireciona a página inicial diretamente para a tela de login
-app.get('/', (req, res) => res.redirect('/index.html'));
+// Redireciona a página inicial diretamente para a rota de login automaticamente
+app.get('/', (req, res) => res.redirect('/login'));
+
+// ROTAS AMIGÁVEIS: Abre as páginas sem precisar digitar o .html no final do link
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, 'public', 'cadastro.html')));
+app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mural.html')));
 
 // Configuração do upload de imagens
 const storage = multer.diskStorage({
@@ -81,7 +86,7 @@ app.post('/auth/cadastro', async (req, res) => {
         [nome, email, senhaCriptografada, cargo], 
         (err) => {
             if (err) return res.status(400).send('Email já cadastrado.');
-            res.redirect('/index.html');
+            res.redirect('/login'); // Redireciona para a rota limpa de login
         }
     );
 });
@@ -97,7 +102,7 @@ app.post('/auth/login', (req, res) => {
         req.session.usuario = { nome: usuario.nome, cargo: usuario.cargo };
         
         req.session.save(() => {
-            res.redirect('/mural.html');
+            res.redirect('/mural'); // Redireciona para a rota limpa do mural
         });
     });
 });
@@ -108,11 +113,11 @@ app.get('/api/usuario-atual', (req, res) => {
     res.json(req.session.usuario);
 });
 
-// ALTERADO: Rota de Logout rápida, remove cookies e sai no mesmo instante
+// Rota de Logout rápida, remove cookies e sai no mesmo instante
 app.get('/auth/logout', (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('connect.sid'); 
-        res.redirect('/index.html');    
+        res.redirect('/login'); // Redireciona para a rota limpa de login   
     });
 });
 
@@ -135,7 +140,7 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
 
     db.run(`INSERT INTO avisos (titulo, conteudo, imagem, autor, data) VALUES (?, ?, ?, ?, ?)`,
         [titulo, conteudo, imagem, autor, data],
-        () => res.redirect('/mural.html')
+        () => res.redirect('/mural') // Redireciona para a rota limpa do mural
     );
 });
 
@@ -149,7 +154,5 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// O servidor usa a porta automática do Render ou a 3000 localmente
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
