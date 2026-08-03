@@ -14,11 +14,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Gerenciamento de Sessão por Arquivos Locais (Evita quedas ao atualizar)
+// Gerenciamento de Sessão por Arquivos Locais
 app.use(session({
     store: new FileStore({
         path: './sessions',
-        ttl: 86400, // Sessão dura 24 horas consecutivas
+        ttl: 86400, 
         logFn: function() {} 
     }),
     secret: 'chave-secreta-do-mural',
@@ -54,9 +54,7 @@ db.serialize(() => {
         nome TEXT UNIQUE, 
         email TEXT UNIQUE,
         senha TEXT,
-        cargo TEXT,
-        pergunta TEXT,
-        resposta TEXT
+        cargo TEXT
     )`);
     
     db.run(`CREATE TABLE IF NOT EXISTS avisos (
@@ -74,26 +72,23 @@ const CHAVE_FUNCIONARIO = "COORDENACAO2026";
 
 // ROTA DE CADASTRO: Valida tamanho da senha e impede e-mails ou nomes repetidos
 app.post('/auth/cadastro', async (req, res) => {
-    const { nome, email, senha, cargo, chaveAcesso, pergunta, resposta } = req.body;
+    const { nome, email, senha, cargo, chaveAcesso } = req.body;
     
     // Validação estrita de barreira de caracteres
     if (!senha || senha.length < 6) {
         return res.status(400).json({ erro: 'A senha deve conter no mínimo 6 caracteres.' });
     }
-    if (!pergunta || !resposta) {
-        return res.status(400).json({ erro: 'Preencha a pergunta e resposta de segurança.' });
-    }
 
     if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
-        if (chaveAcesso !== CHAVE_FUNCIONARIO) {
+        if (!chaveAcesso || chaveAcesso !== CHAVE_FUNCIONARIO) {
             return res.status(403).json({ erro: 'Chave de acesso de funcionário inválida!' });
         }
     }
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     
-    db.run(`INSERT INTO usuarios (nome, email, senha, cargo, pergunta, resposta) VALUES (?, ?, ?, ?, ?, ?)`, 
-        [nome.trim(), email.trim(), senhaCriptografada, cargo, pergunta, resposta.trim().toLowerCase()], 
+    db.run(`INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)`, 
+        [nome.trim(), email.trim(), senhaCriptografada, cargo], 
         (err) => {
             if (err) {
                 // Captura e trata erros de violação de chaves únicas (UNIQUE) do SQLite
@@ -127,35 +122,24 @@ app.post('/auth/login', (req, res) => {
     });
 });
 
-// ROTA DE RECUPERAÇÃO: Controla as etapas de validação e redefinição da nova senha
+// ROTA DE RECUPERAÇÃO: Atualizada e direta, sem pergunta de segurança
 app.post('/auth/recuperar-senha', async (req, res) => {
-    const { identificador, pergunta, resposta, novaSenha, passo } = req.body;
+    const { identificador, novaSenha } = req.body;
 
     db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
         if (!usuario) {
             return res.status(400).json({ erro: 'Usuário ou E-mail não encontrado.' });
         }
 
-        // Passo 1: Captura e exibe na tela qual é a pergunta configurada daquele perfil
-        if (passo === 1) {
-            return res.json({ pergunta: usuario.pergunta });
+        if (!novaSenha || novaSenha.length < 6) {
+            return res.status(400).json({ erro: 'A nova senha deve ter no mínimo 6 caracteres.' });
         }
 
-        // Passo 2: Valida a resposta secreta e substitui a credencial gravando criptografada
-        if (passo === 2) {
-            if (usuario.resposta !== resposta.trim().toLowerCase()) {
-                return res.status(400).json({ erro: 'Resposta de segurança incorreta!' });
-            }
-            if (!novaSenha || novaSenha.length < 6) {
-                return res.status(400).json({ erro: 'A nova senha deve ter no mínimo 6 caracteres.' });
-            }
-
-            const novaSenhaCripto = await bcrypt.hash(novaSenha, 10);
-            db.run(`UPDATE usuarios SET senha = ? WHERE id = ?`, [novaSenhaCripto, usuario.id], (err) => {
-                if (err) return res.status(500).json({ erro: 'Erro ao atualizar a senha.' });
-                return res.json({ sucesso: true });
-            });
-        }
+        const novaSenhaCripto = await bcrypt.hash(novaSenha, 10);
+        db.run(`UPDATE usuarios SET senha = ? WHERE id = ?`, [novaSenhaCripto, usuario.id], (err) => {
+            if (err) return res.status(500).json({ erro: 'Erro ao atualizar a senha.' });
+            return res.json({ sucesso: true });
+        });
     });
 });
 
@@ -173,7 +157,7 @@ app.get('/auth/logout', (req, res) => {
     });
 });
 
-// CORRIGIDO: Rota de listagem de avisos limpa e sem erros de sintaxe
+// Get de todos os avisos em ordem decrescente (Novos no topo)
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
         res.json(rows);

@@ -11,7 +11,6 @@
         .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
         .link-recuperar:hover { text-decoration: underline; }
         
-        /* Container para alinhar o botão de ver senha */
         .campo-senha-container { position: relative; width: 100%; }
         .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
         .btn-ver-senha:hover { background: none; transform: translateY(-50%) scale(1.1); }
@@ -37,36 +36,28 @@
             <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
         </div>
 
-        <!-- BLOCO ESQUECI A SENHA -->
+        <!-- BLOCO ESQUECI A SENHA DIRECT -->
         <div id="bloco-recuperar" class="hidden">
             <div class="form-header">
-                <h2>Recuperar Senha</h2>
+                <h2>Configurar Nova Senha</h2>
             </div>
             <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
             <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
             
-            <div id="rec-passo1">
-                <input type="text" id="rec-identificador" placeholder="Confirme seu Nome de Usuário ou E-mail">
-                <button type="button" onclick="buscarPerguntaSeguranca()">Verificar Conta</button>
-            </div>
-
-            <div id="rec-passo2" class="hidden">
-                <p style="text-align:left; color:#1e293b; font-weight:600; margin-bottom:5px;">Sua pergunta de segurança:</p>
-                <input type="text" id="exibir-pergunta" readonly style="background-color:#e2e8f0; font-weight:600;">
-                <input type="text" id="rec-resposta" placeholder="Digite sua Resposta Secreta" required>
+            <form id="form-redefinir">
+                <input type="text" id="rec-identificador" placeholder="Nome de Usuário ou E-mail da sua conta" required>
                 <div class="campo-senha-container">
-                    <input type="password" id="rec-nova-senha" placeholder="Nova Senha (Mínimo 6 caracteres)" minlength="6" required>
+                    <input type="password" id="rec-nova-senha" placeholder="Digite a Nova Senha (Mínimo 6 dígitos)" minlength="6" required>
                     <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('rec-nova-senha', this)">👁️</button>
                 </div>
-                <button type="button" onclick="redefinirSenhaFinal()">Configurar Nova Senha</button>
-            </div>
+                <button type="submit">Atualizar Senha</button>
+            </form>
 
             <p><a href="#" onclick="fecharRecuperacao()">Voltar para o Login</a></p>
         </div>
     </div>
 
     <script>
-        // Função para mostrar/ocultar senha
         function alternarVisibilidade(idCampo, botao) {
             const campo = document.getElementById(idCampo);
             if (campo.type === "password") {
@@ -100,8 +91,7 @@
             document.getElementById('bloco-recuperar').classList.remove('hidden');
             document.getElementById('mensagem-erro-rec').classList.add('hidden');
             document.getElementById('mensagem-suc-rec').classList.add('hidden');
-            document.getElementById('rec-passo1').classList.remove('hidden');
-            document.getElementById('rec-passo2').classList.add('hidden');
+            document.getElementById('form-redefinir').classList.remove('hidden');
         }
 
         function fecharRecuperacao() {
@@ -110,31 +100,10 @@
             document.getElementById('mensagem-erro').classList.add('hidden');
         }
 
-        async function buscarPerguntaSeguranca() {
+        // Lógica de Redefinição Direta
+        document.getElementById('form-redefinir').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const identificador = document.getElementById('rec-identificador').value;
-            const erroDiv = document.getElementById('mensagem-erro-rec');
-            erroDiv.classList.add('hidden');
-
-            if(!identificador) { erroDiv.innerText = "Digite seu usuário ou email."; erroDiv.classList.remove('hidden'); return; }
-
-            const res = await fetch('/auth/recuperar-senha', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identificador, passo: 1 })
-            });
-            const dados = await res.json();
-
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
-            else {
-                document.getElementById('exibir-pergunta').value = dados.pergunta;
-                document.getElementById('rec-passo1').classList.add('hidden');
-                document.getElementById('rec-passo2').classList.remove('hidden');
-            }
-        }
-
-        async function redefinirSenhaFinal() {
-            const identificador = document.getElementById('rec-identificador').value;
-            const resposta = document.getElementById('rec-resposta').value;
             const novaSenha = document.getElementById('rec-nova-senha').value;
             const erroDiv = document.getElementById('mensagem-erro-rec');
             const sucDiv = document.getElementById('mensagem-suc-rec');
@@ -142,20 +111,27 @@
             erroDiv.classList.add('hidden');
             sucDiv.classList.add('hidden');
 
-            const res = await fetch('/auth/recuperar-senha', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identificador, resposta, novaSenha, passo: 2 })
-            });
-            const dados = await res.json();
+            try {
+                const res = await fetch('/auth/recuperar-senha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identificador, novaSenha })
+                });
+                const dados = await res.json();
 
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
-            else {
-                sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
-                sucDiv.classList.remove('hidden');
-                document.getElementById('rec-passo2').classList.add('hidden');
+                if (!res.ok) { 
+                    erroDiv.innerText = dados.erro; 
+                    erroDiv.classList.remove('hidden'); 
+                } else {
+                    sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
+                    sucDiv.classList.remove('hidden');
+                    document.getElementById('form-redefinir').classList.add('hidden');
+                }
+            } catch (err) {
+                erroDiv.innerText = "Erro ao conectar com o servidor.";
+                erroDiv.classList.remove('hidden');
             }
-        }
+        });
     </script>
 </body>
 </html>

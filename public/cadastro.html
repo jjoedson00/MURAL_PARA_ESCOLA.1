@@ -28,15 +28,6 @@
                 <input type="password" id="senha" placeholder="Senha (Mínimo 6 caracteres)" minlength="6" required>
                 <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
             </div>
-            
-            <select id="pergunta" required>
-                <option value="" disabled selected>Escolha uma pergunta de segurança</option>
-                <option value="Qual o nome do seu primeiro animal de estimação?">Qual o nome do seu primeiro animal de estimação?</option>
-                <option value="Qual a sua comida favorita?">Qual a sua comida favorita?</option>
-                <option value="Qual o nome da sua primeira escola?">Qual o nome da sua primeira escola?</option>
-                <option value="Em qual cidade você nasceu?">Em qual cidade você nasceu?</option>
-            </select>
-            <input type="text" id="resposta" placeholder="Resposta secreta (Guarde bem!)" required>
 
             <select id="cargo" onchange="verificarCargo()" required>
                 <option value="aluno">Aluno</option>
@@ -46,6 +37,7 @@
                 <option value="direcao">Direção</option>
             </select>
 
+            <!-- O campo da senha de acesso do funcionário começa invisível -->
             <div id="campo-chave" class="hidden">
                 <input type="password" id="chaveAcesso" placeholder="Chave de Acesso do Funcionário">
             </div>
@@ -70,10 +62,15 @@
         function verificarCargo() {
             const cargo = document.getElementById('cargo').value;
             const campoChave = document.getElementById('campo-chave');
+            const inputChave = document.getElementById('chaveAcesso');
+            
             if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
                 campoChave.classList.remove('hidden');
+                inputChave.setAttribute('required', 'required'); // Torna obrigatório se for funcionário
             } else {
                 campoChave.classList.add('hidden');
+                inputChave.removeAttribute('required');
+                inputChave.value = '';
             }
         }
 
@@ -84,22 +81,30 @@
             const senha = document.getElementById('senha').value;
             const cargo = document.getElementById('cargo').value;
             const chaveAcesso = document.getElementById('chaveAcesso').value;
-            const pergunta = document.getElementById('pergunta').value;
-            const resposta = document.getElementById('resposta').value;
             const erroDiv = document.getElementById('mensagem-erro');
 
             erroDiv.classList.add('hidden');
 
-            const res = await fetch('/auth/cadastro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso, pergunta, resposta })
-            });
+            try {
+                const res = await fetch('/auth/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+                });
 
-            const dados = await res.json();
+                const dados = await res.json();
 
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
-            else { window.location.href = '/login'; }
+                if (!res.ok) {
+                    // EXIBE O MOTIVO EXATO NA TELA
+                    erroDiv.innerText = dados.erro || 'Erro ao realizar cadastro.';
+                    erroDiv.classList.remove('hidden');
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (err) {
+                erroDiv.innerText = 'Erro de conexão com o servidor.';
+                erroDiv.classList.remove('hidden');
+            }
         });
     </script>
 </body>
