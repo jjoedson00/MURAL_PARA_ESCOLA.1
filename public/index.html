@@ -6,43 +6,63 @@
     <title>Login - Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .erro-alerta {
-            background-color: #fee2e2;
-            color: #dc2626;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #fca5a5;
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
+        .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
+        .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
+        .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
+        .link-recuperar:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="form-header">
-            <h2>Mural Escolar - Login</h2>
+        <!-- BLOCO LOGIN -->
+        <div id="bloco-login">
+            <div class="form-header">
+                <h2>Mural Escolar - Login</h2>
+            </div>
+            <div id="mensagem-erro" class="erro-alerta hidden"></div>
+            <form id="form-login">
+                <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
+                <input type="password" id="senha" placeholder="Sua Senha" required>
+                <span class="link-recuperar" onclick="abrirRecuperacao()">Esqueci minha senha</span>
+                <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
         </div>
 
-        <div id="mensagem-erro" class="erro-alerta hidden"></div>
+        <!-- BLOCO ESQUECI A SENHA (Oculto por padrão) -->
+        <div id="bloco-recuperar" class="hidden">
+            <div class="form-header">
+                <h2>Recuperar Senha</h2>
+            </div>
+            <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
+            <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
+            
+            <!-- Passo 1: Digitar Usuário/Email -->
+            <div id="rec-passo1">
+                <input type="text" id="rec-identificador" placeholder="Confirme seu Nome de Usuário ou E-mail">
+                <button type="button" onclick="buscarPerguntaSeguranca()">Verificar Conta</button>
+            </div>
 
-        <form id="form-login">
-            <!-- ALTERADO: Placeholder atualizado para orientar o usuário -->
-            <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
-            <input type="password" id="senha" placeholder="Sua Senha" required>
-            <button type="submit">Entrar</button>
-        </form>
-        <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+            <!-- Passo 2: Responder Pergunta e Criar Nova Senha -->
+            <div id="rec-passo2" class="hidden">
+                <p style="text-align:left; color:#1e293b; font-weight:600; margin-bottom:5px;">Sua pergunta de segurança:</p>
+                <input type="text" id="exibir-pergunta" readonly style="background-color:#e2e8f0; font-weight:600;">
+                <input type="text" id="rec-resposta" placeholder="Digite sua Resposta Secreta" required>
+                <input type="password" id="rec-nova-senha" placeholder="Nova Senha (Mínimo 6 caracteres)" minlength="6" required>
+                <button type="button" onclick="redefinirSenhaFinal()">Configurar Nova Senha</button>
+            </div>
+
+            <p><a href="#" onclick="fecharRecuperacao()">Voltar para o Login</a></p>
+        </div>
     </div>
 
     <script>
+        // Lógica de Login Comum
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identificador = document.getElementById('identificador').value;
             const senha = document.getElementById('senha').value;
             const erroDiv = document.getElementById('mensagem-erro');
-
             erroDiv.classList.add('hidden');
 
             const res = await fetch('/auth/login', {
@@ -50,16 +70,75 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ identificador, senha })
             });
+            const dados = await res.json();
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
+            else { window.location.href = '/mural'; }
+        });
 
+        // Alternância de Telas Animada
+        function abrirRecuperacao() {
+            document.getElementById('bloco-login').classList.add('hidden');
+            document.getElementById('bloco-recuperar').classList.remove('hidden');
+            document.getElementById('mensagem-erro-rec').classList.add('hidden');
+            document.getElementById('mensagem-suc-rec').classList.add('hidden');
+            document.getElementById('rec-passo1').classList.remove('hidden');
+            document.getElementById('rec-passo2').classList.add('hidden');
+        }
+
+        function fecharRecuperacao() {
+            document.getElementById('bloco-recuperar').classList.add('hidden');
+            document.getElementById('bloco-login').classList.remove('hidden');
+            document.getElementById('mensagem-erro').classList.add('hidden');
+        }
+
+        // Fluxo de Recuperação - Passo 1
+        async function buscarPerguntaSeguranca() {
+            const identificador = document.getElementById('rec-identificador').value;
+            const erroDiv = document.getElementById('mensagem-erro-rec');
+            erroDiv.classList.add('hidden');
+
+            if(!identificador) { erroDiv.innerText = "Digite seu usuário ou email."; erroDiv.classList.remove('hidden'); return; }
+
+            const res = await fetch('/auth/recuperar-senha', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identificador, passo: 1 })
+            });
             const dados = await res.json();
 
-            if (!res.ok) {
-                erroDiv.innerText = dados.erro;
-                erroDiv.classList.remove('hidden');
-            } else {
-                window.location.href = '/mural';
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
+            else {
+                document.getElementById('exibir-pergunta').value = dados.pergunta;
+                document.getElementById('rec-passo1').classList.add('hidden');
+                document.getElementById('rec-passo2').classList.remove('hidden');
             }
-        });
+        }
+
+        // Fluxo de Recuperação - Passo 2
+        async function redefinirSenhaFinal() {
+            const identificador = document.getElementById('rec-identificador').value;
+            const resposta = document.getElementById('rec-resposta').value;
+            const novaSenha = document.getElementById('rec-nova-senha').value;
+            const erroDiv = document.getElementById('mensagem-erro-rec');
+            const sucDiv = document.getElementById('mensagem-suc-rec');
+            
+            erroDiv.classList.add('hidden');
+            sucDiv.classList.add('hidden');
+
+            const res = await fetch('/auth/recuperar-senha', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identificador, resposta, novaSenha, passo: 2 })
+            });
+            const dados = await res.json();
+
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
+            else {
+                sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
+                sucDiv.classList.remove('hidden');
+                document.getElementById('rec-passo2').classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>

@@ -6,17 +6,7 @@
     <title>Cadastro - Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .erro-alerta {
-            background-color: #fee2e2;
-            color: #dc2626;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #fca5a5;
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
+        .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -30,9 +20,18 @@
         <form id="form-cadastro">
             <input type="text" id="nome" placeholder="Nome de Usuário (Ex: JoaoSilva)" required>
             <input type="email" id="email" placeholder="Email" required>
-            <!-- ALTERADO: Atributo minlength="6" obriga o navegador a validar no celular/PC -->
             <input type="password" id="senha" placeholder="Senha (Mínimo 6 caracteres)" minlength="6" required>
             
+            <!-- NOVOS CAMPOS: Configuração do Esqueci minha senha -->
+            <select id="pergunta" required>
+                <option value="" disabled selected>Escolha uma pergunta de segurança</option>
+                <option value="Qual o nome do seu primeiro animal de estimação?">Qual o nome do seu primeiro animal de estimação?</option>
+                <option value="Qual a sua comida favorita?">Qual a sua comida favorita?</option>
+                <option value="Qual o nome da sua primeira escola?">Qual o nome da sua primeira escola?</option>
+                <option value="Em qual cidade você nasceu?">Em qual cidade você nasceu?</option>
+            </select>
+            <input type="text" id="resposta" placeholder="Resposta secreta (Guarde bem!)" required>
+
             <select id="cargo" onchange="verificarCargo()" required>
                 <option value="aluno">Aluno</option>
                 <option value="responsavel">Responsável</option>
@@ -68,6 +67,8 @@
             const senha = document.getElementById('senha').value;
             const cargo = document.getElementById('cargo').value;
             const chaveAcesso = document.getElementById('chaveAcesso').value;
+            const pergunta = document.getElementById('pergunta').value;
+            const resposta = document.getElementById('resposta').value;
             const erroDiv = document.getElementById('mensagem-erro');
 
             erroDiv.classList.add('hidden');
@@ -75,17 +76,13 @@
             const res = await fetch('/auth/cadastro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso, pergunta, resposta })
             });
 
             const dados = await res.json();
 
-            if (!res.ok) {
-                erroDiv.innerText = dados.erro;
-                erroDiv.classList.remove('hidden');
-            } else {
-                window.location.href = '/login';
-            }
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
+            else { window.location.href = '/login'; }
         });
     </script>
 </body>

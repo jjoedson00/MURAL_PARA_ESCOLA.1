@@ -14,18 +14,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(session({
-    store: new FileStore({
-        path: './sessions',
-        ttl: 86400, 
-        logFn: function() {} 
-    }),
+    store: new FileStore({ path: './sessions', ttl: 86400, logFn: function() {} }),
     secret: 'chave-secreta-do-mural',
     resave: false,               
     saveUninitialized: false,    
-    cookie: { 
-        maxAge: 1000 * 60 * 60 * 24, 
-        secure: false           
-    }
+    cookie: { maxAge: 1000 * 60 * 60 * 24, secure: false }
 }));
 
 app.get('/', (req, res) => res.redirect('/login'));
@@ -35,19 +28,20 @@ app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mur
 
 const storage = multer.diskStorage({
     destination: 'public/uploads/',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
+    filename: (req, file, cb) => { cb(null, Date.now() + path.extname(file.originalname)); }
 });
 const upload = multer({ storage });
 
 db.serialize(() => {
+    // ATUALIZADO: Incluindo campos de pergunta e resposta de segurança
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT UNIQUE, -- Adicionado UNIQUE para garantir que nomes não se repitam
+        nome TEXT UNIQUE, 
         email TEXT UNIQUE,
         senha TEXT,
-        cargo TEXT
+        cargo TEXT,
+        pergunta TEXT,
+        resposta TEXT
     )`);
     
     db.run(`CREATE TABLE IF NOT EXISTS avisos (
@@ -63,11 +57,13 @@ db.serialize(() => {
 const CHAVE_FUNCIONARIO = "COORDENACAO2026";
 
 app.post('/auth/cadastro', async (req, res) => {
-    const { nome, email, senha, cargo, chaveAcesso } = req.body;
+    const { nome, email, senha, cargo, chaveAcesso, pergunta, resposta } = req.body;
     
-    // Validação de segurança de tamanho de senha também no servidor
     if (!senha || senha.length < 6) {
         return res.status(400).json({ erro: 'A senha deve conter no mínimo 6 caracteres.' });
+    }
+    if (!pergunta || !resposta) {
+        return res.status(400).json({ erro: 'Preencha a pergunta e resposta de segurança.' });
     }
 
     if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
@@ -78,8 +74,8 @@ app.post('/auth/cadastro', async (req, res) => {
 
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     
-    db.run(`INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)`, 
-        [nome.trim(), email.trim(), senhaCriptografada, cargo], 
+    db.run(`INSERT INTO usuarios (nome, email, senha, cargo, pergunta, resposta) VALUES (?, ?, ?, ?, ?, ?)`, 
+        [nome.trim(), email.trim(), senhaCriptografada, cargo, pergunta, resposta.trim().toLowerCase()], 
         (err) => {
             if (err) {
                 if (err.message.includes('usuarios.nome')) {
@@ -92,20 +88,47 @@ app.post('/auth/cadastro', async (req, res) => {
     );
 });
 
-// ALTERADO: Login aceita tanto e-mail quanto nome exato do usuário
 app.post('/auth/login', (req, res) => {
-    const { identificador, senha } = req.body; // 'identificador' recebe nome ou email do form
-    
+    const { identificador, senha } = req.body;
     db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
         if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
             return res.status(400).json({ erro: 'Usuário/Email ou senha incorretos.' });
         }
         req.session.userId = usuario.id;
         req.session.usuario = { nome: usuario.nome, cargo: usuario.cargo };
-        
-        req.session.save(() => {
-            return res.json({ sucesso: true });
-        });
+        req.session.save(() => { return res.json({ sucesso: true }); });
+    });
+});
+
+// NOVA ROTA: Recuperação e redefinição de senha instantânea
+app.post('/auth/recuperar-senha', async (req, res) => {
+    const { identificador, pergunta, resposta, novaSenha, passo } = req.body;
+
+    db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
+        if (!usuario) {
+            return res.status(400).json({ erro: 'Usuário ou E-mail não encontrado.' });
+        }
+
+        // Passo 1: Apenas busca e devolve a pergunta cadastrada daquele usuário
+        if (passo === 1) {
+            return res.json({ pergunta: usuario.pergunta });
+        }
+
+        // Passo 2: Valida a resposta e grava a nova senha criptografada
+        if (passo === 2) {
+            if (usuario.resposta !== resposta.trim().toLowerCase()) {
+                return res.status(400).json({ erro: 'Resposta de segurança incorreta!' });
+            }
+            if (!novaSenha || novaSenha.length < 6) {
+                return res.status(400).json({ erro: 'A nova senha deve ter no mínimo 6 caracteres.' });
+            }
+
+            const novaSenhaCripto = await bcrypt.hash(novaSenha, 10);
+            db.run(`UPDATE usuarios SET senha = ? WHERE id = ?`, [novaSenhaCripto, usuario.id], (err) => {
+                if (err) return res.status(500).json({ erro: 'Erro ao atualizar a senha.' });
+                return res.json({ sucesso: true });
+            });
+        }
     });
 });
 
@@ -115,16 +138,11 @@ app.get('/api/usuario-atual', (req, res) => {
 });
 
 app.get('/auth/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.clearCookie('connect.sid'); 
-        res.redirect('/login');   
-    });
+    req.session.destroy(() => { res.clearCookie('connect.sid'); res.redirect('/login'); });
 });
 
 app.get('/api/avisos', (req, res) => {
-    db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
-        res.json(rows);
-    });
+    db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => { res.json(rows); });
 });
 
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
@@ -146,9 +164,7 @@ app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
         return res.status(403).json({ erro: 'Acesso negado.' });
     }
-    db.run(`DELETE FROM avisos WHERE id = ?`, [req.params.id], () => {
-        res.json({ sucesso: true });
-    });
+    db.run(`DELETE FROM avisos WHERE id = ?`, [req.params.id], () => { res.json({ sucesso: true }); });
 });
 
 const PORT = process.env.PORT || 3000;
