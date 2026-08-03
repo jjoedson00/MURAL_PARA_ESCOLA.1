@@ -1,16 +1,16 @@
 /* ==========================================================================
-   🎨 DESIGN PREMIUM MINIMALISTA - SUTILEZA, LEITURA E PROFISSIONALISMO
+   🎨 DESIGN PREMIUM MINIMALISTA - VERSÃO AMPLIADA E RESPONSIVA (TCC)
    ========================================================================== */
    :root {
-    --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Fundo escuro premium da tela */
+    --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Fundo escuro premium */
     --gradient-header: linear-gradient(135deg, #1e293b 0%, #334155 100%); /* Faixa minimalista escura */
-    --primary: #2563eb;       /* Azul Safira moderno para links e botões */
+    --primary: #2563eb;       /* Azul Safira moderno */
     --primary-hover: #1d4ed8; 
-    --accent: #334155;        /* Cinza escuro sofisticado para o botão de publicar */
-    --danger: #ef4444;        /* Vermelho vibrante para apagar/sair */
-    --card-bg: #f8fafc;       /* Fundo interno do painel */
-    --text-main: #0f172a;     /* Títulos e textos principais quase pretos */
-    --text-muted: #64748b;    /* Cinza neutro para informações de data/hora */
+    --accent: #334155;        /* Cinza escuro sofisticado */
+    --danger: #ef4444;        /* Vermelho vibrante */
+    --card-bg: #f8fafc;       /* Fundo interno do painel de login/cadastro */
+    --text-main: #0f172a;     /* Texto principal quase preto */
+    --text-muted: #64748b;    /* Cinza neutro para detalhes */
 }
 
 body {
@@ -25,38 +25,46 @@ body {
     box-sizing: border-box;
 }
 
-/* Painel Principal */
+/* Painel Principal (Configuração para Login e Cadastro) */
 .container {
     width: 100%;
-    max-width: 450px;
+    max-width: 550px; /* MODIFICADO: Passou de 450px para 550px para melhor preenchimento */
     background-color: var(--card-bg);
-    padding: 0 20px 35px 20px;
+    padding: 0 30px 40px 30px;
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); 
     overflow: hidden; 
     box-sizing: border-box;
 }
 
-/* Ajuste fluido do mural de avisos */
+/* MODIFICADO: Extensão exclusiva do Mural para preenchimento de telas, TVs e Monitores */
 .container-mural {
-    max-width: 680px !important;
-    background-color: #f1f5f9; /* Fundo cinza sutil que separa visualmente os blocos internos */
+    max-width: 950px !important; /* MODIFICADO: Ampliado drasticamente de 680px para 950px */
+    background-color: #f1f5f9; /* Fundo cinza claro para isolar os blocos internos */
+    padding: 0 40px 45px 40px !important; /* MODIFICADO: Mais espaçamento interno */
 }
 
 /* Faixa Escura Minimalista no Topo */
 .form-header {
     background: var(--gradient-header);
-    margin-left: -20px;
-    margin-right: -20px;
+    margin-left: -30px;
+    margin-right: -30px;
     padding: 22px;
     text-align: center;
     margin-bottom: 25px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Recuo estendido da faixa superior exclusivo para a nova largura do mural */
+.container-mural .form-header {
+    margin-left: -40px;
+    margin-right: -40px;
+    padding: 30px;
+}
+
 .form-header h2 {
     color: #ffffff !important;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
     margin: 0 !important;
     letter-spacing: -0.5px;
@@ -64,12 +72,12 @@ body {
 
 h3 {
     color: #1e293b;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     margin-top: 15px;
 }
 
-/* Campos de Entrada - Fundo branco puro com bordas finas elegantes */
+/* Campos de Entrada - Estilo limpo e espaçado */
 input, select, textarea {
     width: 100%;
     padding: 14px;
@@ -129,9 +137,9 @@ a:hover {
     text-decoration: underline;
 }
 
-/* 📥 ÁREA DE POSTAGEM (Espaço dos Professores Reformulado - Clean White) */
+/* 📥 ÁREA DE POSTAGEM (Espaço de Criação - Clean White) */
 #area-postagem {
-    background-color: #ffffff; /* Sai o verde berrante, entra o branco puro moderno */
+    background-color: #ffffff; 
     border: 1px solid #e2e8f0;
     padding: 24px;
     border-radius: 14px;
@@ -147,18 +155,18 @@ a:hover {
 }
 
 #area-postagem button {
-    background-color: #1e293b; /* Botão cinza escuro para diferenciar de ações comuns */
+    background-color: #1e293b; 
 }
 
 #area-postagem button:hover {
     background-color: #0f172a;
 }
 
-/* 📄 CARDS DE VISUALIZAÇÃO DOS AVISOS (Foco Total no Conteúdo) */
+/* 📄 CARDS DE VISUALIZAÇÃO DOS AVISOS (Design Fluido) */
 .aviso-card {
     background: #ffffff; 
     padding: 24px;
-    border-left: 4px solid #0f172a; /* Linha de destaque grafite escura e séria */
+    border-left: 4px solid #0f172a; /* Linha sutil grafite escura */
     margin-bottom: 16px;
     border-radius: 12px;
     position: relative;
@@ -175,8 +183,8 @@ a:hover {
 
 .aviso-card h4 {
     margin: 0 0 10px 0;
-    color: #0f172a; /* Título do comunicado em destaque escuro nítido */
-    font-size: 19px;
+    color: #0f172a; 
+    font-size: 20px;
     font-weight: 700;
     padding-right: 70px;
 }
@@ -186,13 +194,13 @@ a:hover {
     margin: 0 0 14px 0;
     color: #334155;
     line-height: 1.6;
-    font-size: 15px;
+    font-size: 16px;
 }
 
-/* Ajuste Fino das Imagens Escolares */
+/* Imagens Escolares - Flexíveis e Proporcionais */
 .aviso-card img {
     width: 100%;
-    max-height: 280px;
+    max-height: 450px; /* Aumentado para manter a qualidade em telas amplas */
     object-fit: cover;
     border-radius: 8px;
     margin-top: 12px;
@@ -200,22 +208,43 @@ a:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Rodapé do Comunicado Otimizado */
 .aviso-card small {
     color: #475569;
     font-size: 12px;
     background-color: #f1f5f9; 
     padding: 6px 12px;
-    border-radius: 20px; /* Estilo pílula moderna */
+    border-radius: 20px; 
     display: inline-block;
     margin-top: 12px;
     font-weight: 500;
 }
 
-/* Botões de Ação Especiais (Apagar e Sair) */
+/* Botões Superiores e de Ação */
+.controle-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: -5px;
+}
+
+.btn-tv {
+    background-color: #0f172a;
+    color: #ffffff;
+    width: auto;
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.btn-tv:hover {
+    background-color: #334155;
+}
+
 .btn-delete {
     background-color: transparent;
-    color: #94a3b8; /* Fica discreto por padrão */
+    color: #94a3b8; 
     width: auto;
     padding: 6px 12px;
     font-size: 12px;
@@ -253,7 +282,6 @@ a:hover {
     border-color: var(--danger);
 }
 
-/* Etiqueta Informativa de Login */
 .user-info {
     background: #ffffff; 
     padding: 8px 14px;
@@ -267,7 +295,6 @@ a:hover {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Caixa de Busca Integrada */
 .search-container {
     margin-bottom: 20px;
 }
@@ -284,53 +311,19 @@ a:hover {
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
-/* Ajustes Adicionais para Telas Maiores (PC) */
-@media (min-width: 600px) {
-    body { padding: 20px; }
-    .container { padding: 0 30px 40px 30px; }
-    .form-header { margin-left: -30px; margin-right: -30px; padding: 25px; }
-    .form-header h2 { font-size: 25px; }
-    .aviso-card { padding: 24px; }
-}
 /* ==========================================================================
-   📺 ESTILOS EXCLUSIVOS PARA O MODO TELA CHEIA (TV / MONITORES / TOTEM)
+   📺 MODO TV / TELA CHEIA EXPANDIDO COMPLETAMENTE
    ========================================================================== */
-
-/* Organização dos botões superiores */
-.controle-superior {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    margin-bottom: -5px;
-}
-
-/* Botão estilo TV */
-.btn-tv {
-    background-color: #0f172a;
-    color: #ffffff;
-    width: auto;
-    padding: 8px 16px;
-    font-size: 13px;
-    border-radius: 8px;
-    box-shadow: none;
-}
-.btn-tv:hover {
-    background-color: #334155;
-}
-
-/* REGRA DE OURO: O que acontece quando a TV ativa a tela cheia */
 .modo-totem-ativo {
     max-width: 100% !important;
     width: 100vw !important;
     height: 100vh !important;
     border-radius: 0 !important;
-    padding: 30px !important;
-    overflow-y: auto !important; /* Permite rolar os avisos caso tenha muitos na TV */
-    background-color: #f1f5f9 !important; /* Deixa o fundo cinza clean cobrindo tudo */
+    padding: 40px 60px !important; /* Espaçamento ideal para preencher TVs e Monitores */
+    overflow-y: auto !important; 
+    background-color: #f1f5f9 !important; 
 }
 
-/* Esconde o formulário dos professores na TV para os alunos não verem campos vazios */
 .modo-totem-ativo #area-postagem,
 .modo-totem-ativo .user-info,
 .modo-totem-ativo #linha-separadora,
@@ -338,26 +331,37 @@ a:hover {
     display: none !important;
 }
 
-/* Ajusta o cabeçalho para ficar gigante e centralizado em televisões grandes */
 .modo-totem-ativo .form-header {
-    margin-left: -30px;
-    margin-right: -30px;
-    margin-top: -30px;
+    margin-left: -60px;
+    margin-right: -60px;
+    margin-top: -40px;
     padding: 30px;
 }
+
 .modo-totem-ativo .form-header h2 {
     font-size: 32px;
 }
 
-/* Faz os cartões de avisos ocuparem um visual mais imponente na TV */
 .modo-totem-ativo .aviso-card {
     margin-bottom: 25px;
-    border-left-width: 8px;
+    border-left-width: 6px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+
 .modo-totem-ativo .aviso-card h4 {
-    font-size: 24px;
+    font-size: 26px;
 }
+
 .modo-totem-ativo .aviso-card p {
     font-size: 18px;
+}
+
+/* Regras de Ajuste adicionais para PCs e Telas Grandes */
+@media (min-width: 600px) {
+    body { 
+        padding: 30px 20px; 
+    }
+    .container-mural .form-header h2 { 
+        font-size: 26px; 
+    }
 }
