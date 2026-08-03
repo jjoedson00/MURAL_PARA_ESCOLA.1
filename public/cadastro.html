@@ -62,6 +62,7 @@
 
         document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
@@ -71,19 +72,24 @@
 
             erroDiv.classList.add('hidden');
 
-            const res = await fetch('/auth/cadastro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
-            });
+            try {
+                const res = await fetch('/auth/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+                });
 
-            const dados = await res.json();
+                const dados = await res.json();
 
-            if (!res.ok) {
-                erroDiv.innerText = dados.erro;
+                if (!res.ok) {
+                    erroDiv.innerText = dados.erro || 'Erro ao realizar cadastro.';
+                    erroDiv.classList.remove('hidden');
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (err) {
+                erroDiv.innerText = 'Erro de conexão com o servidor.';
                 erroDiv.classList.remove('hidden');
-            } else {
-                window.location.href = '/login';
             }
         });
     </script>
