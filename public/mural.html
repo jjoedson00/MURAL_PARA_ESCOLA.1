@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ID "conteudo-mural" adicionado para podermos isolar e expandir apenas este bloco -->
     <div class="container container-mural" id="conteudo-mural">
         
-        <!-- Botões de Controle Superiores -->
         <div class="controle-superior">
             <button id="btn-fullscreen" class="btn-tv" onclick="alternarTelaCheia()">📺 Modo TV / Tela Cheia</button>
             <a href="/auth/logout" class="logout-lnk">Sair</a>
@@ -38,18 +36,21 @@
 
         <hr id="linha-separadora" style="border: 0; border-top: 2px solid #e2e8f0; margin: 30px 0;">
         
-        <!-- BARRA DE PESQUISA EM TEMPO REAL -->
-        <div class="search-container">
-            <h3>Avisos Recentes</h3>
+        <!-- BARRA DE PESQUISA (Oculta por padrão via ID, controlada pelo JS) -->
+        <div class="search-container hidden" id="area-busca-alunos">
+            <h3>Buscar Avisos</h3>
             <input type="text" id="campo-busca" placeholder="🔍 Buscar avisos por título ou conteúdo..." onkeyup="filtrarAvisos()">
         </div>
 
+        <h3 id="titulo-lista-avisos">Avisos Recentes</h3>
         <div id="lista-avisos"></div>
     </div>
 
     <script>
         let usuarioAtual = null;
         let todosAvisos = []; 
+        let ultimoIdAviso = 0; // Controla qual foi o último aviso visto para disparar notificação
+        let primeiraCarga = true;
 
         async function carregarUsuario() {
             const res = await fetch('/api/usuario-atual');
@@ -61,16 +62,65 @@
             document.getElementById('nome-usuario').innerText = usuarioAtual.nome;
             document.getElementById('cargo-usuario').innerText = usuarioAtual.cargo;
 
+            // Regra: Mostra formulário se for funcionário, mostra busca se for Aluno/Responsável
             if (['professor', 'coordenador', 'direcao'].includes(usuarioAtual.cargo)) {
                 document.getElementById('area-postagem').classList.remove('hidden');
+            } else {
+                document.getElementById('area-busca-alunos').classList.remove('hidden');
+                solicitarPermissaoNotificacao(); // Pede para o aluno ativar notificações
             }
-            carregarAvisos();
+            
+            await carregarAvisos();
+            // Verifica se há novos avisos no servidor a cada 10 segundos
+            setInterval(checarNovosAvisos, 10000);
         }
 
         async function carregarAvisos() {
             const res = await fetch('/api/avisos');
             todosAvisos = await res.json(); 
+            
+            if (todosAvisos.length > 0 && primeiraCarga) {
+                ultimoIdAviso = todosAvisos[0].id; // Salva o ID do aviso mais recente do topo
+                primeiraCarga = false;
+            }
+            
             renderizarAvisos(todosAvisos);
+        }
+
+        // Função em segundo plano que roda na TV ou no celular do Aluno buscando novidades
+        async function checarNovosAvisos() {
+            const res = await fetch('/api/avisos');
+            const novosAvisos = await res.json();
+            
+            if (novosAvisos.length > 0) {
+                // Se o ID do topo for maior do que o último guardado, tem publicação nova!
+                if (novosAvisos[0].id > ultimoIdAviso) {
+                    ultimoIdAviso = novosAvisos[0].id;
+                    todosAvisos = novosAvisos;
+                    renderizarAvisos(todosAvisos);
+                    
+                    // Só dispara notificação se for Aluno ou Responsável
+                    if (['aluno', 'responsavel'].includes(usuarioAtual.cargo)) {
+                        dispararNotificacao(novosAvisos[0].titulo, novosAvisos[0].conteudo);
+                    }
+                }
+            }
+        }
+
+        // SISTEMA DE NOTIFICAÇÃO PUSH NATIVA
+        function solicitarPermissaoNotificacao() {
+            if ("Notification" in window) {
+                Notification.requestPermission();
+            }
+        }
+
+        function dispararNotificacao(titulo, conteudo) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("📢 Novo Aviso Escolar!", {
+                    body: `${titulo}: ${conteudo.substring(0, 50)}...`,
+                    icon: "/uploads/logo.png" // Opcional: ícone da notificação
+                });
+            }
         }
 
         function renderizarAvisos(listaParaExibir) {
@@ -106,13 +156,9 @@
 
         function filtrarAvisos() {
             const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
-            
             const avisosFiltrados = todosAvisos.filter(aviso => {
-                const tituloObatido = aviso.titulo.toLowerCase();
-                const conteudoObtido = aviso.conteudo.toLowerCase();
-                return tituloObatido.includes(termoBusca) || conteudoObtido.includes(termoBusca);
+                return aviso.titulo.toLowerCase().includes(termoBusca) || aviso.conteudo.toLowerCase().includes(termoBusca);
             });
-
             renderizarAvisos(avisosFiltrados);
         }
 
@@ -121,28 +167,16 @@
             carregarAvisos(); 
         }
 
-        // LÓGICA DE TELA CHEIA (MODO MONITOR / TV)
         function alternarTelaCheia() {
             const muralElemento = document.getElementById('conteudo-mural');
-
             if (!document.fullscreenElement) {
-                // Tenta colocar o elemento em Tela Cheia no navegador
-                if (muralElemento.requestFullscreen) {
-                    muralElemento.requestFullscreen();
-                } else if (muralElemento.webkitRequestFullscreen) { /* Safari Mobile */
-                    muralElemento.webkitRequestFullscreen();
-                } else if (muralElemento.msRequestFullscreen) { /* IE11 */
-                    muralElemento.msRequestFullscreen();
-                }
+                if (muralElemento.requestFullscreen) muralElemento.requestFullscreen();
+                else if (muralElemento.webkitRequestFullscreen) muralElemento.webkitRequestFullscreen();
             } else {
-                // Se já estiver em tela cheia, sai dela
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        // Detecta quando entra/sai da tela cheia para mudar o visual e esconder os menus
         document.addEventListener('fullscreenchange', gerenciarEstiloFullscreen);
         document.addEventListener('webkitfullscreenchange', gerenciarEstiloFullscreen);
 

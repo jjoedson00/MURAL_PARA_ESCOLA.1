@@ -28,7 +28,7 @@ body {
 /* Painel Principal (Configuração para Login e Cadastro) */
 .container {
     width: 100%;
-    max-width: 550px; /* MODIFICADO: Passou de 450px para 550px para melhor preenchimento */
+    max-width: 550px; 
     background-color: var(--card-bg);
     padding: 0 30px 40px 30px;
     border-radius: 16px;
@@ -37,11 +37,11 @@ body {
     box-sizing: border-box;
 }
 
-/* MODIFICADO: Extensão exclusiva do Mural para preenchimento de telas, TVs e Monitores */
+/* Extensão exclusiva do Mural para preenchimento de telas, TVs e Monitores */
 .container-mural {
-    max-width: 950px !important; /* MODIFICADO: Ampliado drasticamente de 680px para 950px */
+    max-width: 950px !important; 
     background-color: #f1f5f9; /* Fundo cinza claro para isolar os blocos internos */
-    padding: 0 40px 45px 40px !important; /* MODIFICADO: Mais espaçamento interno */
+    padding: 0 40px 45px 40px !important; /* Mais espaçamento interno */
 }
 
 /* Faixa Escura Minimalista no Topo */
@@ -200,7 +200,7 @@ a:hover {
 /* Imagens Escolares - Flexíveis e Proporcionais */
 .aviso-card img {
     width: 100%;
-    max-height: 450px; /* Aumentado para manter a qualidade em telas amplas */
+    max-height: 450px; 
     object-fit: cover;
     border-radius: 8px;
     margin-top: 12px;
@@ -312,22 +312,25 @@ a:hover {
 }
 
 /* ==========================================================================
-   📺 MODO TV / TELA CHEIA EXPANDIDO COMPLETAMENTE
+   📺 MODO TV / TELA CHEIA EXPANDIDO COMPLETAMENTE (COM REMOÇÃO DE MENUS)
    ========================================================================== */
 .modo-totem-ativo {
     max-width: 100% !important;
     width: 100vw !important;
     height: 100vh !important;
     border-radius: 0 !important;
-    padding: 40px 60px !important; /* Espaçamento ideal para preencher TVs e Monitores */
+    padding: 40px 60px !important; 
     overflow-y: auto !important; 
     background-color: #f1f5f9 !important; 
 }
 
+/* MODIFICADO: Remove a área de postagem, as informações, o menu do aluno e a busca na TV */
 .modo-totem-ativo #area-postagem,
 .modo-totem-ativo .user-info,
 .modo-totem-ativo #linha-separadora,
-.modo-totem-ativo .logout-lnk {
+.modo-totem-ativo .logout-lnk,
+.modo-totem-ativo #titulo-lista-avisos,
+.modo-totem-ativo #area-busca-alunos {
     display: none !important;
 }
 
