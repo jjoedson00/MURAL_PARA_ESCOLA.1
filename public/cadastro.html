@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
+        .campo-senha-container { position: relative; width: 100%; }
+        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
+        .btn-ver-senha:hover { background: none; transform: translateY(-50%) scale(1.1); }
     </style>
 </head>
 <body>
@@ -20,9 +23,12 @@
         <form id="form-cadastro">
             <input type="text" id="nome" placeholder="Nome de Usuário (Ex: JoaoSilva)" required>
             <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="senha" placeholder="Senha (Mínimo 6 caracteres)" minlength="6" required>
             
-            <!-- NOVOS CAMPOS: Configuração do Esqueci minha senha -->
+            <div class="campo-senha-container">
+                <input type="password" id="senha" placeholder="Senha (Mínimo 6 caracteres)" minlength="6" required>
+                <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
+            </div>
+            
             <select id="pergunta" required>
                 <option value="" disabled selected>Escolha uma pergunta de segurança</option>
                 <option value="Qual o nome do seu primeiro animal de estimação?">Qual o nome do seu primeiro animal de estimação?</option>
@@ -50,6 +56,17 @@
     </div>
 
     <script>
+        function alternarVisibilidade(idCampo, botao) {
+            const campo = document.getElementById(idCampo);
+            if (campo.type === "password") {
+                campo.type = "text";
+                botao.innerText = "🙈";
+            } else {
+                campo.type = "password";
+                botao.innerText = "👁️";
+            }
+        }
+
         function verificarCargo() {
             const cargo = document.getElementById('cargo').value;
             const campoChave = document.getElementById('campo-chave');

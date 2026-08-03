@@ -10,6 +10,11 @@
         .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
         .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
         .link-recuperar:hover { text-decoration: underline; }
+        
+        /* Container para alinhar o botão de ver senha */
+        .campo-senha-container { position: relative; width: 100%; }
+        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
+        .btn-ver-senha:hover { background: none; transform: translateY(-50%) scale(1.1); }
     </style>
 </head>
 <body>
@@ -22,14 +27,17 @@
             <div id="mensagem-erro" class="erro-alerta hidden"></div>
             <form id="form-login">
                 <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
-                <input type="password" id="senha" placeholder="Sua Senha" required>
+                <div class="campo-senha-container">
+                    <input type="password" id="senha" placeholder="Sua Senha" required>
+                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
+                </div>
                 <span class="link-recuperar" onclick="abrirRecuperacao()">Esqueci minha senha</span>
                 <button type="submit">Entrar</button>
             </form>
             <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
         </div>
 
-        <!-- BLOCO ESQUECI A SENHA (Oculto por padrão) -->
+        <!-- BLOCO ESQUECI A SENHA -->
         <div id="bloco-recuperar" class="hidden">
             <div class="form-header">
                 <h2>Recuperar Senha</h2>
@@ -37,18 +45,19 @@
             <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
             <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
             
-            <!-- Passo 1: Digitar Usuário/Email -->
             <div id="rec-passo1">
                 <input type="text" id="rec-identificador" placeholder="Confirme seu Nome de Usuário ou E-mail">
                 <button type="button" onclick="buscarPerguntaSeguranca()">Verificar Conta</button>
             </div>
 
-            <!-- Passo 2: Responder Pergunta e Criar Nova Senha -->
             <div id="rec-passo2" class="hidden">
                 <p style="text-align:left; color:#1e293b; font-weight:600; margin-bottom:5px;">Sua pergunta de segurança:</p>
                 <input type="text" id="exibir-pergunta" readonly style="background-color:#e2e8f0; font-weight:600;">
                 <input type="text" id="rec-resposta" placeholder="Digite sua Resposta Secreta" required>
-                <input type="password" id="rec-nova-senha" placeholder="Nova Senha (Mínimo 6 caracteres)" minlength="6" required>
+                <div class="campo-senha-container">
+                    <input type="password" id="rec-nova-senha" placeholder="Nova Senha (Mínimo 6 caracteres)" minlength="6" required>
+                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('rec-nova-senha', this)">👁️</button>
+                </div>
                 <button type="button" onclick="redefinirSenhaFinal()">Configurar Nova Senha</button>
             </div>
 
@@ -57,7 +66,18 @@
     </div>
 
     <script>
-        // Lógica de Login Comum
+        // Função para mostrar/ocultar senha
+        function alternarVisibilidade(idCampo, botao) {
+            const campo = document.getElementById(idCampo);
+            if (campo.type === "password") {
+                campo.type = "text";
+                botao.innerText = "🙈";
+            } else {
+                campo.type = "password";
+                botao.innerText = "👁️";
+            }
+        }
+
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identificador = document.getElementById('identificador').value;
@@ -75,7 +95,6 @@
             else { window.location.href = '/mural'; }
         });
 
-        // Alternância de Telas Animada
         function abrirRecuperacao() {
             document.getElementById('bloco-login').classList.add('hidden');
             document.getElementById('bloco-recuperar').classList.remove('hidden');
@@ -91,7 +110,6 @@
             document.getElementById('mensagem-erro').classList.add('hidden');
         }
 
-        // Fluxo de Recuperação - Passo 1
         async function buscarPerguntaSeguranca() {
             const identificador = document.getElementById('rec-identificador').value;
             const erroDiv = document.getElementById('mensagem-erro-rec');
@@ -114,7 +132,6 @@
             }
         }
 
-        // Fluxo de Recuperação - Passo 2
         async function redefinirSenhaFinal() {
             const identificador = document.getElementById('rec-identificador').value;
             const resposta = document.getElementById('rec-resposta').value;
