@@ -173,9 +173,9 @@ app.get('/auth/logout', (req, res) => {
     });
 });
 
-// Get de todos os avisos em ordem decrescente (Novos no topo)
+// CORRIGIDO: Rota de listagem de avisos limpa e sem erros de sintaxe
 app.get('/api/avisos', (req, res) => {
-    db.all Atlantic= (`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
+    db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
         res.json(rows);
     });
 });
