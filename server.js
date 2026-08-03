@@ -9,12 +9,10 @@ const FileStore = require('session-file-store')(session);
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
-// Configurações Básicas
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Armazena o login em arquivos locais
 app.use(session({
     store: new FileStore({
         path: './sessions',
@@ -30,10 +28,7 @@ app.use(session({
     }
 }));
 
-// Redireciona a página inicial para a rota de login
 app.get('/', (req, res) => res.redirect('/login'));
-
-// ROTAS AMIGÁVEIS
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, 'public', 'cadastro.html')));
 app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mural.html')));
@@ -46,11 +41,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Criar Tabelas
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT,
+        nome TEXT UNIQUE, -- Adicionado UNIQUE para garantir que nomes não se repitam
         email TEXT UNIQUE,
         senha TEXT,
         cargo TEXT
@@ -68,10 +62,14 @@ db.serialize(() => {
 
 const CHAVE_FUNCIONARIO = "COORDENACAO2026";
 
-// ALTERADO: Cadastro retornando erros em JSON estruturado
 app.post('/auth/cadastro', async (req, res) => {
     const { nome, email, senha, cargo, chaveAcesso } = req.body;
     
+    // Validação de segurança de tamanho de senha também no servidor
+    if (!senha || senha.length < 6) {
+        return res.status(400).json({ erro: 'A senha deve conter no mínimo 6 caracteres.' });
+    }
+
     if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
         if (chaveAcesso !== CHAVE_FUNCIONARIO) {
             return res.status(403).json({ erro: 'Chave de acesso de funcionário inválida!' });
@@ -81,20 +79,26 @@ app.post('/auth/cadastro', async (req, res) => {
     const senhaCriptografada = await bcrypt.hash(senha, 10);
     
     db.run(`INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)`, 
-        [nome, email, senhaCriptografada, cargo], 
+        [nome.trim(), email.trim(), senhaCriptografada, cargo], 
         (err) => {
-            if (err) return res.status(400).json({ erro: 'Este email já está cadastrado.' });
+            if (err) {
+                if (err.message.includes('usuarios.nome')) {
+                    return res.status(400).json({ erro: 'Este nome de usuário já está em uso.' });
+                }
+                return res.status(400).json({ erro: 'Este email já está cadastrado.' });
+            }
             return res.json({ sucesso: true });
         }
     );
 });
 
-// ALTERADO: Login retornando erros em JSON estruturado
+// ALTERADO: Login aceita tanto e-mail quanto nome exato do usuário
 app.post('/auth/login', (req, res) => {
-    const { email, senha } = req.body;
-    db.get(`SELECT * FROM usuarios WHERE email = ?`, [email], async (err, usuario) => {
+    const { identificador, senha } = req.body; // 'identificador' recebe nome ou email do form
+    
+    db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
         if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
-            return res.status(400).json({ erro: 'Email ou senha incorretos.' });
+            return res.status(400).json({ erro: 'Usuário/Email ou senha incorretos.' });
         }
         req.session.userId = usuario.id;
         req.session.usuario = { nome: usuario.nome, cargo: usuario.cargo };

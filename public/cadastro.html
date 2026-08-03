@@ -28,9 +28,10 @@
         <div id="mensagem-erro" class="erro-alerta hidden"></div>
 
         <form id="form-cadastro">
-            <input type="text" id="nome" placeholder="Nome Completo" required>
+            <input type="text" id="nome" placeholder="Nome de Usuário (Ex: JoaoSilva)" required>
             <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="senha" placeholder="Senha" required>
+            <!-- ALTERADO: Atributo minlength="6" obriga o navegador a validar no celular/PC -->
+            <input type="password" id="senha" placeholder="Senha (Mínimo 6 caracteres)" minlength="6" required>
             
             <select id="cargo" onchange="verificarCargo()" required>
                 <option value="aluno">Aluno</option>
@@ -62,7 +63,6 @@
 
         document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
@@ -72,24 +72,19 @@
 
             erroDiv.classList.add('hidden');
 
-            try {
-                const res = await fetch('/auth/cadastro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
-                });
+            const res = await fetch('/auth/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+            });
 
-                const dados = await res.json();
+            const dados = await res.json();
 
-                if (!res.ok) {
-                    erroDiv.innerText = dados.erro || 'Erro ao realizar cadastro.';
-                    erroDiv.classList.remove('hidden');
-                } else {
-                    window.location.href = '/login';
-                }
-            } catch (err) {
-                erroDiv.innerText = 'Erro de conexão com o servidor.';
+            if (!res.ok) {
+                erroDiv.innerText = dados.erro;
                 erroDiv.classList.remove('hidden');
+            } else {
+                window.location.href = '/login';
             }
         });
     </script>

@@ -25,12 +25,11 @@
             <h2>Mural Escolar - Login</h2>
         </div>
 
-        <!-- Caixinha vermelha para avisar erros -->
         <div id="mensagem-erro" class="erro-alerta hidden"></div>
 
-        <!-- O formulário NÃO usa action, ele é controlado pelo Script abaixo -->
         <form id="form-login">
-            <input type="email" id="email" placeholder="Seu Email" required>
+            <!-- ALTERADO: Placeholder atualizado para orientar o usuário -->
+            <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
             <input type="password" id="senha" placeholder="Sua Senha" required>
             <button type="submit">Entrar</button>
         </form>
@@ -39,33 +38,26 @@
 
     <script>
         document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Impede a tela preta com {"sucesso":true}
-
-            const email = document.getElementById('email').value;
+            e.preventDefault();
+            const identificador = document.getElementById('identificador').value;
             const senha = document.getElementById('senha').value;
             const erroDiv = document.getElementById('mensagem-erro');
 
             erroDiv.classList.add('hidden');
 
-            try {
-                const res = await fetch('/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha })
-                });
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identificador, senha })
+            });
 
-                const dados = await res.json();
+            const dados = await res.json();
 
-                if (!res.ok) {
-                    erroDiv.innerText = dados.erro || 'Erro ao realizar login.';
-                    erroDiv.classList.remove('hidden');
-                } else {
-                    // Direciona instantaneamente para a rota amigável do mural
-                    window.location.href = '/mural';
-                }
-            } catch (err) {
-                erroDiv.innerText = 'Erro de conexão com o servidor.';
+            if (!res.ok) {
+                erroDiv.innerText = dados.erro;
                 erroDiv.classList.remove('hidden');
+            } else {
+                window.location.href = '/mural';
             }
         });
     </script>
