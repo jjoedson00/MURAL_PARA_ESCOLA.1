@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- TAG DE RESPONSIVIDADE ADICIONADA: Ajusta o tamanho da tela e das fontes no celular -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cadastro - Mural Escolar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h2>Criar Conta</h2>
+        </div>
+        <form action="/auth/cadastro" method="POST">
+            <input type="text" name="nome" placeholder="Nome Completo" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            
+            <select name="cargo" id="cargo" onchange="verificarCargo()" required>
+                <option value="aluno">Aluno</option>
+                <option value="responsavel">Responsável</option>
+                <option value="professor">Professor</option>
+                <option value="coordenador">Coordenador</option>
+                <option value="direcao">Direção</option>
+            </select>
+
+            <div id="campo-chave" class="hidden">
+                <input type="password" name="chaveAcesso" placeholder="Chave de Acesso do Funcionário">
+            </div>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem conta? <a href="index.html">Fazer Login</a></p>
+    </div>
+
+    <script>
+        function verificarCargo() {
+            const cargo = document.getElementById('cargo').value;
+            const campoChave = document.getElementById('campo-chave');
+            if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
+                campoChave.classList.remove('hidden');
+            } else {
+                campoChave.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

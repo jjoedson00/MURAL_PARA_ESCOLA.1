@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- TAG DE RESPONSIVIDADE ADICIONADA: Ajusta o tamanho da tela e das fontes no celular -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - Mural Escolar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h2>Mural Escolar - Login</h2>
+        </div>
+        <form action="/auth/login" method="POST">
+            <input type="email" name="email" placeholder="Seu Email" required>
+            <input type="password" name="senha" placeholder="Sua Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+        <p>Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
+</body>
+</html>

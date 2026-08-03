@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <!-- TAG DE RESPONSIVIDADE ADICIONADA: Ajusta o tamanho da tela e das fontes no celular -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mural de Avisos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container container-mural">
+        <a href="/auth/logout" class="logout-lnk">Sair</a>
+        <div class="form-header">
+            <h2>Mural de Avisos</h2>
+        </div>
+        
+        <div class="user-info">
+            Olá, <b id="nome-usuario">...</b> (<span id="cargo-usuario">...</span>)
+        </div>
+
+        <!-- Formulário visível apenas para Funcionários -->
+        <div id="area-postagem" class="hidden">
+            <h3>Publicar Novo Aviso</h3>
+            <form action="/api/avisos" method="POST" enctype="multipart/form-data">
+                <input type="text" name="titulo" placeholder="Título do Aviso" required>
+                <textarea name="conteudo" placeholder="Conteúdo do aviso..." rows="4" required></textarea>
+                <label style="font-weight: 600; font-size: 14px; color: #475569;">Imagem de Referência (Opcional):</label>
+                <input type="file" name="imagem" accept="image/*">
+                <button type="submit">Publicar Aviso</button>
+            </form>
+        </div>
+
+        <hr style="border: 0; border-top: 2px solid #e2e8f0; margin: 30px 0;">
+        
+        <!-- BARRA DE PESQUISA EM TEMPO REAL -->
+        <div class="search-container">
+            <h3>Avisos Recentes</h3>
+            <input type="text" id="campo-busca" placeholder="🔍 Buscar avisos por título ou conteúdo..." onkeyup="filtrarAvisos()">
+        </div>
+
+        <div id="lista-avisos"></div>
+    </div>
+
+    <script>
+        let usuarioAtual = null;
+        let todosAvisos = []; 
+
+        async function carregarUsuario() {
+            const res = await fetch('/api/usuario-atual');
+            if (!res.ok) {
+                window.location.href = '/index.html';
+                return;
+            }
+            usuarioAtual = await res.json();
+            document.getElementById('nome-usuario').innerText = usuarioAtual.nome;
+            document.getElementById('cargo-usuario').innerText = usuarioAtual.cargo;
+
+            if (['professor', 'coordenador', 'direcao'].includes(usuarioAtual.cargo)) {
+                document.getElementById('area-postagem').classList.remove('hidden');
+            }
+            carregarAvisos();
+        }
+
+        async function carregarAvisos() {
+            const res = await fetch('/api/avisos');
+            todosAvisos = await res.json(); 
+            renderizarAvisos(todosAvisos);
+        }
+
+        function renderizarAvisos(listaParaExibir) {
+            const lista = document.getElementById('lista-avisos');
+            lista.innerHTML = '';
+
+            if (listaParaExibir.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; color: #64748b; margin-top: 20px;">Nenhum aviso encontrado.</p>';
+                return;
+            }
+
+            listaParaExibir.forEach(aviso => {
+                const card = document.createElement('div');
+                card.className = 'aviso-card';
+                
+                let botaoApagar = '';
+                if (['professor', 'coordenador', 'direcao'].includes(usuarioAtual.cargo)) {
+                    botaoApagar = `<button class="btn-delete" onclick="apagarAviso(${aviso.id})">Apagar</button>`;
+                }
+
+                let tagImagem = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
+
+                card.innerHTML = `
+                    ${botaoApagar}
+                    <h4>${aviso.titulo}</h4>
+                    <p>${aviso.conteudo}</p>
+                    ${tagImagem}
+                    <small>Postado por: ${aviso.autor} em ${aviso.data}</small>
+                `;
+                lista.appendChild(card);
+            });
+        }
+
+        function filtrarAvisos() {
+            const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
+            
+            const avisosFiltrados = todosAvisos.filter(aviso => {
+                const tituloObatido = aviso.titulo.toLowerCase();
+                const conteudoObtido = aviso.conteudo.toLowerCase();
+                return tituloObatido.includes(termoBusca) || conteudoObtido.includes(termoBusca);
+            });
+
+            renderizarAvisos(avisosFiltrados);
+        }
+
+        async function apagarAviso(id) {
+            await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+            carregarAvisos(); 
+        }
+
+        carregarUsuario();
+    </script>
+</body>
+</html>

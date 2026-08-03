@@ -1,0 +1,249 @@
+/* Configurações de Cores - Estilo Grafite Premium */
+:root {
+    --gradient-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+    --gradient-header: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+    --primary: #2563eb;       
+    --primary-hover: #1d4ed8; 
+    --accent: #10b981;        
+    --danger: #ef4444;        
+    --card-bg: #f1f5f9;       
+    --text-main: #1e293b;     
+    --text-muted: #64748b;    
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px; /* Reduzido para dar mais espaço nas laterais do celular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* O container agora usa largura em porcentagem para se moldar ao celular */
+.container {
+    width: 100%;
+    max-width: 450px;
+    background-color: var(--card-bg);
+    padding: 0 20px 30px 20px; /* Ajustado para telas menores */
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+    overflow: hidden; 
+    box-sizing: border-box;
+}
+
+/* Largura maior para o mural de avisos em telas grandes, mas fluida em telas pequenas */
+.container-mural {
+    max-width: 680px !important;
+    background-color: #f1f5f9; 
+}
+
+/* Faixa Colorida no Topo */
+.form-header {
+    background: var(--gradient-header);
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-header h2 {
+    color: #ffffff !important;
+    font-size: 22px; /* Fonte otimizada para celular */
+    font-weight: 700;
+    margin: 0 !important;
+    letter-spacing: -0.5px;
+}
+
+h3 {
+    color: #334155;
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+/* Campos de Entrada - Tamanho confortável para toque com o dedo */
+input, select, textarea {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0 16px 0;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 16px; /* Evita que o iOS dê zoom automático ao focar no campo */
+    background-color: #ffffff;
+    color: var(--text-main);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Botões robustos e fáceis de clicar no celular */
+button {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    transition: all 0.2s ease;
+    -webkit-appearance: none; /* Remove estilos nativos do Safari mobile */
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+.hidden {
+    display: none !important;
+}
+
+p {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Área de Postagem Otimizada */
+#area-postagem {
+    background-color: #ecfdf5; 
+    border: 2px dashed #10b981; 
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+#area-postagem h3 {
+    color: #065f46; 
+    margin-top: 0;
+}
+
+/* Cards de Avisos Responsivos */
+.aviso-card {
+    background: #ffffff; 
+    padding: 16px; /* Menor padding para aproveitar a tela do celular */
+    border-left: 6px solid var(--primary); 
+    margin-bottom: 15px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+    box-sizing: border-box;
+    word-wrap: break-word; /* Força quebra de palavras longas para não estourar a tela */
+}
+
+.aviso-card h4 {
+    margin: 0 0 8px 0;
+    color: var(--primary); 
+    font-size: 18px;
+    padding-right: 60px; /* Evita que o texto sobreponha o botão apagar */
+}
+
+.aviso-card p {
+    text-align: left;
+    margin: 0 0 12px 0;
+    color: var(--text-main);
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+/* Imagens se adaptam sozinhas à largura disponível */
+.aviso-card img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: block;
+}
+
+.aviso-card small {
+    color: var(--text-muted);
+    font-size: 12px;
+    background-color: #f1f5f9; 
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* Botão Apagar Ajustado para telas pequenas */
+.btn-delete {
+    background-color: var(--danger);
+    width: auto;
+    padding: 6px 10px;
+    font-size: 12px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+/* Botão sair responsivo */
+.logout-lnk {
+    float: right;
+    color: var(--danger);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 2px solid var(--danger);
+    border-radius: 8px;
+    margin-top: 12px;
+    background-color: #ffffff;
+}
+
+.user-info {
+    background: #eff6ff; 
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--primary);
+    font-size: 13px;
+    margin-bottom: 15px;
+    display: inline-block;
+    border: 1px solid #bfdbfe;
+}
+
+.search-container {
+    margin-bottom: 15px;
+}
+
+/* 🖥️ REGRAS ADICIONAIS PARA TELAS DE COMPUTADOR (MONITORES GRANDES) */
+@media (min-width: 600px) {
+    body {
+        padding: 20px;
+    }
+    .container {
+        padding: 0 30px 40px 30px;
+    }
+    .form-header {
+        margin-left: -30px;
+        margin-right: -30px;
+        padding: 25px;
+    }
+    .form-header h2 {
+        font-size: 26px;
+    }
+    .aviso-card {
+        padding: 24px;
+    }
+    .aviso-card img {
+        max-height: 320px;
+    }
+}
