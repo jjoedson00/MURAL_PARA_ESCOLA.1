@@ -292,3 +292,72 @@ a:hover {
     .form-header h2 { font-size: 25px; }
     .aviso-card { padding: 24px; }
 }
+/* ==========================================================================
+   📺 ESTILOS EXCLUSIVOS PARA O MODO TELA CHEIA (TV / MONITORES / TOTEM)
+   ========================================================================== */
+
+/* Organização dos botões superiores */
+.controle-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: -5px;
+}
+
+/* Botão estilo TV */
+.btn-tv {
+    background-color: #0f172a;
+    color: #ffffff;
+    width: auto;
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: none;
+}
+.btn-tv:hover {
+    background-color: #334155;
+}
+
+/* REGRA DE OURO: O que acontece quando a TV ativa a tela cheia */
+.modo-totem-ativo {
+    max-width: 100% !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    padding: 30px !important;
+    overflow-y: auto !important; /* Permite rolar os avisos caso tenha muitos na TV */
+    background-color: #f1f5f9 !important; /* Deixa o fundo cinza clean cobrindo tudo */
+}
+
+/* Esconde o formulário dos professores na TV para os alunos não verem campos vazios */
+.modo-totem-ativo #area-postagem,
+.modo-totem-ativo .user-info,
+.modo-totem-ativo #linha-separadora,
+.modo-totem-ativo .logout-lnk {
+    display: none !important;
+}
+
+/* Ajusta o cabeçalho para ficar gigante e centralizado em televisões grandes */
+.modo-totem-ativo .form-header {
+    margin-left: -30px;
+    margin-right: -30px;
+    margin-top: -30px;
+    padding: 30px;
+}
+.modo-totem-ativo .form-header h2 {
+    font-size: 32px;
+}
+
+/* Faz os cartões de avisos ocuparem um visual mais imponente na TV */
+.modo-totem-ativo .aviso-card {
+    margin-bottom: 25px;
+    border-left-width: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.modo-totem-ativo .aviso-card h4 {
+    font-size: 24px;
+}
+.modo-totem-ativo .aviso-card p {
+    font-size: 18px;
+}

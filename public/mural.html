@@ -7,8 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container container-mural">
-        <a href="/auth/logout" class="logout-lnk">Sair</a>
+    <!-- ID "conteudo-mural" adicionado para podermos isolar e expandir apenas este bloco -->
+    <div class="container container-mural" id="conteudo-mural">
+        
+        <!-- Botões de Controle Superiores -->
+        <div class="controle-superior">
+            <button id="btn-fullscreen" class="btn-tv" onclick="alternarTelaCheia()">📺 Modo TV / Tela Cheia</button>
+            <a href="/auth/logout" class="logout-lnk">Sair</a>
+        </div>
+
         <div class="form-header">
             <h2>Mural de Avisos</h2>
         </div>
@@ -22,14 +29,14 @@
             <h3>Publicar Novo Aviso</h3>
             <form action="/api/avisos" method="POST" enctype="multipart/form-data">
                 <input type="text" name="titulo" placeholder="Título do Aviso" required>
-                <textarea name="conteudo" placeholder="Contents do aviso..." rows="4" required></textarea>
+                <textarea name="conteudo" placeholder="Conteúdo do aviso..." rows="4" required></textarea>
                 <label style="font-weight: 600; font-size: 14px; color: #475569;">Imagem de Referência (Opcional):</label>
                 <input type="file" name="imagem" accept="image/*">
                 <button type="submit">Publicar Aviso</button>
             </form>
         </div>
 
-        <hr style="border: 0; border-top: 2px solid #e2e8f0; margin: 30px 0;">
+        <hr id="linha-separadora" style="border: 0; border-top: 2px solid #e2e8f0; margin: 30px 0;">
         
         <!-- BARRA DE PESQUISA EM TEMPO REAL -->
         <div class="search-container">
@@ -47,7 +54,7 @@
         async function carregarUsuario() {
             const res = await fetch('/api/usuario-atual');
             if (!res.ok) {
-                window.location.href = '/login'; // Atualizado para a rota limpa
+                window.location.href = '/login'; 
                 return;
             }
             usuarioAtual = await res.json();
@@ -112,6 +119,44 @@
         async function apagarAviso(id) {
             await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
             carregarAvisos(); 
+        }
+
+        // LÓGICA DE TELA CHEIA (MODO MONITOR / TV)
+        function alternarTelaCheia() {
+            const muralElemento = document.getElementById('conteudo-mural');
+
+            if (!document.fullscreenElement) {
+                // Tenta colocar o elemento em Tela Cheia no navegador
+                if (muralElemento.requestFullscreen) {
+                    muralElemento.requestFullscreen();
+                } else if (muralElemento.webkitRequestFullscreen) { /* Safari Mobile */
+                    muralElemento.webkitRequestFullscreen();
+                } else if (muralElemento.msRequestFullscreen) { /* IE11 */
+                    muralElemento.msRequestFullscreen();
+                }
+            } else {
+                // Se já estiver em tela cheia, sai dela
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Detecta quando entra/sai da tela cheia para mudar o visual e esconder os menus
+        document.addEventListener('fullscreenchange', gerenciarEstiloFullscreen);
+        document.addEventListener('webkitfullscreenchange', gerenciarEstiloFullscreen);
+
+        function gerenciarEstiloFullscreen() {
+            const muralElemento = document.getElementById('conteudo-mural');
+            const btnTv = document.getElementById('btn-fullscreen');
+
+            if (document.fullscreenElement) {
+                muralElemento.classList.add('modo-totem-ativo');
+                btnTv.innerText = "❌ Sair do Modo TV";
+            } else {
+                muralElemento.classList.remove('modo-totem-ativo');
+                btnTv.innerText = "📺 Modo TV / Tela Cheia";
+            }
         }
 
         carregarUsuario();
