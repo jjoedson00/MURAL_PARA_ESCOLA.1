@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Armazena o login em arquivos locais evitando conflitos
+// Armazena o login em arquivos locais
 app.use(session({
     store: new FileStore({
         path: './sessions',
@@ -30,15 +30,14 @@ app.use(session({
     }
 }));
 
-// Redireciona a página inicial diretamente para a rota de login automaticamente
+// Redireciona a página inicial para a rota de login
 app.get('/', (req, res) => res.redirect('/login'));
 
-// ROTAS AMIGÁVEIS: Abre as páginas sem precisar digitar o .html no final do link
+// ROTAS AMIGÁVEIS
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, 'public', 'cadastro.html')));
 app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mural.html')));
 
-// Configuração do upload de imagens
 const storage = multer.diskStorage({
     destination: 'public/uploads/',
     filename: (req, file, cb) => {
@@ -47,7 +46,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Criar Tabelas no Banco de Dados
+// Criar Tabelas
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,16 +66,15 @@ db.serialize(() => {
     )`);
 });
 
-// Chave secreta dos funcionários
 const CHAVE_FUNCIONARIO = "COORDENACAO2026";
 
-// Rota de Cadastro
+// ALTERADO: Cadastro retornando erros em JSON estruturado
 app.post('/auth/cadastro', async (req, res) => {
     const { nome, email, senha, cargo, chaveAcesso } = req.body;
     
     if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
         if (chaveAcesso !== CHAVE_FUNCIONARIO) {
-            return res.status(403).send('Chave de acesso de funcionário inválida!');
+            return res.status(403).json({ erro: 'Chave de acesso de funcionário inválida!' });
         }
     }
 
@@ -85,50 +83,46 @@ app.post('/auth/cadastro', async (req, res) => {
     db.run(`INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)`, 
         [nome, email, senhaCriptografada, cargo], 
         (err) => {
-            if (err) return res.status(400).send('Email já cadastrado.');
-            res.redirect('/login'); // Redireciona para a rota limpa de login
+            if (err) return res.status(400).json({ erro: 'Este email já está cadastrado.' });
+            return res.json({ sucesso: true });
         }
     );
 });
 
-// Rota de Login
+// ALTERADO: Login retornando erros em JSON estruturado
 app.post('/auth/login', (req, res) => {
     const { email, senha } = req.body;
     db.get(`SELECT * FROM usuarios WHERE email = ?`, [email], async (err, usuario) => {
         if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
-            return res.status(400).send('Email ou senha incorretos.');
+            return res.status(400).json({ erro: 'Email ou senha incorretos.' });
         }
         req.session.userId = usuario.id;
         req.session.usuario = { nome: usuario.nome, cargo: usuario.cargo };
         
         req.session.save(() => {
-            res.redirect('/mural'); // Redireciona para a rota limpa do mural
+            return res.json({ sucesso: true });
         });
     });
 });
 
-// Rota para pegar dados do usuário logado
 app.get('/api/usuario-atual', (req, res) => {
     if (!req.session || !req.session.usuario) return res.status(401).json({ erro: 'Não logado' });
     res.json(req.session.usuario);
 });
 
-// Rota de Logout rápida, remove cookies e sai no mesmo instante
 app.get('/auth/logout', (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('connect.sid'); 
-        res.redirect('/login'); // Redireciona para a rota limpa de login   
+        res.redirect('/login');   
     });
 });
 
-// Listar Avisos
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
         res.json(rows);
     });
 });
 
-// Criar Aviso
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
         return res.status(403).send('Acesso negado.');
@@ -140,11 +134,10 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
 
     db.run(`INSERT INTO avisos (titulo, conteudo, imagem, autor, data) VALUES (?, ?, ?, ?, ?)`,
         [titulo, conteudo, imagem, autor, data],
-        () => res.redirect('/mural') // Redireciona para a rota limpa do mural
+        () => res.redirect('/mural')
     );
 });
 
-// Deletar Aviso
 app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
         return res.status(403).json({ erro: 'Acesso negado.' });

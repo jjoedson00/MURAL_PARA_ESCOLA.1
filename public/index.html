@@ -5,18 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login - Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .erro-alerta {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #fca5a5;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="form-header">
             <h2>Mural Escolar - Login</h2>
         </div>
-        <form action="/auth/login" method="POST">
-            <input type="email" name="email" placeholder="Seu Email" required>
-            <input type="password" name="senha" placeholder="Sua Senha" required>
+
+        <div id="mensagem-erro" class="erro-alerta hidden"></div>
+
+        <form id="form-login">
+            <input type="email" id="email" placeholder="Seu Email" required>
+            <input type="password" id="senha" placeholder="Sua Senha" required>
             <button type="submit">Entrar</button>
         </form>
         <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
     </div>
+
+    <script>
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const erroDiv = document.getElementById('mensagem-erro');
+
+            erroDiv.classList.add('hidden');
+
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
+
+            const dados = await res.json();
+
+            if (!res.ok) {
+                erroDiv.innerText = dados.erro;
+                erroDiv.classList.remove('hidden');
+            } else {
+                window.location.href = '/mural';
+            }
+        });
+    </script>
 </body>
 </html>

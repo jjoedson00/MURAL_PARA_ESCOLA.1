@@ -5,18 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cadastro - Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .erro-alerta {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #fca5a5;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="form-header">
             <h2>Criar Conta</h2>
         </div>
-        <form action="/auth/cadastro" method="POST">
-            <input type="text" name="nome" placeholder="Nome Completo" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="senha" placeholder="Senha" required>
+
+        <div id="mensagem-erro" class="erro-alerta hidden"></div>
+
+        <form id="form-cadastro">
+            <input type="text" id="nome" placeholder="Nome Completo" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="senha" placeholder="Senha" required>
             
-            <select name="cargo" id="cargo" onchange="verificarCargo()" required>
+            <select id="cargo" onchange="verificarCargo()" required>
                 <option value="aluno">Aluno</option>
                 <option value="responsavel">Responsável</option>
                 <option value="professor">Professor</option>
@@ -25,7 +41,7 @@
             </select>
 
             <div id="campo-chave" class="hidden">
-                <input type="password" name="chaveAcesso" placeholder="Chave de Acesso do Funcionário">
+                <input type="password" id="chaveAcesso" placeholder="Chave de Acesso do Funcionário">
             </div>
 
             <button type="submit">Cadastrar</button>
@@ -43,6 +59,33 @@
                 campoChave.classList.add('hidden');
             }
         }
+
+        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const cargo = document.getElementById('cargo').value;
+            const chaveAcesso = document.getElementById('chaveAcesso').value;
+            const erroDiv = document.getElementById('mensagem-erro');
+
+            erroDiv.classList.add('hidden');
+
+            const res = await fetch('/auth/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+            });
+
+            const dados = await res.json();
+
+            if (!res.ok) {
+                erroDiv.innerText = dados.erro;
+                erroDiv.classList.remove('hidden');
+            } else {
+                window.location.href = '/login';
+            }
+        });
     </script>
 </body>
 </html>

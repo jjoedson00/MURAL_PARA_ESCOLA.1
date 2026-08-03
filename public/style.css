@@ -1,14 +1,16 @@
-/* Configurações de Cores - Estilo Grafite Premium */
-:root {
-    --gradient-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-    --gradient-header: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
-    --primary: #2563eb;       
+/* ==========================================================================
+   🎨 DESIGN PREMIUM MINIMALISTA - SUTILEZA, LEITURA E PROFISSIONALISMO
+   ========================================================================== */
+   :root {
+    --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* Fundo escuro premium da tela */
+    --gradient-header: linear-gradient(135deg, #1e293b 0%, #334155 100%); /* Faixa minimalista escura */
+    --primary: #2563eb;       /* Azul Safira moderno para links e botões */
     --primary-hover: #1d4ed8; 
-    --accent: #10b981;        
-    --danger: #ef4444;        
-    --card-bg: #f1f5f9;       
-    --text-main: #1e293b;     
-    --text-muted: #64748b;    
+    --accent: #334155;        /* Cinza escuro sofisticado para o botão de publicar */
+    --danger: #ef4444;        /* Vermelho vibrante para apagar/sair */
+    --card-bg: #f8fafc;       /* Fundo interno do painel */
+    --text-main: #0f172a;     /* Títulos e textos principais quase pretos */
+    --text-muted: #64748b;    /* Cinza neutro para informações de data/hora */
 }
 
 body {
@@ -16,92 +18,94 @@ body {
     background: var(--gradient-bg);
     min-height: 100vh;
     margin: 0;
-    padding: 10px; /* Reduzido para dar mais espaço nas laterais do celular */
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
 }
 
-/* O container agora usa largura em porcentagem para se moldar ao celular */
+/* Painel Principal */
 .container {
     width: 100%;
     max-width: 450px;
     background-color: var(--card-bg);
-    padding: 0 20px 30px 20px; /* Ajustado para telas menores */
+    padding: 0 20px 35px 20px;
     border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); 
     overflow: hidden; 
     box-sizing: border-box;
 }
 
-/* Largura maior para o mural de avisos em telas grandes, mas fluida em telas pequenas */
+/* Ajuste fluido do mural de avisos */
 .container-mural {
     max-width: 680px !important;
-    background-color: #f1f5f9; 
+    background-color: #f1f5f9; /* Fundo cinza sutil que separa visualmente os blocos internos */
 }
 
-/* Faixa Colorida no Topo */
+/* Faixa Escura Minimalista no Topo */
 .form-header {
     background: var(--gradient-header);
     margin-left: -20px;
     margin-right: -20px;
-    padding: 20px;
+    padding: 22px;
     text-align: center;
     margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .form-header h2 {
     color: #ffffff !important;
-    font-size: 22px; /* Fonte otimizada para celular */
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 600;
     margin: 0 !important;
     letter-spacing: -0.5px;
 }
 
 h3 {
-    color: #334155;
-    font-size: 18px;
+    color: #1e293b;
+    font-size: 17px;
+    font-weight: 600;
     margin-top: 15px;
 }
 
-/* Campos de Entrada - Tamanho confortável para toque com o dedo */
+/* Campos de Entrada - Fundo branco puro com bordas finas elegantes */
 input, select, textarea {
     width: 100%;
     padding: 14px;
     margin: 8px 0 16px 0;
-    border: 2px solid #cbd5e1;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
     box-sizing: border-box;
-    font-size: 16px; /* Evita que o iOS dê zoom automático ao focar no campo */
+    font-size: 15px;
     background-color: #ffffff;
     color: var(--text-main);
+    transition: all 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
-/* Botões robustos e fáceis de clicar no celular */
+/* Botões do Sistema */
 button {
     width: 100%;
     background-color: var(--primary);
     color: white;
     border: none;
-    padding: 15px;
+    padding: 14px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
     transition: all 0.2s ease;
-    -webkit-appearance: none; /* Remove estilos nativos do Safari mobile */
 }
 
 button:hover {
     background-color: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
 .hidden {
@@ -112,138 +116,179 @@ p {
     text-align: center;
     margin-top: 20px;
     color: var(--text-muted);
-    font-size: 15px;
+    font-size: 14px;
 }
 
 a {
-    color: #2563eb;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 600;
 }
 
-/* Área de Postagem Otimizada */
+a:hover {
+    text-decoration: underline;
+}
+
+/* 📥 ÁREA DE POSTAGEM (Espaço dos Professores Reformulado - Clean White) */
 #area-postagem {
-    background-color: #ecfdf5; 
-    border: 2px dashed #10b981; 
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
+    background-color: #ffffff; /* Sai o verde berrante, entra o branco puro moderno */
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 }
 
 #area-postagem h3 {
-    color: #065f46; 
+    color: #0f172a;
     margin-top: 0;
+    margin-bottom: 15px;
 }
 
-/* Cards de Avisos Responsivos */
+#area-postagem button {
+    background-color: #1e293b; /* Botão cinza escuro para diferenciar de ações comuns */
+}
+
+#area-postagem button:hover {
+    background-color: #0f172a;
+}
+
+/* 📄 CARDS DE VISUALIZAÇÃO DOS AVISOS (Foco Total no Conteúdo) */
 .aviso-card {
     background: #ffffff; 
-    padding: 16px; /* Menor padding para aproveitar a tela do celular */
-    border-left: 6px solid var(--primary); 
-    margin-bottom: 15px;
-    border-radius: 10px;
+    padding: 24px;
+    border-left: 4px solid #0f172a; /* Linha de destaque grafite escura e séria */
+    margin-bottom: 16px;
+    border-radius: 12px;
     position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     box-sizing: border-box;
-    word-wrap: break-word; /* Força quebra de palavras longas para não estourar a tela */
+    word-wrap: break-word;
+}
+
+.aviso-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
 .aviso-card h4 {
-    margin: 0 0 8px 0;
-    color: var(--primary); 
-    font-size: 18px;
-    padding-right: 60px; /* Evita que o texto sobreponha o botão apagar */
+    margin: 0 0 10px 0;
+    color: #0f172a; /* Título do comunicado em destaque escuro nítido */
+    font-size: 19px;
+    font-weight: 700;
+    padding-right: 70px;
 }
 
 .aviso-card p {
     text-align: left;
-    margin: 0 0 12px 0;
-    color: var(--text-main);
-    line-height: 1.5;
+    margin: 0 0 14px 0;
+    color: #334155;
+    line-height: 1.6;
     font-size: 15px;
 }
 
-/* Imagens se adaptam sozinhas à largura disponível */
+/* Ajuste Fino das Imagens Escolares */
 .aviso-card img {
     width: 100%;
-    max-height: 250px;
+    max-height: 280px;
     object-fit: cover;
     border-radius: 8px;
-    margin-top: 10px;
+    margin-top: 12px;
     display: block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* Rodapé do Comunicado Otimizado */
 .aviso-card small {
-    color: var(--text-muted);
+    color: #475569;
     font-size: 12px;
     background-color: #f1f5f9; 
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 6px 12px;
+    border-radius: 20px; /* Estilo pílula moderna */
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 12px;
+    font-weight: 500;
 }
 
-/* Botão Apagar Ajustado para telas pequenas */
+/* Botões de Ação Especiais (Apagar e Sair) */
 .btn-delete {
-    background-color: var(--danger);
+    background-color: transparent;
+    color: #94a3b8; /* Fica discreto por padrão */
     width: auto;
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 12px;
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 20px;
+    right: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: none;
 }
 
-/* Botão sair responsivo */
+.btn-delete:hover {
+    background-color: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
 .logout-lnk {
     float: right;
-    color: var(--danger);
+    color: #475569;
     text-decoration: none;
     font-weight: 600;
     font-size: 13px;
-    padding: 6px 12px;
-    border: 2px solid var(--danger);
+    padding: 6px 14px;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
     margin-top: 12px;
     background-color: #ffffff;
+    transition: all 0.2s;
 }
 
+.logout-lnk:hover {
+    background-color: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
+/* Etiqueta Informativa de Login */
 .user-info {
-    background: #eff6ff; 
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: var(--primary);
+    background: #ffffff; 
+    padding: 8px 14px;
+    border-radius: 20px;
+    color: #334155;
     font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: inline-block;
-    border: 1px solid #bfdbfe;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* Caixa de Busca Integrada */
 .search-container {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-/* 🖥️ REGRAS ADICIONAIS PARA TELAS DE COMPUTADOR (MONITORES GRANDES) */
+#campo-busca {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#campo-busca:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Ajustes Adicionais para Telas Maiores (PC) */
 @media (min-width: 600px) {
-    body {
-        padding: 20px;
-    }
-    .container {
-        padding: 0 30px 40px 30px;
-    }
-    .form-header {
-        margin-left: -30px;
-        margin-right: -30px;
-        padding: 25px;
-    }
-    .form-header h2 {
-        font-size: 26px;
-    }
-    .aviso-card {
-        padding: 24px;
-    }
-    .aviso-card img {
-        max-height: 320px;
-    }
+    body { padding: 20px; }
+    .container { padding: 0 30px 40px 30px; }
+    .form-header { margin-left: -30px; margin-right: -30px; padding: 25px; }
+    .form-header h2 { font-size: 25px; }
+    .aviso-card { padding: 24px; }
 }
