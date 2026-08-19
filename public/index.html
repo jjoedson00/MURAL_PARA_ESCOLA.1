@@ -101,7 +101,6 @@
         <div style="font-size: 5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));">📢</div>
         <h1>Mural de Avisos</h1>
         <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-        <!-- CHAMADA DE FUNÇÃO CORRIGIDA AQUI -->
         <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
     </div>
 
@@ -168,16 +167,20 @@
         // Atualização automática dos avisos no monitor a cada 15 segundos
         setInterval(carregarAvisos, 15000);
 
-        // FUNÇÃO ADICIONADA: Fecha a tela azul na marra e abre o mural
+        // MODIFICADO: Função reforçada que deleta a tela azul da memória no clique
         function entrarNoSistema() {
             const telaBoasVindas = document.getElementById('tela-boas-vindas');
-            telaBoasVindas.style.setProperty('display', 'none', 'important');
+            if (telaBoasVindas) {
+                telaBoasVindas.remove(); 
+            }
             mudarTela('tela-mural');
         }
 
         function mudarTela(idTela) {
-            // Garante que a tela de boas-vindas suma ao navegar
-            document.getElementById('tela-boas-vindas').style.setProperty('display', 'none', 'important');
+            const telaBoasVindas = document.getElementById('tela-boas-vindas');
+            if (telaBoasVindas && idTela !== 'tela-boas-vindas') {
+                telaBoasVindas.remove();
+            }
             
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
             document.getElementById(idTela).classList.add('ativa');
