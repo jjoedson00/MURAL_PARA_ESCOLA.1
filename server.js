@@ -44,8 +44,11 @@ app.use(session({
     }
 }));
 
-// Redirecionamento da Página Inicial para as Rotas Amigáveis
-app.get('/', (req, res) => res.redirect('/mural'));
+// ROTA ÚNICA: Qualquer acesso ao site abre o index.html unificado
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 
 // Roteamento sem a extensão .html na barra de endereços
@@ -78,7 +81,7 @@ db.serialize(() => {
         conteudo TEXT,
         imagem TEXT,
         autor TEXT,
-        data TEXT
+        data TEXT"
     )`);
 });
 

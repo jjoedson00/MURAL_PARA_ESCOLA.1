@@ -3,158 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - Mural Escolar</title>
+    <title>Mural Escolar Digital</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilos da nova tela de boas-vindas */
-        .boas-vindas-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .boas-vindas-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .boas-vindas-wrapper h1 {
-            font-size: 2.8rem;
-            margin: 15px 0 10px 0;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .boas-vindas-wrapper p {
-            font-size: 1.1rem;
-            color: #e2e8f0;
-            max-width: 450px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        .btn-laranja {
-            background-color: #ff9200;
-            color: white;
-            border: none;
-            padding: 14px 45px;
-            border-radius: 30px;
-            font-size: 1.15rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 146, 0, 0.4);
-            transition: transform 0.2s, background-color 0.2s;
-             /* Novas linhas para encolher e uniformizar o botão */
-    width: 100%;
-    max-width: 250px; 
-}
+        /* Controle de exibição das telas */
+        .tela { display: none !important; }
+        .tela.ativa { display: flex !important; flex-direction: column; }
         
-        .btn-laranja:hover {
-            background-color: #e08100;
-            transform: translateY(-2px);
+        /* Estilos da tela de boas-vindas */
+        .boas-vindas-wrapper {
+            align-items: center; justify-content: center; min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;
+            text-align: center; padding: 20px; box-sizing: border-box;
         }
-        .icon-megafone {
-            font-size: 4rem;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        .boas-vindas-wrapper h1 { font-size: 2.8rem; margin: 15px 0 10px 0; font-weight: 700; }
+        .boas-vindas-wrapper p { font-size: 1.1rem; color: #e2e8f0; max-width: 450px; margin-bottom: 30px; }
+        .btn-laranja {
+            background-color: #ff9200; color: white; border: none; padding: 14px 45px;
+            border-radius: 30px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 146, 0, 0.4); width: 100%; max-width: 250px; transition: 0.2s;
         }
-
-        /* Classes utilitárias que você já usava */
-        .hidden { display: none !important; }
-
+        .btn-laranja:hover { background-color: #e08100; transform: translateY(-2px); }
+        
+        /* Estilos reusados do seu projeto */
         .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
         .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
-        .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
-        .link-recuperar:hover { text-decoration: underline; }
-        
+        .link-navegacao { color: #2563eb; cursor: pointer; text-decoration: none; font-weight: 600; }
+        .link-navegacao:hover { text-decoration: underline; }
         .campo-senha-container { position: relative; width: 100%; }
-        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
-        .btn-ver-senha:hover { background: none; transform: translateY(-50%) scale(1.1); }
+        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- 1. NOVA TELA DE BOAS-VINDAS -->
-    <div id="tela-boas-vindas" class="boas-vindas-wrapper">
-        <div class="icon-megafone">📢</div>
+    <!-- TELA 1: BOAS-VINDAS -->
+    <div id="tela-boas-vindas" class="tela ativa boas-vindas-wrapper">
+        <div style="font-size: 4rem;">📢</div>
         <h1>Mural de Avisos</h1>
         <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-        <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
+        <button type="button" class="btn-laranja" onclick="mudarTela('tela-mural')">Acessar Mural</button>
     </div>
 
-    <!-- 2. CONTAINER DE CONTEÚDO ORIGINAL (LOGIN E RECUPERAÇÃO) -->
-    <div class="container">
-        <!-- BLOCO LOGIN -->
-        <div id="bloco-login">
-            <div class="form-header">
-                <h2>Mural Escolar - Login</h2>
-            </div>
-            <div id="mensagem-erro" class="erro-alerta hidden"></div>
-            <form id="form-login">
-                <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
-                <div class="campo-senha-container">
-                    <input type="password" id="senha" placeholder="Sua Senha" required>
-                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
-                </div>
-                <span class="link-recuperar" onclick="abrirRecuperacao()">Esqueci minha senha</span>
-                <button type="submit">Entrar</button>
-            </form>
-            <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+    <!-- TELA 2: MURAL PÚBLICO (Aparece ao clicar no botão laranja) -->
+    <div id="tela-mural" class="tela" style="padding: 20px;">
+        <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto 30px auto;">
+            <h1>🏛️ Mural Escolar</h1>
+            <button class="btn-laranja" style="max-width: 150px; padding: 10px;" onclick="mudarTela('tela-login')">Área Restrita</button>
+        </header>
+        <div id="mural-container" class="container">
+            <!-- Seus cards de avisos vão carregar aqui via JavaScript -->
+            <p style="text-align:center; color:#64748b;">Nenhum aviso publicado no momento.</p>
         </div>
+    </div>
 
-        <!-- BLOCO ESQUECI A SENHA DIRECT -->
-        <div id="bloco-recuperar" class="hidden">
-            <div class="form-header">
-                <h2>Configurar Nova Senha</h2>
+    <!-- TELA 3: LOGIN -->
+    <div id="tela-login" class="tela container">
+        <div class="form-header"><h2>Mural Escolar - Login</h2></div>
+        <div id="mensagem-erro" class="erro-alerta tela"></div>
+        <form id="form-login">
+            <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
+            <div class="campo-senha-container">
+                <input type="password" id="senha" placeholder="Sua Senha" required>
+                <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
             </div>
-            <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
-            <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
-            
-            <form id="form-redefinir">
-                <input type="text" id="rec-identificador" placeholder="Nome de Usuário ou E-mail da sua conta" required>
-                <div class="campo-senha-container">
-                    <input type="password" id="rec-nova-senha" placeholder="Digite a Nova Senha (Mínimo 6 dígitos)" minlength="6" required>
-                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('rec-nova-senha', this)">👁️</button>
-                </div>
-                <button type="submit">Atualizar Senha</button>
-            </form>
+            <button type="submit">Entrar</button>
+        </form>
+        <p>Não tem conta? <span class="link-navegacao" onclick="mudarTela('tela-cadastro')">Cadastre-se</span></p>
+        <p style="margin-top: 10px;"><span class="link-navegacao" onclick="mudarTela('tela-mural')">Voltar ao Mural</span></p>
+    </div>
 
-            <p><a href="#" onclick="fecharRecuperacao()">Voltar para o Login</a></p>
-        </div>
+    <!-- TELA 4: CADASTRO -->
+    <div id="tela-cadastro" class="tela container">
+        <div class="form-header"><h2>Criar Conta</h2></div>
+        <div id="mensagem-erro-cad" class="erro-alerta tela"></div>
+        <form id="form-cadastro">
+            <input type="text" id="cad-nome" placeholder="Nome de Usuário" required>
+            <input type="email" id="cad-email" placeholder="Seu E-mail" required>
+            <div class="campo-senha-container">
+                <input type="password" id="cad-senha" placeholder="Sua Senha (Mínimo 6 dígitos)" minlength="6" required>
+                <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('cad-senha', this)">👁️</button>
+            </div>
+            <select id="cad-cargo" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
+                <option value="aluno">Aluno</option>
+                <option value="responsavel">Responsável</option>
+                <option value="professor">Professor</option>
+                <option value="coordenador">Coordenador</option>
+                <option value="direcao">Direção</option>
+            </select>
+            <input type="text" id="cad-chave" placeholder="Chave de Acesso (Apenas Funcionários)">
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem conta? <span class="link-navegacao" onclick="mudarTela('tela-login')">Fazer Login</span></p>
     </div>
 
     <script>
-        // Função para sumir a tela inicial e revelar o login
-        function entrarNoSistema() {
-            document.getElementById('tela-boas-vindas').classList.add('hidden');
+        // Função mágica que troca as telas trocando as classes CSS, mantendo a URL intacta
+        function mudarTela(idTela) {
+            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+            document.getElementById(idTela).classList.add('ativa');
+            if(idTela === 'tela-mural') carregarAvisos();
         }
 
         function alternarVisibilidade(idCampo, botao) {
             const campo = document.getElementById(idCampo);
-            if (campo.type === "password") {
-                campo.type = "text";
-                botao.innerText = "🙈";
-            } else {
-                campo.type = "password";
-                botao.innerText = "👁️";
-            }
+            campo.type = campo.type === "password" ? "text" : "password";
+            botao.innerText = campo.type === "password" ? "👁️" : "🙈";
         }
 
+        // Lógica de Login integrada
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identificador = document.getElementById('identificador').value;
             const senha = document.getElementById('senha').value;
             const erroDiv = document.getElementById('mensagem-erro');
-            erroDiv.classList.add('hidden');
+            erroDiv.classList.add('tela');
 
             const res = await fetch('/auth/login', {
                 method: 'POST',
@@ -162,56 +124,26 @@
                 body: JSON.stringify({ identificador, senha })
             });
             const dados = await res.json();
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
-            else { window.location.href = '/mural'; }
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); }
+            else { alert('Logado com sucesso!'); mudarTela('tela-mural'); }
         });
 
-        function abrirRecuperacao() {
-            document.getElementById('bloco-login').classList.add('hidden');
-            document.getElementById('bloco-recuperar').classList.remove('hidden');
-            document.getElementById('mensagem-erro-rec').classList.add('hidden');
-            document.getElementById('mensagem-suc-rec').classList.add('hidden');
-            document.getElementById('form-redefinir').classList.remove('hidden');
-        }
-
-        function fecharRecuperacao() {
-            document.getElementById('bloco-recuperar').classList.add('hidden');
-            document.getElementById('bloco-login').classList.remove('hidden');
-            document.getElementById('mensagem-erro').classList.add('hidden');
-        }
-
-        // Lógica de Redefinição Direta
-        document.getElementById('form-redefinir').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identificador = document.getElementById('rec-identificador').value;
-            const novaSenha = document.getElementById('rec-nova-senha').value;
-            const erroDiv = document.getElementById('mensagem-erro-rec');
-            const sucDiv = document.getElementById('mensagem-suc-rec');
-            
-            erroDiv.classList.add('hidden');
-            sucDiv.classList.add('hidden');
-
-            try {
-                const res = await fetch('/auth/recuperar-senha', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identificador, novaSenha })
-                });
-                const dados = await res.json();
-
-                if (!res.ok) { 
-                    erroDiv.innerText = dados.erro; 
-                    erroDiv.classList.remove('hidden'); 
-                } else {
-                    sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
-                    sucDiv.classList.remove('hidden');
-                    document.getElementById('form-redefinir').classList.add('hidden');
-                }
-            } catch (err) {
-                erroDiv.innerText = "Erro ao conectar com o servidor.";
-                erroDiv.classList.remove('hidden');
+        // Função para simular o carregamento dos seus avisos do banco do TCC
+        async function carregarAvisos() {
+            const res = await fetch('/api/avisos');
+            const avisos = await res.json();
+            const container = document.getElementById('mural-container');
+            if(avisos.length > 0) {
+                container.innerHTML = avisos.map(a => `
+                    <div class="card" style="background:white; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
+                        <h2>${a.titulo}</h2>
+                        <p>${a.conteudo}</p>
+                        ${a.imagem ? `<img src="${a.imagem}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : ''}
+                        <small style="display:block; margin-top:10px; color:#64748b;">Postado por ${a.autor} em ${a.data}</small>
+                    </div>
+                `).join('');
             }
-        });
+        }
     </script>
 </body>
 </html>
