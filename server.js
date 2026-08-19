@@ -176,9 +176,11 @@ app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
     res.json({ sucesso: true });
 });
 
-// Define a porta dinâmica aceita pelo Render
-const PORT = process.env.PORT || 3000;
- 
+ // O Render injeta automaticamente uma porta em process.env.PORT. Caso rode local, ele usa a 3000.
+const port  = process.env.PORT || 3000;
+
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor rodando com sucesso na porta ${PORT}`);
+    console.log(`🚀 Mural Digital Escolar online na porta ${PORT}`);
 });
+
+
