@@ -190,11 +190,11 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Adicione esta linha logo acima do listen
+// Define a porta dinâmica aceita pelo Render
 const PORT = process.env.PORT || 3000;
 
-// Altere o seu listen para ficar exatamente assim:
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });
+
 
