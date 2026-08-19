@@ -10,15 +10,25 @@
         .tela { display: none !important; }
         .tela.ativa { display: flex !important; flex-direction: column; }
         
-        /* Estilos específicos da tela de boas-vindas */
+        /* Estilos específicos da tela de boas-vindas ocupando 100% da tela */
         .boas-vindas-wrapper {
-            align-items: center; justify-content: center; min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;
-            text-align: center; padding: 20px; box-sizing: border-box;
-            position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+            color: white;
+            text-align: center; 
+            padding: 20px; 
+            box-sizing: border-box;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999;
         }
-        .boas-vindas-wrapper h1 { font-size: 2.8rem; margin: 15px 0 10px 0; font-weight: 700; }
-        .boas-vindas-wrapper p { font-size: 1.1rem; color: #e2e8f0; max-width: 450px; margin-bottom: 30px; }
+        .boas-vindas-wrapper h1 { font-size: 3rem; margin: 20px 0 10px 0; font-weight: 700; color: white !important; }
+        .boas-vindas-wrapper p { font-size: 1.2rem; color: #e2e8f0; max-width: 550px; margin-bottom: 35px; line-height: 1.6; }
         
         /* Botão Laranja Uniforme e Reduzido */
         .btn-laranja {
@@ -87,7 +97,7 @@
 
     <!-- TELA 1: BOAS-VINDAS -->
     <div id="tela-boas-vindas" class="tela ativa boas-vindas-wrapper">
-        <div style="font-size: 4rem;">📢</div>
+        <div style="font-size: 5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));">📢</div>
         <h1>Mural de Avisos</h1>
         <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
         <button type="button" class="btn-laranja" onclick="mudarTela('tela-mural')">Acessar Mural</button>
@@ -158,6 +168,11 @@
 
         function mudarTela(idTela) {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+            
+            if (idTela !== 'tela-boas-vindas') {
+                document.getElementById('tela-boas-vindas').style.setProperty('display', 'none', 'important');
+            }
+            
             document.getElementById(idTela).classList.add('ativa');
             if(idTela === 'tela-mural') carregarAvisos();
         }
@@ -196,14 +211,4 @@
             const chaveAcesso = document.getElementById('cad-chave').value;
             const erroDiv = document.getElementById('mensagem-erro-cad');
             erroDiv.classList.add('tela');
-
-            const res = await fetch('/auth/cadastro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
-            });
-            const dados = await res.json();
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); }
-            else { alert('Conta criada com sucesso! Faça login.'); mudarTela('tela-login'); }
-        });
 
