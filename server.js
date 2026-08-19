@@ -190,10 +190,11 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Procure por app.listen no final do seu arquivo server.js
+// Adicione esta linha logo acima do listen
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+// Altere o seu listen para ficar exatamente assim:
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });
 
