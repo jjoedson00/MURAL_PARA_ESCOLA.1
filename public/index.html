@@ -35,6 +35,7 @@
             background-color: #ff9200; color: white; border: none; padding: 14px 45px;
             border-radius: 30px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 146, 0, 0.4); width: 100%; max-width: 250px; transition: 0.2s;
+            display: inline-block; text-align: center;
         }
         .btn-laranja:hover { background-color: #e08100; transform: translateY(-2px); }
         
@@ -100,13 +101,14 @@
         <div style="font-size: 5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));">📢</div>
         <h1>Mural de Avisos</h1>
         <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-        <button type="button" class="btn-laranja" onclick="mudarTela('tela-mural')">Acessar Mural</button>
+        <!-- CHAMADA DE FUNÇÃO CORRIGIDA AQUI -->
+        <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
     </div>
 
     <!-- TELA 2: MURAL PÚBLICO -->
     <div id="tela-mural" class="tela" style="padding: 20px; width: 100%; box-sizing: border-box;">
         <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto 30px auto; padding: 10px 0;">
-            <h1 class="mural-header-titulo">
+            <h1 class="mural-header-titulo" style="color: white !important;">
                 <span>🏛️</span> Mural Escolar
             </h1>
             <button class="btn-laranja" style="max-width: 160px; padding: 12px 20px; font-size: 0.95rem; margin: 0;" onclick="mudarTela('tela-login')">Área Restrita</button>
@@ -166,13 +168,18 @@
         // Atualização automática dos avisos no monitor a cada 15 segundos
         setInterval(carregarAvisos, 15000);
 
+        // FUNÇÃO ADICIONADA: Fecha a tela azul na marra e abre o mural
+        function entrarNoSistema() {
+            const telaBoasVindas = document.getElementById('tela-boas-vindas');
+            telaBoasVindas.style.setProperty('display', 'none', 'important');
+            mudarTela('tela-mural');
+        }
+
         function mudarTela(idTela) {
+            // Garante que a tela de boas-vindas suma ao navegar
+            document.getElementById('tela-boas-vindas').style.setProperty('display', 'none', 'important');
+            
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-            
-            if (idTela !== 'tela-boas-vindas') {
-                document.getElementById('tela-boas-vindas').style.setProperty('display', 'none', 'important');
-            }
-            
             document.getElementById(idTela).classList.add('ativa');
             if(idTela === 'tela-mural') carregarAvisos();
         }
@@ -205,10 +212,3 @@
         document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nome = document.getElementById('cad-nome').value;
-            const email = document.getElementById('cad-email').value;
-            const senha = document.getElementById('cad-senha').value;
-            const cargo = document.getElementById('cad-cargo').value;
-            const chaveAcesso = document.getElementById('cad-chave').value;
-            const erroDiv = document.getElementById('mensagem-erro-cad');
-            erroDiv.classList.add('tela');
-
