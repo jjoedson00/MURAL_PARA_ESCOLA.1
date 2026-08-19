@@ -28,7 +28,6 @@
             z-index: 9999;
         }
         .boas-vindas-wrapper h1 { font-size: 3rem; margin: 20px 0 10px 0; font-weight: 700; color: white !important; }
-        .boas-vindas-wrapper p { font-size: 1.2rem; color: #e2e8f0; max-width: 550px; margin-bottom: 35px; line-height: 1.6; }
         
         /* Botão Laranja Uniforme e Reduzido */
         .btn-laranja {
@@ -96,11 +95,11 @@
 </head>
 <body>
 
-    <!-- TELA 1: BOAS-VINDAS -->
-    <div id="tela-boas-vindas" class="boas-vindas-wrapper">
+    <!-- TELA 1: BOAS-VINDAS (Texto corrigido e forçado para o centro) -->
+    <div id="tela-boas-vindas" class="tela ativa boas-vindas-wrapper">
         <div style="font-size: 5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));">📢</div>
         <h1>Mural de Avisos</h1>
-        <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
+        <p style="text-align: center !important; margin: 0 auto 35px auto !important; display: block !important;">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
         <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
     </div>
 
@@ -158,7 +157,15 @@
     </div>
 
     <script>
-        // Função de clique isolada no topo para evitar dependências de erros no script
+        // Mantém a barra de endereços URL limpa
+        window.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState({}, '', '/');
+            carregarAvisos();
+        });
+
+        // Atualização automática dos avisos no monitor a cada 15 segundos
+        setInterval(carregarAvisos, 15000);
+
         function entrarNoSistema() {
             try {
                 const elemento = document.getElementById('tela-boas-vindas');
@@ -187,29 +194,25 @@
             if(idTela === 'tela-mural') carregarAvisos();
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            window.history.pushState({}, '', '/');
-            carregarAvisos();
-            
-            // Tratamento contra travamento de envio de formulários inexistentes ou duplicados
-            const formLogin = document.getElementById('form-login');
-            if (formLogin) {
-                formLogin.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const identificador = document.getElementById('identificador').value;
-                    const senha = document.getElementById('senha').value;
-                    const erroDiv = document.getElementById('mensagem-erro');
-                    if (erroDiv) erroDiv.classList.add('tela');
-
-                    const res = await fetch('/auth/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ identificador, senha })
-                    });
-                    const dados = await res.json();
-                    if (!res.ok) { if (erroDiv) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); } }
-                    else { mudarTela('tela-mural'); }
-                });
+        function alternarVisibilidade(idCampo, botao) {
+            const campo = document.getElementById(idCampo);
+            if (campo) {
+                campo.type = campo.type === "password" ? "text" : "password";
+                botao.innerText = campo.type === "password" ? "👁️" : "🙈";
             }
+        }
 
-            const formCadastro = document.getElementById('form-cadastro');
+        // Envio do formulário de login integrado
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identificador = document.getElementById('identificador').value;
+            const senha = document.getElementById('senha').value;
+            const erroDiv = document.getElementById('mensagem-erro');
+            if (erroDiv) erroDiv.classList.add('tela');
+
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identificador, senha })
+            });
+            const dados = await res.json();
