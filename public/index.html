@@ -93,7 +93,6 @@
             gap: 16px;
         }
 
-        /* Input Estilizado da Barra de Pesquisa */
         .barra-pesquisa {
             width: 100%;
             max-width: 400px;
@@ -212,20 +211,23 @@
             z-index: 50;
             background-color: rgba(15, 23, 42, 0.96);
             padding: 16px;
+            overflow-y: auto; /* Permite rolar a tela se o celular for pequeno */
         }
 
+        /* CORRIGIDO: Removido limite rígido de altura para comportar todos os inputs e botões */
         .box-login {
             background-color: #ffffff;
-            padding: 32px;
+            padding: 36px 32px;
             border-radius: 24px;
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             color: #0f172a;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            margin: auto; /* Mantém centralizado em todas as resoluções */
         }
 
         .input-grupo {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             text-align: left;
         }
 
@@ -245,10 +247,12 @@
             background-color: #f8fafc;
             font-size: 1rem;
             color: #0f172a;
+            outline: none;
         }
 
         .input-grupo input:focus {
-            outline: 2px solid #2563eb;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
         }
 
         .btn-enviar {
@@ -261,6 +265,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-size: 1rem;
+            margin-top: 8px;
             transition: background 0.2s;
         }
 
@@ -291,7 +296,6 @@
                 <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px; margin-bottom: 12px;">Monitores e Celulares</p>
             </div>
             
-            <!-- BARRA DE BUSCA EM TEMPO REAL -->
             <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso específico..." oninput="filtrarAvisosNaTela()">
 
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -313,14 +317,7 @@
     <!-- ==================== 3. MODAL DE ACESSO ADMINISTRATIVO ==================== -->
     <div id="id-tela-login" class="tela-login flex-center" style="display: none;">
         
-        <!-- Formulário de LOGIN -->
+        <!-- Formulário de LOGIN (CORRIGIDO: Todo o HTML estruturado interno visível) -->
         <div id="box-login-container" class="box-login">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">🔐</span>
-                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Acesso Restrito</h2>
-                <p style="color: #64748b; font-size: 0.875rem;">Apenas professores, coordenadores e diretores autorizados</p>
-            </div>
-            
-            <form id="id-form-login-mural">
-                <div class="input-grupo">
-                    <label>Nome de Usuário ou E-mail</label>
