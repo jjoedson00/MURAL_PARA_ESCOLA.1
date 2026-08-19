@@ -44,8 +44,11 @@ app.use(session({
     }
 }));
 
-// Redirecionamento da Página Inicial para as Rotas Amigáveis
-app.get('/', (req, res) => res.redirect('/login'));
+// CORREÇÃO PARA EXPRESS V5: O asterisco agora precisa ser nomeado (*splat)
+app.get('/*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 
 // Roteamento sem a extensão .html na barra de endereços
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
