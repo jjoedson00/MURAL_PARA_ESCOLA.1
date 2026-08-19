@@ -190,6 +190,10 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Escuta ativa de portas injetadas pelo ambiente de nuvem do Render ou local 3000
+// Procure por app.listen no final do seu arquivo server.js
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando com sucesso na porta ${PORT}`);
+});
+
