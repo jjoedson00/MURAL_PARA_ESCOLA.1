@@ -6,7 +6,6 @@
     <title>Mural de Avisos Escolares</title>
     
     <style>
-        /* CSS Nativo Corrigido - Funciona Offline e sem bloqueios */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -21,7 +20,6 @@
             overflow-x: hidden;
         }
 
-        /* Classes de utilidade para controle das telas */
         .flex-center {
             display: flex;
             flex-direction: column;
@@ -42,7 +40,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Estilo da Tela Inicial */
+        /* 1. Tela Inicial */
         .tela-inicial {
             position: fixed;
             inset: 0;
@@ -70,7 +68,6 @@
             line-height: 1.6;
         }
 
-        /* O famoso Botão Laranja */
         .btn-laranja {
             background-color: #f97316;
             color: #ffffff;
@@ -81,22 +78,18 @@
             border-radius: 9999px;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
-            transition: all 0.3s transform;
+            transition: all 0.2s ease;
         }
 
         .btn-laranja:hover {
             background-color: #ea580c;
-            box-shadow: 0 12px 30px rgba(249, 115, 22, 0.6);
+            transform: translateY(-2px);
         }
 
-        .btn-laranja:active {
-            transform: scale(0.95);
-        }
-
-        /* Estilo da Tela do Mural */
+        /* 2. Tela do Mural */
         .tela-mural {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 24px;
             z-index: 40;
@@ -106,7 +99,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-b: 1px solid #334155;
+            border-bottom: 1px solid #334155;
             padding-bottom: 24px;
             margin-bottom: 32px;
             flex-wrap: wrap;
@@ -142,12 +135,57 @@
             color: #f1f5f9;
         }
 
-        /* Grid de Avisos */
+        /* Grid Organizador de Avisos - Responsivo para Monitores e Smartphones */
         .grid-mural {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
             width: 100%;
+        }
+
+        .card-aviso {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-imagem {
+            width: 100%;
+            height: 180px;
+            object-cover: cover;
+            background-color: #0f172a;
+        }
+
+        .card-corpo {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-titulo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .card-conteudo {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .card-data {
+            padding: 16px 20px;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            font-weight: 600;
+            border-top: 1px solid #334155/50;
+            background-color: #1e293b;
         }
 
         .card-vazio {
@@ -159,14 +197,14 @@
             border: 2px dashed #334155;
         }
 
-        /* Estilo da Tela de Login */
+        /* 3. Telas Modais de Login / Cadastro */
         .tela-login {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100vh;
             z-index: 50;
-            background-color: rgba(15, 23, 42, 0.95);
+            background-color: rgba(15, 23, 42, 0.96);
             padding: 16px;
         }
 
@@ -175,13 +213,14 @@
             padding: 32px;
             border-radius: 24px;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             color: #0f172a;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
         }
 
         .input-grupo {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            text-align: left;
         }
 
         .input-grupo label {
@@ -194,11 +233,12 @@
 
         .input-grupo input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 14px;
             border: 1px solid #cbd5e1;
             border-radius: 12px;
             background-color: #f8fafc;
             font-size: 1rem;
+            color: #0f172a;
         }
 
         .input-grupo input:focus {
@@ -223,7 +263,7 @@
         }
     </style>
 </head>
-<body>
+<body class="flex-center">
 
     <!-- ==================== 1. TELA INICIAL (BOAS-VINDAS) ==================== -->
     <div id="id-tela-inicial" class="tela-inicial flex-center fade-in">
@@ -237,13 +277,12 @@
         </button>
     </div>
 
-
-    <!-- ==================== 2. TELA DO MURAL PÚBLICO (Avisos) ==================== -->
+    <!-- ==================== 2. TELA DO MURAL PÚBLICO (EXIBIÇÃO) ==================== -->
     <div id="id-tela-mural" class="tela-mural hidden fade-in">
         <header class="topo-mural">
             <div>
                 <h1 style="font-size: 2rem; font-weight: 800; color: white;">🏫 Mural Digital Escolar</h1>
-                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Quadros atualizados automaticamente para monitores e celulares</p>
+                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Atualizações automáticas ideais para monitores e celulares</p>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
                 <button onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
@@ -253,67 +292,38 @@
 
         <main>
             <div id="id-mural-container" class="grid-mural">
-                <div class="card-vazio">
-                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
-                    <p style="color: #94a3b8; font-size: 1.125rem; font-weight: 500;">Buscando comunicados no banco de dados...</p>
-                </div>
+                <!-- Preenchido via JavaScript dinamicamente com dados do SQLite -->
             </div>
         </main>
     </div>
 
-
-    <!-- ==================== 3. TELA DE LOGIN (Administração) ==================== -->
+    <!-- ==================== 3. MODAL DE ACESSO ADMINISTRATIVO ==================== -->
     <div id="id-tela-login" class="tela-login flex-center hidden fade-in">
-        <div class="box-login">
+        
+        <!-- Formulário de LOGIN -->
+        <div id="box-login-container" class="box-login">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">🔐</span>
-                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 8px;">Acesso Restrito</h2>
-                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Insira suas credenciais administrativas</p>
+                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Acesso Restrito</h2>
+                <p style="color: #64748b; font-size: 0.875rem;">Apenas professores autorizados</p>
             </div>
             
             <form id="id-form-login-mural">
                 <div class="input-grupo">
                     <label>Nome de Usuário</label>
-                    <input type="text" required placeholder="Ex: admin">
+                    <input type="text" id="login-username" required placeholder="Ex: prof_carlos">
                 </div>
                 <div class="input-grupo">
                     <label>Senha</label>
-                    <input type="password" required placeholder="••••••••">
+                    <input type="password" id="login-password" required placeholder="••••••••">
                 </div>
                 <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
             </form>
+
+            <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">
+                Novo professor? 
+                <button onclick="alternarFormularios('cadastro')" style="color: #2563eb; font-weight: bold; background: none; border: none; cursor: pointer; text-decoration: underline;">
+                    Cadastre-se aqui
+                </button>
+            </p>
             
-            <button onclick="mostrarMural()" style="width:100%; background:none; border:none; color:#64748b; font-size:0.875rem; margin-top:20px; cursor:pointer; font-weight:600;">
-                ← Cancelar e Voltar
-            </button>
-        </div>
-    </div>
-
-    <!-- ==================== SCRIPT DE CONTROLE INTERATIVO ==================== -->
-    <script>
-        const telaInicial = document.getElementById('id-tela-inicial');
-        const telaMural = document.getElementById('id-tela-mural');
-        const telaLogin = document.getElementById('id-tela-login');
-
-        function mostrarMural() {
-            telaInicial.classList.add('hidden');
-            telaLogin.classList.add('hidden');
-            telaMural.classList.remove('hidden');
-        }
-
-        function mostrarLogin() {
-            telaLogin.classList.remove('hidden');
-        }
-
-        function voltarParaInicial() {
-            telaMural.classLight = telaMural.classList.add('hidden');
-            telaLogin.classList.add('hidden');
-            telaInicial.classList.remove('hidden');
-        }
-
-        document.getElementById('id-form-login-mural').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Conectando ao sistema back-end...');
-        });
-    </script>
-</body>

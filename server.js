@@ -1,193 +1,179 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const multer = require('multer');
-const path = require('path');
-const bcrypt = require('bcryptjs');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session); 
-const fs = require('fs'); 
+import express from 'express';
+import session from 'express-session';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import bcrypt from 'bcryptjs';
+import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';
 
 const app = express();
+const PORT = 3000;
 
-// === CRIAÇÃO AUTOMÁTICA DE PASTAS OBRIGATÓRIAS PARA O RENDER ===
-const pastasObrigatorias = [
-    path.join(__dirname, 'sessions'),
-    path.join(__dirname, 'public'),
-    path.join(__dirname, 'public', 'uploads')
-];
-pastasObrigatorias.forEach(pasta => {
-    if (!fs.existsSync(pasta)) {
-        fs.mkdirSync(pasta, { recursive: true });
-    }
+// Garante a existência da pasta de upload para fotos de referência
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+}
+
+// Inicialização Assíncrona do Banco de Dados SQLite
+const dbPromise = open({
+    filename: './database.db',
+    driver: sqlite3.Database
 });
 
-const db = new sqlite3.Database('./database.db');
+(async () => {
+    const db = await dbPromise;
+    
+    // Tabela de Usuários (Professores e Administradores)
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            password TEXT
+        )
+    `);
+    
+    // Tabela de Avisos Escolares
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS avisos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT,
+            conteudo TEXT,
+            imagem TEXT,
+            data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 
-// Configurações Básicas do Express
+    // Criar um usuário administrador padrão de fábrica (User: admin / Pass: admin123)
+    const adminExiste = await db.get('SELECT * FROM usuarios WHERE username = ?', ['admin']);
+    if (!adminExiste) {
+        const hash = await bcrypt.hash('admin123', 10);
+        await db.run('INSERT INTO usuarios (username, password) VALUES (?, ?)', ['admin', hash]);
+        console.log('🛡️ Conta master criada automaticamente: admin / admin123');
+    }
+})();
+
+// Configurações Globais do Servidor Express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-// Gerenciamento de Sessão por Arquivos Locais
 app.use(session({
-    store: new FileStore({
-        path: './sessions',
-        ttl: 86400, 
-        logFn: function() {} 
-    }),
-    secret: 'chave-secreta-do-mural',
-    resave: false,               
-    saveUninitialized: false,    
-    cookie: { 
-        maxAge: 1000 * 60 * 60 * 24, 
-        secure: false           
-    }
+    secret: 'chave-secreta-mural-escolar-2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Define como true se for rodar em HTTPS futuramente
 }));
 
-// Configuração do Multer para Upload Seguro de Imagens de Referência
+// Mapeamento de Pastas Estáticas do Front-End
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
+
+// Mecanismo de Upload com Multer (Renomeia as imagens com a data atual para evitar substituições)
 const storage = multer.diskStorage({
-    destination: 'public/uploads/',
+    destination: './uploads/',
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 const upload = multer({ storage });
 
-// === CONFIGURAÇÃO DO SQLITE EM LINHA RETA (Evita unrecognized token) ===
-db.serialize(() => {
-    db.run("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT UNIQUE, email TEXT UNIQUE, senha TEXT, cargo TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS avisos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, conteudo TEXT, imagem TEXT, autor TEXT, data TEXT)");
-});
+// Bloqueador de Segurança (Middleware)
+const requerAutenticacao = (req, res, next) => {
+    if (req.session.usuarioId) return next();
+    res.status(401).json({ erro: 'Não autorizado. Faça o login primeiro.' });
+};
 
-// Credencial mestra para validação de cargos da gestão escolar
-const CHAVE_FUNCIONARIO = "COORDENACAO2026";
+// ==================== ROTAS DE AUTENTICAÇÃO E CADASTRO ====================
 
-// ROTA DE CADASTRO: Valida tamanho da senha e impede e-mails ou nomes repetidos
-app.post('/auth/cadastro', async (req, res) => {
-    const { nome, email, senha, cargo, chaveAcesso } = req.body;
-    
-    if (!senha || senha.length < 6) {
-        return res.status(400).json({ erro: 'A senha deve conter no mínimo 6 caracteres.' });
+// Cadastro Seguro de Professores
+app.post('/api/cadastro', async (req, res) => {
+    const { username, password, chaveAcesso } = req.body;
+
+    // Bloqueio rigoroso direto no servidor caso tentem burlar o Front-end
+    if (chaveAcesso !== 'COORDENACAO2026') {
+        return res.status(403).json({ erro: 'Código de autorização inválido. Cadastro negado.' });
     }
 
-    if (['professor', 'coordenador', 'direcao'].includes(cargo)) {
-        if (!chaveAcesso || chaveAcesso !== CHAVE_FUNCIONARIO) {
-            return res.status(403).json({ erro: 'Chave de acesso de funcionário inválida!' });
-        }
+    if (!username || !password) {
+        return res.status(400).json({ erro: 'Todos os campos de login devem ser preenchidos.' });
     }
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
-    
-    db.run(`INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)`, 
-        [nome.trim(), email.trim(), senhaCriptografada, cargo], 
-        (err) => {
-            if (err) {
-                if (err.message.includes('usuarios.email') || err.message.includes('UNIQUE constraint failed')) {
-                    return res.status(400).json({ erro: 'Este email já está cadastrado em outra conta.' });
-                }
-                if (err.message.includes('usuarios.nome')) {
-                    return res.status(400).json({ erro: 'Este nome de usuário já está em uso.' });
-                }
-                return res.status(400).json({ erro: 'Erro ao realizar cadastro.' });
-            }
-            return res.json({ sucesso: true });
-        }
-    );
-});
-
-// ROTA DE LOGIN: Autenticação por e-mail ou nome do usuário híbrida
-app.post('/auth/login', (req, res) => {
-    const { identificador, senha } = req.body; 
-    
-    db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
-        if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) {
-            return res.status(400).json({ erro: 'Usuário/Email ou senha incorretos.' });
-        }
-        req.session.userId = usuario.id;
-        req.session.usuario = { nome: usuario.nome, cargo: usuario.cargo };
+    try {
+        const db = await dbPromise;
+        const usuarioExiste = await db.get('SELECT * FROM usuarios WHERE username = ?', [username]);
         
-        req.session.save(() => {
-            return res.json({ sucesso: true });
-        });
-    });
-});
-
-// ROTA DE RECUPERAÇÃO: Atualizada e direta, sem pergunta de segurança
-app.post('/auth/recuperar-senha', async (req, res) => {
-    const { identificador, novaSenha } = req.body;
-
-    db.get(`SELECT * FROM usuarios WHERE email = ? OR nome = ?`, [identificador.trim(), identificador.trim()], async (err, usuario) => {
-        if (!usuario) {
-            return res.status(400).json({ erro: 'Usuário ou E-mail não encontrado.' });
+        if (usuarioExiste) {
+            return res.status(400).json({ erro: 'Este nome de usuário já está cadastrado por outro docente.' });
         }
 
-        if (!novaSenha || novaSenha.length < 6) {
-            return res.status(400).json({ erro: 'A nova senha deve ter no mínimo 6 caracteres.' });
-        }
-
-        const novaSenhaCripto = await bcrypt.hash(novaSenha, 10);
-        db.run(`UPDATE usuarios SET senha = ? WHERE id = ?`, [novaSenhaCripto, usuario.id], (err) => {
-            if (err) return res.status(500).json({ erro: 'Erro ao atualizar a senha.' });
-            return res.json({ sucesso: true });
-        });
-    });
-});
-
-// Rota de consumo interna para mapear sessões ativas do Front-end
-app.get('/api/usuario-atual', (req, res) => {
-    if (!req.session || !req.session.usuario) return res.status(401).json({ erro: 'Não logado' });
-    res.json(req.session.usuario);
-});
-
-// Destruição de sessão e expiração de cookies
-app.get('/auth/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.clearCookie('connect.sid'); 
-        res.redirect('/login');   
-    });
-});
-
-// Get de todos os avisos em ordem decrescente (Novos no topo)
-app.get('/api/avisos', (req, res) => {
-    db.all(`SELECT * FROM avisos ORDER BY id DESC`, [], (err, rows) => {
-        res.json(rows);
-    });
-});
-
-// Endpoint de gravação de comunicados com uploads opcionais
-app.post('/api/avisos', upload.single('imagem'), (req, res) => {
-    if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
-        return res.status(403).send('Acesso negado.');
-    }
-    const { titulo, conteudo } = req.body;
-    const imagem = req.file ? `/uploads/${req.file.filename}` : '';
-    const autor = req.session.usuario.nome;
-    const data = new Date().toLocaleDateString('pt-BR');
-
-    db.run(`INSERT INTO avisos (titulo, conteudo, imagem, autor, data) VALUES (?, ?, ?, ?, ?)`,
-        [titulo, conteudo, imagem, autor, data],
-        () => res.redirect('/mural')
-    );
-});
-
-// Remoção de publicações acionada por gestores cadastrados
-app.delete('/api/avisos/:id', (req, res) => {
-    if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
-        return res.status(403).json({ erro: 'Acesso negado.' });
-    }
-    db.run(`DELETE FROM avisos WHERE id = ?`, [req.params.id], () => {
+        const hash = await bcrypt.hash(password, 10);
+        await db.run('INSERT INTO usuarios (username, password) VALUES (?, ?)', [username, hash]);
         res.json({ sucesso: true });
-    });
+    } catch (err) {
+        res.status(500).json({ erro: 'Falha interna ao registrar no banco de dados.' });
+    }
 });
 
-// === ADAPTAÇÃO PARA EXPRESS V5: Parâmetro nomeado splat ===
-app.get('/*splat', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Login do Painel Administrativo
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    const db = await dbPromise;
+    const usuario = await db.get('SELECT * FROM usuarios WHERE username = ?', [username]);
+
+    if (usuario && await bcrypt.compare(password, usuario.password)) {
+        req.session.usuarioId = usuario.id;
+        return res.json({ sucesso: true });
+    }
+    res.status(400).json({ erro: 'Usuário ou senha incorretos.' });
 });
 
-// Define a porta dinâmica aceita pelo Render
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor rodando com sucesso na porta ${PORT}`);
+// Logoff da Sessão
+app.post('/api/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ sucesso: true });
 });
+
+// Validador de Sessão Ativa
+app.get('/api/checar-sessao', (req, res) => {
+    res.json({ logado: !!req.session.usuarioId });
+});
+
+// ==================== ROTAS DE GERENCIAMENTO DOS AVISOS ====================
+
+// Listagem de Avisos (Acesso público no mural)
+app.get('/api/avisos', async (req, res) => {
+    const db = await dbPromise;
+    const avisos = await db.all('SELECT * FROM avisos ORDER BY data_criacao DESC');
+    res.json(avisos);
+});
+
+// Criar Novo Comunicado (Protegido por Login)
+app.post('/api/avisos', requerAutenticacao, upload.single('imagem'), async (req, res) => {
+    const { titulo, conteudo } = req.body;
+    const imagem = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!titulo || !conteudo) {
+        return res.status(400).json({ erro: 'O aviso precisa conter um título e uma descrição.' });
+    }
+
+    const db = await dbPromise;
+    await db.run('INSERT INTO avisos (titulo, conteudo, imagem) VALUES (?, ?, ?)', [titulo, conteudo, imagem]);
+    res.json({ sucesso: true });
+});
+
+// Remover Comunicado (Protegido por Login)
+app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
+    const { id } = req.params;
+    const db = await dbPromise;
+    
+    // Remove o arquivo físico de imagem associado para não lotar o HD do servidor
+    const aviso = await db.get('SELECT imagem FROM avisos WHERE id = ?', [id]);
+    if (aviso && aviso.imagem) {
+        const caminhoImagem = path.join('.', aviso.imagem);
+        if (fs.existsSync(caminhoImagem)) fs.unlinkSync(caminhoImagem);
+    }
+
+    await db.run('DELETE FROM avisos WHERE id = ?', [id]);
+    res.json({ sucesso: true });
+});
+
+app.listen(PORT, () => console.log(`🚀 Mural Digital Escolar online em: http://localhost:${PORT}`));
