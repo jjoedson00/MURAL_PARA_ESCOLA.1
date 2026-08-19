@@ -97,7 +97,7 @@
 <body>
 
     <!-- TELA 1: BOAS-VINDAS -->
-    <div id="tela-boas-vindas" class="tela ativa boas-vindas-wrapper">
+    <div id="tela-boas-vindas" class="boas-vindas-wrapper">
         <div style="font-size: 5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));">📢</div>
         <h1>Mural de Avisos</h1>
         <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
@@ -158,60 +158,58 @@
     </div>
 
     <script>
-        // Mantém a barra de endereços URL limpa
-        window.addEventListener('DOMContentLoaded', () => {
-            window.history.pushState({}, '', '/');
-            carregarAvisos();
-        });
-
-        // Atualização automática dos avisos no monitor a cada 15 segundos
-        setInterval(carregarAvisos, 15000);
-
-        // MODIFICADO: Função reforçada que deleta a tela azul da memória no clique
+        // Função de clique isolada no topo para evitar dependências de erros no script
         function entrarNoSistema() {
-            const telaBoasVindas = document.getElementById('tela-boas-vindas');
-            if (telaBoasVindas) {
-                telaBoasVindas.remove(); 
-            }
+            try {
+                const elemento = document.getElementById('tela-boas-vindas');
+                if (elemento) {
+                    elemento.style.setProperty('display', 'none', 'important');
+                    elemento.remove();
+                }
+            } catch(e) { console.log(e); }
             mudarTela('tela-mural');
         }
 
         function mudarTela(idTela) {
-            const telaBoasVindas = document.getElementById('tela-boas-vindas');
-            if (telaBoasVindas && idTela !== 'tela-boas-vindas') {
-                telaBoasVindas.remove();
-            }
+            try {
+                const boasVindas = document.getElementById('tela-boas-vindas');
+                if (boasVindas && idTela !== 'tela-boas-vindas') {
+                    boasVindas.style.setProperty('display', 'none', 'important');
+                    boasVindas.remove();
+                }
+            } catch(e) {}
             
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-            document.getElementById(idTela).classList.add('ativa');
+            const target = document.getElementById(idTela);
+            if (target) {
+                target.classList.add('ativa');
+            }
             if(idTela === 'tela-mural') carregarAvisos();
         }
 
-        function alternarVisibilidade(idCampo, botao) {
-            const campo = document.getElementById(idCampo);
-            campo.type = campo.type === "password" ? "text" : "password";
-            botao.innerText = campo.type === "password" ? "👁️" : "🙈";
-        }
+        window.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState({}, '', '/');
+            carregarAvisos();
+            
+            // Tratamento contra travamento de envio de formulários inexistentes ou duplicados
+            const formLogin = document.getElementById('form-login');
+            if (formLogin) {
+                formLogin.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const identificador = document.getElementById('identificador').value;
+                    const senha = document.getElementById('senha').value;
+                    const erroDiv = document.getElementById('mensagem-erro');
+                    if (erroDiv) erroDiv.classList.add('tela');
 
-        // Envio do formulário de login integrado
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identificador = document.getElementById('identificador').value;
-            const senha = document.getElementById('senha').value;
-            const erroDiv = document.getElementById('mensagem-erro');
-            erroDiv.classList.add('tela');
+                    const res = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ identificador, senha })
+                    });
+                    const dados = await res.json();
+                    if (!res.ok) { if (erroDiv) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); } }
+                    else { mudarTela('tela-mural'); }
+                });
+            }
 
-            const res = await fetch('/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identificador, senha })
-            });
-            const dados = await res.json();
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); }
-            else { mudarTela('tela-mural'); }
-        });
-
-        // Envio do formulário de cadastro integrado
-        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nome = document.getElementById('cad-nome').value;
+            const formCadastro = document.getElementById('form-cadastro');
