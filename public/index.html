@@ -265,7 +265,6 @@
     </div>
 
     <!-- ==================== 2. TELA DO MURAL PÚBLICO (EXIBIÇÃO) ==================== -->
-    <!-- CORRIGIDO: Removido o display: none do CSS inline e controlado via JS para renderizar o topo imediatamente -->
     <div id="id-tela-mural" class="tela-mural" style="display: none;">
         <header class="topo-mural">
             <div>
@@ -273,14 +272,13 @@
                 <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Atualizações automáticas ideais para monitores e celulares</p>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <button onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
-                <button onclick="voltarParaInicial()" class="btn-voltar">Voltar ↩</button>
+                <button type="button" onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
+                <button type="button" onclick="voltarParaInicial()" class="btn-voltar">Voltar ↩</button>
             </div>
         </header>
 
         <main>
             <div id="id-mural-container" class="grid-mural">
-                <!-- Inicializa com o estado vazio estruturado correto -->
                 <div class="card-vazio">
                     <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
                     <p style="color: #94a3b8; font-size: 1.125rem;">Nenhum aviso ativo cadastrado pela coordenação.</p>
