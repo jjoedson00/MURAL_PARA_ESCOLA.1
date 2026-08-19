@@ -67,7 +67,7 @@ function salvarBancoNoDisco() {
     const buffer = Buffer.from(data);
     fs.writeFileSync(DATABASE_PATH, buffer);
 }
-
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({

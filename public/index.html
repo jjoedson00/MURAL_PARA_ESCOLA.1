@@ -259,7 +259,8 @@
         <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        <button type="button" onclick="mostrarMural()" class="btn-laranja">
+        <button type="button" onclick="this.parentElement.style.display='none'; document.getElementById('id-tela-mural').style.display='block'; buscarAvisosDoBanco();" class="btn-laranja">
+
             Acessar Mural
         </button>
     </div>
