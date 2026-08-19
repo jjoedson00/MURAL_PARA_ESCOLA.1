@@ -5,7 +5,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session); 
-const fs = require('fs'); // Módulo nativo para manipulação de pastas
+const fs = require('fs'); 
 
 const app = express();
 
@@ -44,18 +44,6 @@ app.use(session({
     }
 }));
 
-// CORREÇÃO PARA EXPRESS V5: O asterisco agora precisa ser nomeado (*splat)
-app.get('/*splat', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-
-// Roteamento sem a extensão .html na barra de endereços
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, 'public', 'cadastro.html')));
-app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mural.html')));
-
-
 // Configuração do Multer para Upload Seguro de Imagens de Referência
 const storage = multer.diskStorage({
     destination: 'public/uploads/',
@@ -65,24 +53,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Inicialização Automatizada das Tabelas Relacionais do SQLite
+// === CORREÇÃO DE SINTAXE SQL EM UMA ÚNICA LINHA (Evita unrecognized token) ===
 db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT UNIQUE, 
-        email TEXT UNIQUE,
-        senha TEXT,
-        cargo TEXT
-    )`);
-    
-    db.run(`CREATE TABLE IF NOT EXISTS avisos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        titulo TEXT,
-        conteudo TEXT,
-        imagem TEXT,
-        autor TEXT,
-        data TEXT"
-    )`);
+    db.run("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT UNIQUE, email TEXT UNIQUE, senha TEXT, cargo TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS avisos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, conteudo TEXT, imagem TEXT, autor TEXT, data TEXT)");
 });
 
 // Credencial mestra para validação de cargos da gestão escolar
@@ -92,7 +66,6 @@ const CHAVE_FUNCIONARIO = "COORDENACAO2026";
 app.post('/auth/cadastro', async (req, res) => {
     const { nome, email, senha, cargo, chaveAcesso } = req.body;
     
-    // Validação estrita de barreira de caracteres
     if (!senha || senha.length < 6) {
         return res.status(400).json({ erro: 'A senha deve conter no mínimo 6 caracteres.' });
     }
@@ -109,7 +82,6 @@ app.post('/auth/cadastro', async (req, res) => {
         [nome.trim(), email.trim(), senhaCriptografada, cargo], 
         (err) => {
             if (err) {
-                // Captura e trata erros de violação de chaves únicas (UNIQUE) do SQLite
                 if (err.message.includes('usuarios.email') || err.message.includes('UNIQUE constraint failed')) {
                     return res.status(400).json({ erro: 'Este email já está cadastrado em outra conta.' });
                 }
@@ -206,6 +178,11 @@ app.delete('/api/avisos/:id', (req, res) => {
     db.run(`DELETE FROM avisos WHERE id = ?`, [req.params.id], () => {
         res.json({ sucesso: true });
     });
+});
+
+// === CORREÇÃO DE ROTAS CORINGA DO EXPRESS V5 (Utiliza parâmetro nomeado splat) ===
+app.get('/*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Define a porta dinâmica aceita pelo Render
