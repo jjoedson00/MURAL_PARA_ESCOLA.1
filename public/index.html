@@ -202,7 +202,7 @@
             border: 2px dashed #334155;
         }
 
-        /* 3. Telas Modais de Login / Cadastro */
+        /* 3. Fundo Escurecido do Modal */
         .tela-login {
             position: fixed;
             inset: 0;
@@ -211,24 +211,28 @@
             z-index: 50;
             background-color: rgba(15, 23, 42, 0.96);
             padding: 16px;
-            overflow-y: auto; /* Permite rolar a tela se o celular for pequeno */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* CORRIGIDO: Removido limite rígido de altura para comportar todos os inputs e botões */
+        /* CORRIGIDO: Caixa de login estruturada com dimensões fluidas independentes */
         .box-login {
             background-color: #ffffff;
-            padding: 36px 32px;
+            padding: 32px;
             border-radius: 24px;
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             color: #0f172a;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-            margin: auto; /* Mantém centralizado em todas as resoluções */
+            display: flex;
+            flex-direction: column;
         }
 
         .input-grupo {
             margin-bottom: 16px;
             text-align: left;
+            width: 100%;
         }
 
         .input-grupo label {
@@ -274,7 +278,7 @@
         }
     </style>
 </head>
-<body class="flex-center">
+<body>
 
     <!-- ==================== 1. TELA INICIAL (BOAS-VINDAS) ==================== -->
     <div id="id-tela-inicial" class="tela-inicial flex-center">
@@ -283,7 +287,7 @@
         <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        <button type="button" onclick="document.getElementById('id-tela-inicial').style.display='none'; document.getElementById('id-tela-mural').style.display='block'; buscarAvisosDoBanco();" class="btn-laranja">
+        <button type="button" onclick="mostrarMural()" class="btn-laranja">
             Acessar Mural
         </button>
     </div>
@@ -299,7 +303,7 @@
             <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso específico..." oninput="filtrarAvisosNaTela()">
 
             <div style="display: flex; align-items: center; gap: 12px;">
-                <button type="button" onclick="document.getElementById('id-tela-login').style.display='flex'; alternarFormularios('login');" class="btn-restrita">⚙️ Área Restrita</button>
+                <button type="button" onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
                 <button type="button" onclick="voltarParaInicial()" class="btn-voltar">Voltar ↩</button>
             </div>
         </header>
@@ -315,9 +319,15 @@
     </div>
 
     <!-- ==================== 3. MODAL DE ACESSO ADMINISTRATIVO ==================== -->
-    <div id="id-tela-login" class="tela-login flex-center" style="display: none;">
+    <div id="id-tela-login" class="tela-login" style="display: none;">
         
-        <!-- Formulário de LOGIN (CORRIGIDO: Todo o HTML estruturado interno visível) -->
+        <!-- Formulário de LOGIN -->
         <div id="box-login-container" class="box-login">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">🔐</span>
+                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Acesso Restrito</h2>
+                <p style="color: #64748b; font-size: 0.875rem; margin-top: 2px;">Apenas professores, coordenadores e diretores</p>
+            </div>
+            
+            <form id="id-form-login-mural">
+                <div class="input-grupo">
