@@ -3,197 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mural de Avisos</title>
+    <title>Login - Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos da nova tela de boas-vindas */
+        .boas-vindas-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .boas-vindas-wrapper.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .boas-vindas-wrapper h1 {
+            font-size: 2.8rem;
+            margin: 15px 0 10px 0;
+            font-weight: 700;
+        }
+        .boas-vindas-wrapper p {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            max-width: 450px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-laranja {
+            background-color: #ff9200;
+            color: white;
+            border: none;
+            padding: 14px 45px;
+            border-radius: 30px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 146, 0, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            width: 100%;
+            
+            /* TAMANHO UNIFORME E REDUZIDO */
+            max-width: 250px; 
+        }
+        .btn-laranja:hover {
+            background-color: #e08100;
+            transform: translateY(-2px);
+        }
+        .icon-megafone {
+            font-size: 4rem;
+        }
+
+        .hidden { display: none !important; }
+        .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
+        .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
+        .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
+        .link-recuperar:hover { text-decoration: underline; }
+        .campo-senha-container { position: relative; width: 100%; }
+        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
+    </style>
 </head>
 <body>
-    <div class="container container-mural" id="conteudo-mural">
-        
-        <div class="controle-superior">
-            <button id="btn-fullscreen" class="btn-tv" onclick="alternarTelaCheia()">📺 Modo TV / Tela Cheia</button>
-            <a href="/auth/logout" class="logout-lnk">Sair</a>
-        </div>
 
-        <div class="form-header">
-            <h2>Mural de Avisos</h2>
-        </div>
-        
-        <div class="user-info">
-            Olá, <b id="nome-usuario">...</b> (<span id="cargo-usuario">...</span>)
-        </div>
+    <!-- 1. TELA DE BOAS-VINDAS -->
+    <div id="tela-boas-vindas" class="boas-vindas-wrapper">
+        <div class="icon-megafone">📢</div>
+        <h1>Mural de Avisos</h1>
+        <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
+        <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
+    </div>
 
-        <!-- Formulário visível apenas para Funcionários -->
-        <div id="area-postagem" class="hidden">
-            <h3>Publicar Novo Aviso</h3>
-            <form action="/api/avisos" method="POST" enctype="multipart/form-data">
-                <input type="text" name="titulo" placeholder="Título do Aviso" required>
-                <textarea name="conteudo" placeholder="Conteúdo do aviso..." rows="4" required></textarea>
-                <label style="font-weight: 600; font-size: 14px; color: #475569;">Imagem de Referência (Opcional):</label>
-                <input type="file" name="imagem" accept="image/*">
-                <button type="submit">Publicar Aviso</button>
+    <!-- 2. BLOCO DE LOGIN -->
+    <div class="container">
+        <div id="bloco-login">
+            <div class="form-header">
+                <h2>Mural Escolar - Login</h2>
+            </div>
+            <div id="mensagem-erro" class="erro-alerta hidden"></div>
+            <form id="form-login">
+                <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
+                <div class="campo-senha-container">
+                    <input type="password" id="senha" placeholder="Sua Senha" required>
+                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
+                </div>
+                <span class="link-recuperar" onclick="abrirRecuperacao()">Esqueci minha senha</span>
+                <button type="submit">Entrar</button>
             </form>
+            <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
         </div>
 
-        <hr id="linha-separadora" style="border: 0; border-top: 2px solid #e2e8f0; margin: 30px 0;">
-        
-        <!-- BARRA DE PESQUISA (Oculta por padrão via ID, controlada pelo JS) -->
-        <div class="search-container hidden" id="area-busca-alunos">
-            <h3>Buscar Avisos</h3>
-            <input type="text" id="campo-busca" placeholder="🔍 Buscar avisos por título ou conteúdo..." onkeyup="filtrarAvisos()">
+        <!-- BLOCO ESQUECI A SENHA -->
+        <div id="bloco-recuperar" class="hidden">
+            <div class="form-header">
+                <h2>Configurar Nova Senha</h2>
+            </div>
+            <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
+            <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
+            
+            <form id="form-redefinir">
+                <input type="text" id="rec-identificador" placeholder="Nome de Usuário ou E-mail da sua conta" required>
+                <div class="campo-senha-container">
+                    <input type="password" id="rec-nova-senha" placeholder="Digite a Nova Senha (Mínimo 6 dígitos)" minlength="6" required>
+                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('rec-nova-senha', this)">👁️</button>
+                </div>
+                <button type="submit">Atualizar Senha</button>
+            </form>
+            <p><a href="#" onclick="fecharRecuperacao()">Voltar para o Login</a></p>
         </div>
-
-        <h3 id="titulo-lista-avisos">Avisos Recentes</h3>
-        <div id="lista-avisos"></div>
     </div>
 
     <script>
-        let usuarioAtual = null;
-        let todosAvisos = []; 
-        let ultimoIdAviso = 0; // Controla qual foi o último aviso visto para disparar notificação
-        let primeiraCarga = true;
+        // Remove /login da barra de endereço assim que o site carrega
+        window.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState({}, '', '/');
+        });
 
-        async function carregarUsuario() {
-            const res = await fetch('/api/usuario-atual');
-            if (!res.ok) {
-                window.location.href = '/login'; 
-                return;
-            }
-            usuarioAtual = await res.json();
-            document.getElementById('nome-usuario').innerText = usuarioAtual.nome;
-            document.getElementById('cargo-usuario').innerText = usuarioAtual.cargo;
+        function entrarNoSistema() {
+            document.getElementById('tela-boas-vindas').classList.add('hidden');
+        }
 
-            // Regra: Mostra formulário se for funcionário, mostra busca se for Aluno/Responsável
-            if (['professor', 'coordenador', 'direcao'].includes(usuarioAtual.cargo)) {
-                document.getElementById('area-postagem').classList.remove('hidden');
+        function alternarVisibilidade(idCampo, botao) {
+            const campo = document.getElementById(idCampo);
+            if (campo.type === "password") {
+                campo.type = "text";
+                botao.innerText = "🙈";
             } else {
-                document.getElementById('area-busca-alunos').classList.remove('hidden');
-                solicitarPermissaoNotificacao(); // Pede para o aluno ativar notificações
-            }
-            
-            await carregarAvisos();
-            // Verifica se há novos avisos no servidor a cada 10 segundos
-            setInterval(checarNovosAvisos, 10000);
-        }
-
-        async function carregarAvisos() {
-            const res = await fetch('/api/avisos');
-            todosAvisos = await res.json(); 
-            
-            if (todosAvisos.length > 0 && primeiraCarga) {
-                ultimoIdAviso = todosAvisos[0].id; // Salva o ID do aviso mais recente do topo
-                primeiraCarga = false;
-            }
-            
-            renderizarAvisos(todosAvisos);
-        }
-
-        // Função em segundo plano que roda na TV ou no celular do Aluno buscando novidades
-        async function checarNovosAvisos() {
-            const res = await fetch('/api/avisos');
-            const novosAvisos = await res.json();
-            
-            if (novosAvisos.length > 0) {
-                // Se o ID do topo for maior do que o último guardado, tem publicação nova!
-                if (novosAvisos[0].id > ultimoIdAviso) {
-                    ultimoIdAviso = novosAvisos[0].id;
-                    todosAvisos = novosAvisos;
-                    renderizarAvisos(todosAvisos);
-                    
-                    // Só dispara notificação se for Aluno ou Responsável
-                    if (['aluno', 'responsavel'].includes(usuarioAtual.cargo)) {
-                        dispararNotificacao(novosAvisos[0].titulo, novosAvisos[0].conteudo);
-                    }
-                }
+                campo.type = "password";
+                botao.innerText = "👁️";
             }
         }
 
-        // SISTEMA DE NOTIFICAÇÃO PUSH NATIVA
-        function solicitarPermissaoNotificacao() {
-            if ("Notification" in window) {
-                Notification.requestPermission();
-            }
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identificador = document.getElementById('identificador').value;
+            const senha = document.getElementById('senha').value;
+            const erroDiv = document.getElementById('mensagem-erro');
+            erroDiv.classList.add('hidden');
+
+            const res = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identificador, senha })
+            });
+            const dados = await res.json();
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
+            else { window.location.href = '/mural'; }
+        });
+
+        function abrirRecuperacao() {
+            document.getElementById('bloco-login').classList.add('hidden');
+            document.getElementById('bloco-recuperar').classList.remove('hidden');
+            document.getElementById('mensagem-erro-rec').classList.add('hidden');
+            document.getElementById('mensagem-suc-rec').classList.add('hidden');
+            document.getElementById('form-redefinir').classList.remove('hidden');
         }
 
-        function dispararNotificacao(titulo, conteudo) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("📢 Novo Aviso Escolar!", {
-                    body: `${titulo}: ${conteudo.substring(0, 50)}...`,
-                    icon: "/uploads/logo.png" // Opcional: ícone da notificação
+        function fecharRecuperacao() {
+            document.getElementById('bloco-recuperar').classList.add('hidden');
+            document.getElementById('bloco-login').classList.remove('hidden');
+            document.getElementById('mensagem-erro').classList.add('hidden');
+        }
+
+        document.getElementById('form-redefinir').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const identificador = document.getElementById('rec-identificador').value;
+            const novaSenha = document.getElementById('rec-nova-senha').value;
+            const erroDiv = document.getElementById('mensagem-erro-rec');
+            const sucDiv = document.getElementById('mensagem-suc-rec');
+            
+            erroDiv.classList.add('hidden');
+            sucDiv.classList.add('hidden');
+
+            try {
+                const res = await fetch('/auth/recuperar-senha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identificador, novaSenha })
                 });
-            }
-        }
+                const dados = await res.json();
 
-        function renderizarAvisos(listaParaExibir) {
-            const lista = document.getElementById('lista-avisos');
-            lista.innerHTML = '';
-
-            if (listaParaExibir.length === 0) {
-                lista.innerHTML = '<p style="text-align: center; color: #64748b; margin-top: 20px;">Nenhum aviso encontrado.</p>';
-                return;
-            }
-
-            listaParaExibir.forEach(aviso => {
-                const card = document.createElement('div');
-                card.className = 'aviso-card';
-                
-                let botaoApagar = '';
-                if (['professor', 'coordenador', 'direcao'].includes(usuarioAtual.cargo)) {
-                    botaoApagar = `<button class="btn-delete" onclick="apagarAviso(${aviso.id})">Apagar</button>`;
+                if (!res.ok) { 
+                    erroDiv.innerText = dados.erro; 
+                    erroDiv.classList.remove('hidden'); 
+                } else {
+                    sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
+                    sucDiv.classList.remove('hidden');
+                    document.getElementById('form-redefinir').classList.add('hidden');
                 }
-
-                let tagImagem = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
-
-                card.innerHTML = `
-                    ${botaoApagar}
-                    <h4>${aviso.titulo}</h4>
-                    <p>${aviso.conteudo}</p>
-                    ${tagImagem}
-                    <small>Postado por: ${aviso.autor} em ${aviso.data}</small>
-                `;
-                lista.appendChild(card);
-            });
-        }
-
-        function filtrarAvisos() {
-            const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
-            const avisosFiltrados = todosAvisos.filter(aviso => {
-                return aviso.titulo.toLowerCase().includes(termoBusca) || aviso.conteudo.toLowerCase().includes(termoBusca);
-            });
-            renderizarAvisos(avisosFiltrados);
-        }
-
-        async function apagarAviso(id) {
-            await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
-            carregarAvisos(); 
-        }
-
-        function alternarTelaCheia() {
-            const muralElemento = document.getElementById('conteudo-mural');
-            if (!document.fullscreenElement) {
-                if (muralElemento.requestFullscreen) muralElemento.requestFullscreen();
-                else if (muralElemento.webkitRequestFullscreen) muralElemento.webkitRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
+            } catch (err) {
+                erroDiv.innerText = "Erro ao conectar com o servidor.";
+                erroDiv.classList.remove('hidden');
             }
-        }
-
-        document.addEventListener('fullscreenchange', gerenciarEstiloFullscreen);
-        document.addEventListener('webkitfullscreenchange', gerenciarEstiloFullscreen);
-
-        function gerenciarEstiloFullscreen() {
-            const muralElemento = document.getElementById('conteudo-mural');
-            const btnTv = document.getElementById('btn-fullscreen');
-
-            if (document.fullscreenElement) {
-                muralElemento.classList.add('modo-totem-ativo');
-                btnTv.innerText = "❌ Sair do Modo TV";
-            } else {
-                muralElemento.classList.remove('modo-totem-ativo');
-                btnTv.innerText = "📺 Modo TV / Tela Cheia";
-            }
-        }
-
-        carregarUsuario();
+        });
     </script>
 </body>
 </html>
