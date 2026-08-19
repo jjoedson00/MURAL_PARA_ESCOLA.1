@@ -2,211 +2,107 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - Mural Escolar</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural Digital Escolar</title>
     <style>
-        /* Estilos da nova tela de boas-vindas */
-        .boas-vindas-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .boas-vindas-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .boas-vindas-wrapper h1 {
-            font-size: 2.8rem;
-            margin: 15px 0 10px 0;
-            font-weight: 700;
-        }
-        .boas-vindas-wrapper p {
-            font-size: 1.1rem;
-            color: #e2e8f0;
-            max-width: 450px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        .btn-laranja {
-            background-color: #ff9200;
-            color: white;
-            border: none;
-            padding: 14px 45px;
-            border-radius: 30px;
-            font-size: 1.15rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 146, 0, 0.4);
-            transition: transform 0.2s, background-color 0.2s;
-            width: 100%;
-            
-            /* TAMANHO UNIFORME E REDUZIDO */
-            max-width: 250px; 
-        }
-        .btn-laranja:hover {
-            background-color: #e08100;
-            transform: translateY(-2px);
-        }
-        .icon-megafone {
-            font-size: 4rem;
-        }
-
-        .hidden { display: none !important; }
-        .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
-        .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
-        .link-recuperar { display: block; text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 13px; color: #2563eb; cursor: pointer; text-decoration: none; }
-        .link-recuperar:hover { text-decoration: underline; }
-        .campo-senha-container { position: relative; width: 100%; }
-        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; width: auto; padding: 0; box-shadow: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; padding: 24px; }
+        .tela-mural { width: 100%; max-width: 1400px; margin: 0 auto; }
+        .topo-mural { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 24px; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+        .barra-pesquisa { width: 100%; max-width: 400px; padding: 12px 18px; border: 1px solid #475569; border-radius: 14px; background-color: #1e293b; color: #f8fafc; outline: none; font-size: 0.95rem; }
+        .barra-pesquisa:focus { border-color: #38bdf8; }
+        .btn-restrita { background-color: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 12px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 0.875rem; }
+        .btn-restrita:hover { background-color: #334155; }
+        .btn-voltar { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
+        .btn-voltar:hover { color: #f8fafc; }
+        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; width: 100%; }
+        .card-aviso { background-color: #1e293b; border: 1px solid #334155; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .card-imagem { width: 100%; height: 180px; object-fit: cover; background-color: #0f172a; }
+        .card-corpo { padding: 20px; flex-grow: 1; }
+        .card-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #ffffff; }
+        .card-conteudo { font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; white-space: pre-wrap; }
+        .card-data { padding: 16px 20px; font-size: 0.75rem; color: #38bdf8; font-weight: 600; border-top: 1px solid rgba(51, 65, 85, 0.5); background-color: #1e293b; }
+        .card-vazio { grid-column: 1 / -1; text-align: center; padding: 80px 24px; background-color: rgba(30, 41, 59, 0.5); border-radius: 16px; border: 2px dashed #334155; }
     </style>
 </head>
 <body>
-
-    <!-- 1. TELA DE BOAS-VINDAS -->
-    <div id="tela-boas-vindas" class="boas-vindas-wrapper">
-        <div class="icon-megafone">📢</div>
-        <h1>Mural de Avisos</h1>
-        <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-        <button type="button" class="btn-laranja" onclick="entrarNoSistema()">Acessar Mural</button>
-    </div>
-
-    <!-- 2. BLOCO DE LOGIN -->
-    <div class="container">
-        <div id="bloco-login">
-            <div class="form-header">
-                <h2>Mural Escolar - Login</h2>
+    <div class="tela-mural">
+        <header class="topo-mural">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800;">🏫 Mural Digital Escolar</h1>
+                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Monitores e Celulares</p>
             </div>
-            <div id="mensagem-erro" class="erro-alerta hidden"></div>
-            <form id="form-login">
-                <input type="text" id="identificador" placeholder="Nome de Usuário ou E-mail" required>
-                <div class="campo-senha-container">
-                    <input type="password" id="senha" placeholder="Sua Senha" required>
-                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('senha', this)">👁️</button>
-                </div>
-                <span class="link-recuperar" onclick="abrirRecuperacao()">Esqueci minha senha</span>
-                <button type="submit">Entrar</button>
-            </form>
-            <p>Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
-        </div>
-
-        <!-- BLOCO ESQUECI A SENHA -->
-        <div id="bloco-recuperar" class="hidden">
-            <div class="form-header">
-                <h2>Configurar Nova Senha</h2>
-            </div>
-            <div id="mensagem-erro-rec" class="erro-alerta hidden"></div>
-            <div id="mensagem-suc-rec" class="sucesso-alerta hidden"></div>
             
-            <form id="form-redefinir">
-                <input type="text" id="rec-identificador" placeholder="Nome de Usuário ou E-mail da sua conta" required>
-                <div class="campo-senha-container">
-                    <input type="password" id="rec-nova-senha" placeholder="Digite a Nova Senha (Mínimo 6 dígitos)" minlength="6" required>
-                    <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('rec-nova-senha', this)">👁️</button>
+            <!-- Barra de Busca Inteligente -->
+            <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso específico..." oninput="filtrarAvisosNaTela()">
+
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="login.html" class="btn-restrita">⚙️ Área Restrita</a>
+                <a href="index.html" class="btn-voltar">Voltar ↩</a>
+            </div>
+        </header>
+
+        <main>
+            <div id="id-mural-container" class="grid-mural">
+                <div class="card-vazio">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
+                    <p style="color: #94a3b8; font-size: 1.125rem;">Carregando os avisos escolares...</p>
                 </div>
-                <button type="submit">Atualizar Senha</button>
-            </form>
-            <p><a href="#" onclick="fecharRecuperacao()">Voltar para o Login</a></p>
-        </div>
+            </div>
+        </main>
     </div>
 
     <script>
-        // Remove /login da barra de endereço assim que o site carrega
-        window.addEventListener('DOMContentLoaded', () => {
-            window.history.pushState({}, '', '/');
-        });
+        const containerMural = document.getElementById('id-mural-container');
+        let todosOsAvisosCache = [];
 
-        function entrarNoSistema() {
-            document.getElementById('tela-boas-vindas').classList.add('hidden');
-        }
-
-        function alternarVisibilidade(idCampo, botao) {
-            const campo = document.getElementById(idCampo);
-            if (campo.type === "password") {
-                campo.type = "text";
-                botao.innerText = "🙈";
-            } else {
-                campo.type = "password";
-                botao.innerText = "👁️";
-            }
-        }
-
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identificador = document.getElementById('identificador').value;
-            const senha = document.getElementById('senha').value;
-            const erroDiv = document.getElementById('mensagem-erro');
-            erroDiv.classList.add('hidden');
-
-            const res = await fetch('/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identificador, senha })
-            });
-            const dados = await res.json();
-            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('hidden'); }
-            else { window.location.href = '/mural'; }
-        });
-
-        function abrirRecuperacao() {
-            document.getElementById('bloco-login').classList.add('hidden');
-            document.getElementById('bloco-recuperar').classList.remove('hidden');
-            document.getElementById('mensagem-erro-rec').classList.add('hidden');
-            document.getElementById('mensagem-suc-rec').classList.add('hidden');
-            document.getElementById('form-redefinir').classList.remove('hidden');
-        }
-
-        function fecharRecuperacao() {
-            document.getElementById('bloco-recuperar').classList.add('hidden');
-            document.getElementById('bloco-login').classList.remove('hidden');
-            document.getElementById('mensagem-erro').classList.add('hidden');
-        }
-
-        document.getElementById('form-redefinir').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identificador = document.getElementById('rec-identificador').value;
-            const novaSenha = document.getElementById('rec-nova-senha').value;
-            const erroDiv = document.getElementById('mensagem-erro-rec');
-            const sucDiv = document.getElementById('mensagem-suc-rec');
-            
-            erroDiv.classList.add('hidden');
-            sucDiv.classList.add('hidden');
-
+        async function buscarAvisosDoBanco() {
             try {
-                const res = await fetch('/auth/recuperar-senha', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identificador, novaSenha })
-                });
-                const dados = await res.json();
-
-                if (!res.ok) { 
-                    erroDiv.innerText = dados.erro; 
-                    erroDiv.classList.remove('hidden'); 
-                } else {
-                    sucDiv.innerText = "Senha redefinida com sucesso! Faça login.";
-                    sucDiv.classList.remove('hidden');
-                    document.getElementById('form-redefinir').classList.add('hidden');
-                }
+                const res = await fetch('/api/avisos');
+                todosOsAvisosCache = await res.json();
+                renderizarAvisos(todosOsAvisosCache);
             } catch (err) {
-                erroDiv.innerText = "Erro ao conectar com o servidor.";
-                erroDiv.classList.remove('hidden');
+                console.log("Banco offline.");
             }
-        });
+        }
+
+        function renderizarAvisos(lista) {
+            containerMural.innerHTML = '';
+            if (!lista || lista.length === 0) {
+                containerMural.innerHTML = `
+                    <div class="card-vazio">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
+                        <p style="color: #94a3b8; font-size: 1.125rem;">Nenhum aviso ativo no momento.</p>
+                    </div>`;
+                return;
+            }
+            lista.forEach(aviso => {
+                const dataStr = new Date(aviso.data_criacao).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                containerMural.innerHTML += `
+                    <div class="card-aviso">
+                        ${aviso.imagem ? `<img src="${aviso.imagem}" class="card-imagem" alt="Referência">` : ''}
+                        <div class="card-corpo">
+                            <h3 class="card-titulo">${aviso.titulo}</h3>
+                            <p class="card-conteudo">${aviso.conteudo}</p>
+                        </div>
+                        <div class="card-data">🕒 Publicado em: ${dataStr}</div>
+                    </div>`;
+            });
+        }
+
+        function filtrarAvisosNaTela() {
+            const termoBusca = document.getElementById('campo-busca').value.toLowerCase().trim();
+            const filtrados = todosOsAvisosCache.filter(aviso => {
+                return aviso.titulo.toLowerCase().includes(termoBusca) || aviso.conteudo.toLowerCase().includes(termoBusca);
+            });
+            renderizarAvisos(filtrados);
+        }
+
+        buscarAvisosDoBanco();
+        setInterval(() => {
+            const pesquisando = document.getElementById('campo-busca').value.trim().length > 0;
+            if (!pesquisando) buscarAvisosDoBanco();
+        }, 30000);
     </script>
 </body>
 </html>
