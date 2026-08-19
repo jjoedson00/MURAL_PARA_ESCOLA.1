@@ -53,7 +53,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// === CORREÇÃO DE SINTAXE SQL EM UMA ÚNICA LINHA (Evita unrecognized token) ===
+// === CONFIGURAÇÃO DO SQLITE EM LINHA RETA (Evita unrecognized token) ===
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT UNIQUE, email TEXT UNIQUE, senha TEXT, cargo TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS avisos (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, conteudo TEXT, imagem TEXT, autor TEXT, data TEXT)");
@@ -95,7 +95,7 @@ app.post('/auth/cadastro', async (req, res) => {
     );
 });
 
-// ROTA DE LOGIN: Aceita autenticação por e-mail ou nome do usuário de forma híbrida
+// ROTA DE LOGIN: Autenticação por e-mail ou nome do usuário híbrida
 app.post('/auth/login', (req, res) => {
     const { identificador, senha } = req.body; 
     
@@ -139,7 +139,7 @@ app.get('/api/usuario-atual', (req, res) => {
     res.json(req.session.usuario);
 });
 
-// Destruição instantânea de sessão e expiração dos vestígios de cookies
+// Destruição de sessão e expiração de cookies
 app.get('/auth/logout', (req, res) => {
     req.session.destroy(() => {
         res.clearCookie('connect.sid'); 
@@ -154,7 +154,7 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
-// Endpoint de gravação de comunicados com tratamento de uploads opcional
+// Endpoint de gravação de comunicados com uploads opcionais
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
         return res.status(403).send('Acesso negado.');
@@ -170,7 +170,7 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     );
 });
 
-// Remoção direta de publicações acionada por gestores cadastrados
+// Remoção de publicações acionada por gestores cadastrados
 app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuario || ['aluno', 'responsavel'].includes(req.session.usuario.cargo)) {
         return res.status(403).json({ erro: 'Acesso negado.' });
@@ -180,7 +180,7 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// === CORREÇÃO DE ROTAS CORINGA DO EXPRESS V5 (Utiliza parâmetro nomeado splat) ===
+// === ADAPTAÇÃO PARA EXPRESS V5: Parâmetro nomeado splat ===
 app.get('/*splat', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
