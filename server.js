@@ -5,8 +5,22 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session); 
+const fs = require('fs'); // Módulo nativo para manipulação de pastas
 
 const app = express();
+
+// === CRIAÇÃO AUTOMÁTICA DE PASTAS OBRIGATÓRIAS PARA O RENDER ===
+const pastasObrigatorias = [
+    path.join(__dirname, 'sessions'),
+    path.join(__dirname, 'public'),
+    path.join(__dirname, 'public', 'uploads')
+];
+pastasObrigatorias.forEach(pasta => {
+    if (!fs.existsSync(pasta)) {
+        fs.mkdirSync(pasta, { recursive: true });
+    }
+});
+
 const db = new sqlite3.Database('./database.db');
 
 // Configurações Básicas do Express
@@ -196,5 +210,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });
-
-
