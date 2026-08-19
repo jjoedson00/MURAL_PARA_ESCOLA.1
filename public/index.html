@@ -4,21 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mural de Avisos Escolares</title>
-    <!-- Tailwind CSS para deixar o layout moderno, vivo e responsivo -->
-    <script src="https://tailwindcss.com"></script>
     
     <style>
-        /* Base de estilos e animações */
-        body {
+        /* CSS Nativo Corrigido - Funciona Offline e sem bloqueios */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
             background-color: #0f172a;
             color: #f8fafc;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Animação suave para as transições de tela */
+        /* Classes de utilidade para controle das telas */
+        .flex-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         .fade-in {
             animation: fadeInEffect 0.4s ease-out forwards;
         }
@@ -28,158 +42,278 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Efeito de pulso sutil no ícone para dar mais vida */
-        .pulse-soft {
-            animation: pulseSoftEffect 3s infinite ease-in-out;
+        /* Estilo da Tela Inicial */
+        .tela-inicial {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 50;
+            background: linear-gradient(135deg, #1d4ed8, #1e1b4b);
+            padding: 24px;
+            text-align: center;
         }
 
-        @keyframes pulseSoftEffect {
-            0%, 100% { transform: scale(1) translateY(0); }
-            50% { transform: scale(1.05) translateY(-5px); }
+        .titulo-boas-vindas {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: -0.05em;
+        }
+
+        .subtitulo-boas-vindas {
+            color: #dbeafe;
+            font-size: 1rem;
+            max-width: 400px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* O famoso Botão Laranja */
+        .btn-laranja {
+            background-color: #f97316;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.125rem;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+            transition: all 0.3s transform;
+        }
+
+        .btn-laranja:hover {
+            background-color: #ea580c;
+            box-shadow: 0 12px 30px rgba(249, 115, 22, 0.6);
+        }
+
+        .btn-laranja:active {
+            transform: scale(0.95);
+        }
+
+        /* Estilo da Tela do Mural */
+        .tela-mural {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            z-index: 40;
+        }
+
+        .topo-mural {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-b: 1px solid #334155;
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .btn-restrita {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-restrita:hover {
+            background-color: #334155;
+        }
+
+        .btn-voltar {
+            background-color: transparent;
+            color: #94a3b8;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 0.875rem;
+        }
+
+        .btn-voltar:hover {
+            color: #f1f5f9;
+        }
+
+        /* Grid de Avisos */
+        .grid-mural {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .card-vazio {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 24px;
+            background-color: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            border: 2px dashed #334155;
+        }
+
+        /* Estilo da Tela de Login */
+        .tela-login {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 50;
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 16px;
+        }
+
+        .box-login {
+            background-color: #ffffff;
+            padding: 32px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            color: #0f172a;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .input-grupo {
+            margin-bottom: 20px;
+        }
+
+        .input-grupo label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .input-grupo input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            background-color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .input-grupo input:focus {
+            outline: 2px solid #2563eb;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-enviar:hover {
+            background-color: #1d4ed8;
         }
     </style>
 </head>
-<body class="flex flex-col justify-center items-center overflow-x-hidden">
+<body>
 
     <!-- ==================== 1. TELA INICIAL (BOAS-VINDAS) ==================== -->
-    <div id="id-tela-inicial" class="fade-in fixed inset-0 w-screen h-screen z-50 flex flex-col justify-center items-center bg-gradient-to-br from-blue-700 to-indigo-950 p-6 text-center">
-        <!-- Ícone Animado -->
-        <div class="pulse-soft text-7xl md:text-8xl mb-6 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]">
-            📢
-        </div>
-        
-        <!-- Título Principal -->
-        <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white mb-3 drop-shadow-md">
-            Mural de Avisos
-        </h1>
-        
-        <!-- Subtítulo descritivo -->
-        <p class="text-blue-100 text-sm md:text-lg max-w-md mb-8 font-medium opacity-90 leading-relaxed">
+    <div id="id-tela-inicial" class="tela-inicial flex-center fade-in">
+        <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
+        <h1 class="titulo-boas-vindas">Mural de Avisos</h1>
+        <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        
-        <!-- BOTÃO LARANJA CORRIGIDO (O clique agora ativa a função JavaScript) -->
-        <button type="button" onclick="mostrarMural()" class="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold text-lg py-4 px-10 rounded-full shadow-[0_10px_25px_rgba(249,115,22,0.4)] hover:shadow-[0_12px_30px_rgba(249,115,22,0.6)] transition-all duration-300 transform">
+        <button type="button" onclick="mostrarMural()" class="btn-laranja">
             Acessar Mural
         </button>
     </div>
 
 
     <!-- ==================== 2. TELA DO MURAL PÚBLICO (Avisos) ==================== -->
-    <!-- Começa oculta com 'hidden' para não bloquear o clique da tela inicial -->
-    <div id="id-tela-mural" class="hidden fade-in w-full min-h-screen flex-col items-center bg-slate-950 p-4 md:p-8 z-40">
-        
-        <!-- Topo do Mural -->
-        <header class="w-full max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-slate-800 pb-6 mb-8">
-            <div class="text-center sm:text-left">
-                <h1 class="text-2xl md:text-4xl font-extrabold text-white flex items-center justify-center sm:justify-start gap-3">
-                    <span>🏫</span> Mural Digital Escolar
-                </h1>
-                <p class="text-slate-400 text-sm mt-1">Quadros atualizados automaticamente para monitores e celulares</p>
+    <div id="id-tela-mural" class="tela-mural hidden fade-in">
+        <header class="topo-mural">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; color: white;">🏫 Mural Digital Escolar</h1>
+                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Quadros atualizados automaticamente para monitores e celulares</p>
             </div>
-            
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
-                <!-- Botão para abrir o Login Administrativo -->
-                <button onclick="mostrarLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm px-5 py-2.5 rounded-xl border border-slate-700 transition">
-                    ⚙️ Área Restrita
-                </button>
-                
-                <!-- Botão para voltar à tela azul de boas-vindas -->
-                <button onclick="voltarParaInicial()" class="bg-slate-900 hover:bg-slate-800 text-slate-400 text-sm px-4 py-2.5 rounded-xl transition">
-                    Voltar ↩
-                </button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
+                <button onclick="voltarParaInicial()" class="btn-voltar">Voltar ↩</button>
             </div>
         </header>
 
-        <!-- Container Grid Onde os Avisos Vão Ficar -->
-        <main class="w-full max-w-7xl grow">
-            <div id="id-mural-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Estado vazio inicial padrão (Exemplo demonstrativo vivo) -->
-                <div class="col-span-full text-center py-20 bg-slate-900/50 rounded-2xl border border-dashed border-slate-800">
-                    <span class="text-5xl block mb-4">📭</span>
-                    <p class="text-slate-400 text-lg font-medium">Buscando comunicados no banco de dados...</p>
+        <main>
+            <div id="id-mural-container" class="grid-mural">
+                <div class="card-vazio">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
+                    <p style="color: #94a3b8; font-size: 1.125rem; font-weight: 500;">Buscando comunicados no banco de dados...</p>
                 </div>
             </div>
         </main>
-        
-        <!-- Indicador de funcionamento para Monitores de TV/Escola -->
-        <footer class="mt-12 text-xs text-slate-600 font-mono" id="id-relogio-status">
-            Sincronizado em tempo real
-        </footer>
     </div>
 
 
     <!-- ==================== 3. TELA DE LOGIN (Administração) ==================== -->
-    <!-- Começa oculta com 'hidden' -->
-    <div id="id-tela-login" class="hidden fade-in fixed inset-0 w-screen h-screen z-50 flex flex-col justify-center items-center bg-slate-900/95 backdrop-blur-md p-4">
-        
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md text-slate-800 border border-slate-100">
-            <div class="text-center mb-6">
-                <span class="text-4xl">🔐</span>
-                <h2 class="text-2xl font-black text-slate-900 mt-2">Acesso Restrito</h2>
-                <p class="text-slate-400 text-sm">Insira suas credenciais para publicar ou remover avisos</p>
+    <div id="id-tela-login" class="tela-login flex-center hidden fade-in">
+        <div class="box-login">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <span style="font-size: 2.5rem;">🔐</span>
+                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 8px;">Acesso Restrito</h2>
+                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Insira suas credenciais administrativas</p>
             </div>
             
-            <!-- Formulário administrativo -->
-            <form id="id-form-login-mural" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Nome de Usuário</label>
-                    <input type="text" required placeholder="Ex: admin" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+            <form id="id-form-login-mural">
+                <div class="input-grupo">
+                    <label>Nome de Usuário</label>
+                    <input type="text" required placeholder="Ex: admin">
                 </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Senha</label>
-                    <input type="password" required placeholder="••••••••" class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                <div class="input-grupo">
+                    <label>Senha</label>
+                    <input type="password" required placeholder="••••••••">
                 </div>
-                
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3.5 rounded-xl transition duration-200 shadow-lg shadow-blue-600/20">
-                    Entrar no Gerenciador
-                </button>
+                <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
             </form>
             
-            <!-- Botão de cancelamento/retorno -->
-            <button onclick="mostrarMural()" class="w-full text-center text-sm font-semibold text-slate-400 hover:text-slate-600 mt-5 transition">
-                ← Cancelar e Voltar ao Mural
+            <button onclick="mostrarMural()" style="width:100%; background:none; border:none; color:#64748b; font-size:0.875rem; margin-top:20px; cursor:pointer; font-weight:600;">
+                ← Cancelar e Voltar
             </button>
         </div>
     </div>
 
-
     <!-- ==================== SCRIPT DE CONTROLE INTERATIVO ==================== -->
     <script>
-        // Elementos das telas guardados em variáveis
         const telaInicial = document.getElementById('id-tela-inicial');
         const telaMural = document.getElementById('id-tela-mural');
         const telaLogin = document.getElementById('id-tela-login');
 
-        // [AÇÃO] Exibe a tela de avisos (Mural público)
         function mostrarMural() {
-            telaInicial.style.setProperty('display', 'none', 'important');
-            telaLogin.style.setProperty('display', 'none', 'important');
-            telaMural.style.setProperty('display', 'flex', 'important');
-            
-            // Caso sua função de buscar dados do banco de dados (API) esteja pronta, remova as duas barras abaixo:
-            // carregarDadosDoBanco();
+            telaInicial.classList.add('hidden');
+            telaLogin.classList.add('hidden');
+            telaMural.classList.remove('hidden');
         }
 
-        // [AÇÃO] Exibe o painel flutuante de login administrativo
         function mostrarLogin() {
-            telaLogin.style.setProperty('display', 'flex', 'important');
+            telaLogin.classList.remove('hidden');
         }
 
-        // [AÇÃO] Volta o sistema para o estágio zero (Mensagem de entrada)
         function voltarParaInicial() {
-            telaMural.style.setProperty('display', 'none', 'important');
-            telaLogin.style.setProperty('display', 'none', 'important');
-            telaInicial.style.setProperty('display', 'flex', 'important');
+            telaMural.classLight = telaMural.classList.add('hidden');
+            telaLogin.classList.add('hidden');
+            telaInicial.classList.remove('hidden');
         }
 
-        // Código temporário auxiliar para o formulário de login não dar recarga na página de teste
         document.getElementById('id-form-login-mural').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Conectando ao sistema back-end com o banco de dados...');
-            // Aqui entra a rota fetch('/api/login') configurada no seu server.js
+            alert('Conectando ao sistema back-end...');
         });
     </script>
-
 </body>
-</html>
