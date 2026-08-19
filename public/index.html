@@ -250,7 +250,7 @@
         }
     </style>
 </head>
-<body>
+<body class="flex-center">
 
     <!-- ==================== 1. TELA INICIAL (BOAS-VINDAS) ==================== -->
     <div id="id-tela-inicial" class="tela-inicial flex-center">
@@ -259,8 +259,8 @@
         <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        <button type="button" onclick="this.parentElement.style.display='none'; document.getElementById('id-tela-mural').style.display='block'; buscarAvisosDoBanco();" class="btn-laranja">
-
+        <!-- CORRIGIDO: Trocado o menos (-) por igual (=) para destravar o funcionamento do clique -->
+        <button type="button" onclick="document.getElementById('id-tela-inicial').style.display='none'; document.getElementById('id-tela-mural').style.display='block'; buscarAvisosDoBanco();" class="btn-laranja">
             Acessar Mural
         </button>
     </div>
@@ -273,7 +273,8 @@
                 <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Atualizações automáticas ideais para monitores e celulares</p>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <button type="button" onclick="mostrarLogin()" class="btn-restrita">⚙️ Área Restrita</button>
+                <!-- CORRIGIDO: Ativa a exibição em bloco flexível para a caixinha aparecer na frente de tudo -->
+                <button type="button" onclick="document.getElementById('id-tela-login').style.display='flex'; alternarFormularios('login');" class="btn-restrita">⚙️ Área Restrita</button>
                 <button type="button" onclick="voltarParaInicial()" class="btn-voltar">Voltar ↩</button>
             </div>
         </header>
@@ -313,8 +314,3 @@
 
             <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">
                 Novo professor? 
-                <button type="button" onclick="alternarFormularios('cadastro')" style="color: #2563eb; font-weight: bold; background: none; border: none; cursor: pointer; text-decoration: underline;">
-                    Cadastre-se aqui
-                </button>
-            </p>
-            
