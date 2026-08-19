@@ -6,18 +6,21 @@
     <title>Mural Escolar Digital</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Controle de exibição das telas */
+        /* Controle estrito de exibição de telas do SPA */
         .tela { display: none !important; }
         .tela.ativa { display: flex !important; flex-direction: column; }
         
-        /* Estilos da tela de boas-vindas */
+        /* Estilos específicos da tela de boas-vindas */
         .boas-vindas-wrapper {
             align-items: center; justify-content: center; min-height: 100vh;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;
             text-align: center; padding: 20px; box-sizing: border-box;
+            position: absolute; top: 0; left: 0; width: 100%; z-index: 10;
         }
         .boas-vindas-wrapper h1 { font-size: 2.8rem; margin: 15px 0 10px 0; font-weight: 700; }
         .boas-vindas-wrapper p { font-size: 1.1rem; color: #e2e8f0; max-width: 450px; margin-bottom: 30px; }
+        
+        /* Botão Laranja Uniforme e Reduzido */
         .btn-laranja {
             background-color: #ff9200; color: white; border: none; padding: 14px 45px;
             border-radius: 30px; font-size: 1.15rem; font-weight: bold; cursor: pointer;
@@ -25,13 +28,59 @@
         }
         .btn-laranja:hover { background-color: #e08100; transform: translateY(-2px); }
         
-        /* Estilos reusados do seu projeto */
+        /* Cabeçalho do Mural Público */
+        .mural-header-titulo {
+            color: #ffffff; 
+            margin: 0; 
+            font-size: 2.2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+
+        /* Correção definitiva de alinhamento e isolamento do contêiner de senha */
+        .campo-senha-container { 
+            position: relative; 
+            width: 100%; 
+            display: block !important; 
+            margin-bottom: 0px;
+        }
+        .campo-senha-container input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .btn-ver-senha { 
+            position: absolute !important; 
+            right: 15px !important; 
+            top: 50% !important; 
+            transform: translateY(-50%) !important; 
+            background: none !important; 
+            border: none !important; 
+            color: #64748b !important; 
+            font-size: 18px !important; 
+            cursor: pointer !important;
+            width: auto !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            z-index: 5;
+        }
+
+        /* Classes de alertas e links utilitários */
         .erro-alerta { background-color: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
-        .sucesso-alerta { background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; border: 1px solid #6ee7b7; font-size: 14px; text-align: center; margin-bottom: 15px; font-weight: 600; }
         .link-navegacao { color: #2563eb; cursor: pointer; text-decoration: none; font-weight: 600; }
         .link-navegacao:hover { text-decoration: underline; }
-        .campo-senha-container { position: relative; width: 100%; }
-        .btn-ver-senha { position: absolute; right: 15px; top: 38%; transform: translateY(-50%); background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; }
+        
+        /* Ajuste do select para se comportar igual aos seus inputs originais */
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            background-color: white;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -44,14 +93,15 @@
         <button type="button" class="btn-laranja" onclick="mudarTela('tela-mural')">Acessar Mural</button>
     </div>
 
-    <!-- TELA 2: MURAL PÚBLICO (Aparece ao clicar no botão laranja) -->
-    <div id="tela-mural" class="tela" style="padding: 20px;">
-        <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto 30px auto;">
-            <h1>🏛️ Mural Escolar</h1>
-            <button class="btn-laranja" style="max-width: 150px; padding: 10px;" onclick="mudarTela('tela-login')">Área Restrita</button>
+    <!-- TELA 2: MURAL PÚBLICO -->
+    <div id="tela-mural" class="tela" style="padding: 20px; width: 100%; box-sizing: border-box;">
+        <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto 30px auto; padding: 10px 0;">
+            <h1 class="mural-header-titulo">
+                <span>🏛️</span> Mural Escolar
+            </h1>
+            <button class="btn-laranja" style="max-width: 160px; padding: 12px 20px; font-size: 0.95rem; margin: 0;" onclick="mudarTela('tela-login')">Área Restrita</button>
         </header>
         <div id="mural-container" class="container">
-            <!-- Seus cards de avisos vão carregar aqui via JavaScript -->
             <p style="text-align:center; color:#64748b;">Nenhum aviso publicado no momento.</p>
         </div>
     </div>
@@ -79,11 +129,11 @@
         <form id="form-cadastro">
             <input type="text" id="cad-nome" placeholder="Nome de Usuário" required>
             <input type="email" id="cad-email" placeholder="Seu E-mail" required>
-            <div class="campo-senha-container">
+            <div class="campo-senha-container" style="margin-bottom: 15px;">
                 <input type="password" id="cad-senha" placeholder="Sua Senha (Mínimo 6 dígitos)" minlength="6" required>
                 <button type="button" class="btn-ver-senha" onclick="alternarVisibilidade('cad-senha', this)">👁️</button>
             </div>
-            <select id="cad-cargo" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ddd;">
+            <select id="cad-cargo" required>
                 <option value="aluno">Aluno</option>
                 <option value="responsavel">Responsável</option>
                 <option value="professor">Professor</option>
@@ -97,7 +147,15 @@
     </div>
 
     <script>
-        // Função mágica que troca as telas trocando as classes CSS, mantendo a URL intacta
+        // Mantém a barra de endereços URL limpa
+        window.addEventListener('DOMContentLoaded', () => {
+            window.history.pushState({}, '', '/');
+            carregarAvisos();
+        });
+
+        // Atualização automática dos avisos no monitor a cada 15 segundos
+        setInterval(carregarAvisos, 15000);
+
         function mudarTela(idTela) {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
             document.getElementById(idTela).classList.add('ativa');
@@ -110,7 +168,7 @@
             botao.innerText = campo.type === "password" ? "👁️" : "🙈";
         }
 
-        // Lógica de Login integrada
+        // Envio do formulário de login integrado
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identificador = document.getElementById('identificador').value;
@@ -125,25 +183,27 @@
             });
             const dados = await res.json();
             if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); }
-            else { alert('Logado com sucesso!'); mudarTela('tela-mural'); }
+            else { mudarTela('tela-mural'); }
         });
 
-        // Função para simular o carregamento dos seus avisos do banco do TCC
-        async function carregarAvisos() {
-            const res = await fetch('/api/avisos');
-            const avisos = await res.json();
-            const container = document.getElementById('mural-container');
-            if(avisos.length > 0) {
-                container.innerHTML = avisos.map(a => `
-                    <div class="card" style="background:white; padding:20px; border-radius:12px; margin-bottom:15px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
-                        <h2>${a.titulo}</h2>
-                        <p>${a.conteudo}</p>
-                        ${a.imagem ? `<img src="${a.imagem}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : ''}
-                        <small style="display:block; margin-top:10px; color:#64748b;">Postado por ${a.autor} em ${a.data}</small>
-                    </div>
-                `).join('');
-            }
-        }
-    </script>
-</body>
-</html>
+        // Envio do formulário de cadastro integrado
+        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('cad-nome').value;
+            const email = document.getElementById('cad-email').value;
+            const senha = document.getElementById('cad-senha').value;
+            const cargo = document.getElementById('cad-cargo').value;
+            const chaveAcesso = document.getElementById('cad-chave').value;
+            const erroDiv = document.getElementById('mensagem-erro-cad');
+            erroDiv.classList.add('tela');
+
+            const res = await fetch('/auth/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha, cargo, chaveAcesso })
+            });
+            const dados = await res.json();
+            if (!res.ok) { erroDiv.innerText = dados.erro; erroDiv.classList.remove('tela'); }
+            else { alert('Conta criada com sucesso! Faça login.'); mudarTela('tela-login'); }
+        });
+
