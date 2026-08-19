@@ -8,23 +8,28 @@ import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
 
 const app = express();
-const PORT = 3000;
 
-// Garante a existência da pasta de upload para fotos de referência
-if (!fs.existsSync('./uploads')) {
-    fs.mkdirSync('./uploads');
+// CONFIGURAÇÃO DE PASTAS DE ACORDO COM O AMBIENTE (Local vs Render)
+// Na nuvem (Render), usamos a pasta /tmp que permite escrita de arquivos
+const IS_RENDER = process.env.RENDER === 'true';
+const UPLOADS_DIR = IS_RENDER ? '/tmp/uploads' : './uploads';
+const DATABASE_PATH = IS_RENDER ? '/tmp/database.db' : './database.db';
+
+// Garante que a pasta de uploads exista no local correto
+if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-// Inicialização Assíncrona do Banco de Dados SQLite
+// Inicialização do Banco de Dados SQLite no caminho seguro
 const dbPromise = open({
-    filename: './database.db',
+    filename: DATABASE_PATH,
     driver: sqlite3.Database
 });
 
 (async () => {
     const db = await dbPromise;
     
-    // Tabela de Usuários (Professores e Administradores)
+    // Tabela de Usuários (Professores)
     await db.exec(`
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,32 +49,34 @@ const dbPromise = open({
         )
     `);
 
-    // Criar um usuário administrador padrão de fábrica (User: admin / Pass: admin123)
+    // Criar um usuário administrador padrão automático (User: admin / Pass: admin123)
     const adminExiste = await db.get('SELECT * FROM usuarios WHERE username = ?', ['admin']);
     if (!adminExiste) {
         const hash = await bcrypt.hash('admin123', 10);
         await db.run('INSERT INTO usuarios (username, password) VALUES (?, ?)', ['admin', hash]);
-        console.log('🛡️ Conta master criada automaticamente: admin / admin123');
+        console.log('🛡️ Conta master padrão pronta: admin / admin123');
     }
 })();
 
-// Configurações Globais do Servidor Express
+// Configurações do Servidor Express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'chave-secreta-mural-escolar-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Define como true se for rodar em HTTPS futuramente
+    cookie: { secure: false }
 }));
 
-// Mapeamento de Pastas Estáticas do Front-End
+// Servir arquivos estáticos do Front-end
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
 
-// Mecanismo de Upload com Multer (Renomeia as imagens com a data atual para evitar substituições)
+// Rota para entregar as imagens salvas (independente de onde estejam guardadas)
+app.use('/uploads', express.static(UPLOADS_DIR));
+
+// Configuração do Multer para upload de imagens de referência
 const storage = multer.diskStorage({
-    destination: './uploads/',
+    destination: UPLOADS_DIR,
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
@@ -82,13 +89,12 @@ const requerAutenticacao = (req, res, next) => {
     res.status(401).json({ erro: 'Não autorizado. Faça o login primeiro.' });
 };
 
-// ==================== ROTAS DE AUTENTICAÇÃO E CADASTRO ====================
+// ==================== ROTAS DO SISTEMA ====================
 
-// Cadastro Seguro de Professores
+// Cadastro Seguro de Professores (Chave Secreta)
 app.post('/api/cadastro', async (req, res) => {
     const { username, password, chaveAcesso } = req.body;
 
-    // Bloqueio rigoroso direto no servidor caso tentem burlar o Front-end
     if (chaveAcesso !== 'COORDENACAO2026') {
         return res.status(403).json({ erro: 'Código de autorização inválido. Cadastro negado.' });
     }
@@ -102,7 +108,7 @@ app.post('/api/cadastro', async (req, res) => {
         const usuarioExiste = await db.get('SELECT * FROM usuarios WHERE username = ?', [username]);
         
         if (usuarioExiste) {
-            return res.status(400).json({ erro: 'Este nome de usuário já está cadastrado por outro docente.' });
+            return res.status(400).json({ erro: 'Este nome de usuário já está em uso.' });
         }
 
         const hash = await bcrypt.hash(password, 10);
@@ -137,8 +143,6 @@ app.get('/api/checar-sessao', (req, res) => {
     res.json({ logado: !!req.session.usuarioId });
 });
 
-// ==================== ROTAS DE GERENCIAMENTO DOS AVISOS ====================
-
 // Listagem de Avisos (Acesso público no mural)
 app.get('/api/avisos', async (req, res) => {
     const db = await dbPromise;
@@ -165,10 +169,10 @@ app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
     const { id } = req.params;
     const db = await dbPromise;
     
-    // Remove o arquivo físico de imagem associado para não lotar o HD do servidor
     const aviso = await db.get('SELECT imagem FROM avisos WHERE id = ?', [id]);
     if (aviso && aviso.imagem) {
-        const caminhoImagem = path.join('.', aviso.imagem);
+        const nomeArquivo = path.basename(aviso.imagem);
+        const caminhoImagem = path.join(UPLOADS_DIR, nomeArquivo);
         if (fs.existsSync(caminhoImagem)) fs.unlinkSync(caminhoImagem);
     }
 
@@ -176,11 +180,8 @@ app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
     res.json({ sucesso: true });
 });
 
- // O Render injeta automaticamente uma porta em process.env.PORT. Caso rode local, ele usa a 3000.
-const port  = process.env.PORT || 3000;
-
+// Inicialização de porta dinâmica para o Render
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Mural Digital Escolar online na porta ${PORT}`);
+    console.log(`🚀 Sistema do Mural online na porta ${PORT}`);
 });
-
-
