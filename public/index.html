@@ -27,19 +27,6 @@
             align-items: center;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        .fade-in {
-            animation: fadeInEffect 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeInEffect {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
         /* 1. Tela Inicial */
         .tela-inicial {
             position: fixed;
@@ -263,23 +250,23 @@
         }
     </style>
 </head>
-<body class="flex-center">
+<body>
 
     <!-- ==================== 1. TELA INICIAL (BOAS-VINDAS) ==================== -->
-    <div id="id-tela-inicial" class="tela-inicial flex-center fade-in">
+    <div id="id-tela-inicial" class="tela-inicial flex-center">
         <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
         <h1 class="titulo-boas-vindas">Mural de Avisos</h1>
         <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        <!-- LINHA ADICIONADA: O botão agora desliga a tela azul e liga o mural de forma direta e infalível -->
-        <button type="button" onclick="document.getElementById('id-tela-inicial').style.display='none'; document.getElementById('id-tela-mural').style.display='block'; buscarAvisosDoBanco();" class="btn-laranja">
+        <button type="button" onclick="mostrarMural()" class="btn-laranja">
             Acessar Mural
         </button>
     </div>
 
     <!-- ==================== 2. TELA DO MURAL PÚBLICO (EXIBIÇÃO) ==================== -->
-    <div id="id-tela-mural" class="tela-mural hidden fade-in">
+    <!-- CORRIGIDO: Removido o display: none do CSS inline e controlado via JS para renderizar o topo imediatamente -->
+    <div id="id-tela-mural" class="tela-mural" style="display: none;">
         <header class="topo-mural">
             <div>
                 <h1 style="font-size: 2rem; font-weight: 800; color: white;">🏫 Mural Digital Escolar</h1>
@@ -293,13 +280,17 @@
 
         <main>
             <div id="id-mural-container" class="grid-mural">
-                <!-- Preenchido via JavaScript dinamicamente -->
+                <!-- Inicializa com o estado vazio estruturado correto -->
+                <div class="card-vazio">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
+                    <p style="color: #94a3b8; font-size: 1.125rem;">Nenhum aviso ativo cadastrado pela coordenação.</p>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- ==================== 3. MODAL DE ACESSO ADMINISTRATIVO ==================== -->
-    <div id="id-tela-login" class="tela-login flex-center hidden fade-in">
+    <div id="id-tela-login" class="tela-login flex-center" style="display: none;">
         
         <!-- Formulário de LOGIN -->
         <div id="box-login-container" class="box-login">
@@ -323,3 +314,8 @@
 
             <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">
                 Novo professor? 
+                <button type="button" onclick="alternarFormularios('cadastro')" style="color: #2563eb; font-weight: bold; background: none; border: none; cursor: pointer; text-decoration: underline;">
+                    Cadastre-se aqui
+                </button>
+            </p>
+            
