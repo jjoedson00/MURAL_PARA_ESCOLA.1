@@ -44,17 +44,14 @@ app.use(session({
     }
 }));
 
-// ROTA ÚNICA: Qualquer acesso ao site abre o index.html unificado
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-
+// Redirecionamento da Página Inicial para as Rotas Amigáveis
+app.get('/', (req, res) => res.redirect('/login'));
 
 // Roteamento sem a extensão .html na barra de endereços
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/cadastro', (req, res) => res.sendFile(path.join(__dirname, 'public', 'cadastro.html')));
 app.get('/mural', (req, res) => res.sendFile(path.join(__dirname, 'public', 'mural.html')));
+
 
 // Configuração do Multer para Upload Seguro de Imagens de Referência
 const storage = multer.diskStorage({
