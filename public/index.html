@@ -56,14 +56,11 @@
 
         /* 3. Tela de Login e Cadastro */
         #id-tela-login { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; background-color: rgba(15, 23, 42, 0.97); padding: 16px; display: none; justify-content: center; align-items: center; }
-        
-        /* CORRIGIDO: Largura e altura da caixa expandidas para o layout correto no monitor */
         .box-login { background-color: #ffffff; padding: 36px 32px; border-radius: 24px; width: 100%; max-width: 440px; color: #0f172a; box-shadow: 0 25px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         
         .input-grupo { margin-bottom: 16px; text-align: left; width: 100%; }
         .input-grupo label { display: block; font-size: 0.875rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
         .input-grupo input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; background-color: #f8fafc; font-size: 1rem; color: #0f172a; outline: none; }
-        .input-grupo input:focus { border-color: #2563eb; }
         .btn-enviar { width: 100%; background-color: #2563eb; color: white; font-weight: bold; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; margin-top: 8px; transition: background 0.2s; }
         .btn-enviar:hover { background-color: #1d4ed8; }
     </style>
@@ -117,12 +114,15 @@
             <button type="button" onclick="document.getElementById('id-tela-login').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important');" class="btn-voltar" style="margin-top:20px; width:100%;">← Voltar ao Mural</button>
         </div>
 
-        <!-- Formulário de CADASTRO (CORRIGIDO: Tamanho restaurado, token inserido abaixo e trava de e-mail único) -->
+        <!-- Formulário de CADASTRO -->
+        <!-- ALTERADO: Título atualizado para abranger professores, coordenadores e direção -->
         <div id="box-cadastro-container" class="box-login" style="display: none;">
             <div style="text-align: center; margin-bottom: 20px;">
                 <span style="font-size: 2.5rem;">👨‍🏫</span>
-                <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Registro do Corpo Docente</h2>
+                <h2 style="font-size: 1.35rem; font-weight: 900; margin-top: 6px; line-height: 1.3;">Professores, Coordenadores ou Direção</h2>
             </div>
             <form id="id-form-cadastro-mural">
                 <div class="input-grupo"><label>Usuário</label><input type="text" id="cad-username" required placeholder="Ex: prof_ana"></div>
                 <div class="input-grupo"><label>E-mail</label><input type="email" id="cad-email" required placeholder="Ex: ana@escola.com"></div>
+                <div class="input-grupo"><label>Senha</label><input type="password" id="cad-password" required placeholder="No mínimo 6 caracteres"></div>
+                
