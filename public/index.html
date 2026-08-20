@@ -54,13 +54,14 @@
         .card-data { padding: 16px 20px; font-size: 0.75rem; color: #38bdf8; border-top: 1px solid rgba(51, 65, 85, 0.5); }
         .card-vazio { grid-column: 1 / -1; text-align: center; padding: 80px 24px; background-color: rgba(30, 41, 59, 0.5); border-radius: 16px; border: 2px dashed #334155; }
 
-        /* 3. Tela de Login */
+        /* 3. Tela de Login e Cadastro */
         #id-tela-login { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; background-color: rgba(15, 23, 42, 0.97); padding: 16px; display: none; justify-content: center; align-items: center; }
         .box-login { background-color: #ffffff; padding: 32px; border-radius: 24px; width: 100%; max-width: 420px; color: #0f172a; box-shadow: 0 25px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .input-grupo { margin-bottom: 16px; text-align: left; width: 100%; }
         .input-grupo label { display: block; font-size: 0.875rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
         .input-grupo input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; background-color: #f8fafc; font-size: 1rem; color: #0f172a; outline: none; }
-        .btn-enviar { width: 100%; background-color: #2563eb; color: white; font-weight: bold; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; margin-top: 8px; }
+        .btn-enviar { width: 100%; background-color: #2563eb; color: white; font-weight: bold; padding: 14px; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; margin-top: 8px; transition: background 0.2s; }
+        .btn-enviar:hover { background-color: #1d4ed8; }
     </style>
 </head>
 <body>
@@ -106,15 +107,14 @@
                 <div class="input-grupo"><label>Senha</label><input type="password" id="login-password" required></div>
                 <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
             </form>
-            <!-- ALTERADO: O clique agora oculta o login e mostra o cadastro instantaneamente por comando inline -->
             <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">
                 Novo? <button type="button" onclick="document.getElementById('box-login-container').style.setProperty('display', 'none', 'important'); document.getElementById('box-cadastro-container').style.setProperty('display', 'block', 'important');" style="color:#2563eb; font-weight:bold; background:none; border:none; cursor:pointer; text-decoration:underline;">Cadastre-se</button>
             </p>
             <button type="button" onclick="document.getElementById('id-tela-login').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important');" class="btn-voltar" style="margin-top:20px; width:100%;">← Voltar ao Mural</button>
         </div>
 
-        <!-- Formulário de CADASTRO -->
-        <div id="box-cadastro-container" class="box-login" style="display: none;">
+        <!-- Formulário de CADASTRO (CORRIGIDO: Removido o campo secreto e alinhada a div externa para o botão verde aparecer) -->
+        <div id="box-cadastro-container" class="box-login">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">👨‍🏫</span>
                 <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Registro do Corpo Docente</h2>
@@ -123,4 +123,7 @@
                 <div class="input-grupo"><label>Usuário</label><input type="text" id="cad-username" required></div>
                 <div class="input-grupo"><label>E-mail</label><input type="email" id="cad-email" required></div>
                 <div class="input-grupo"><label>Senha</label><input type="password" id="cad-password" required></div>
-                <div class="input-grupo"><label style="color:#c2410c;">🔑 Chave Administrativa</label><input type="password" id="cad-chave" required placeholder="COORDENACAO2026"></div>
+                
+                <!-- BOTÃO VERDE RECUPERADO COM SUCESSO -->
+                <button type="submit" class="btn-enviar" style="background-color:#16a34a;">Validar e Cadastrar</button>
+            </form>
