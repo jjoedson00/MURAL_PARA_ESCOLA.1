@@ -50,14 +50,21 @@
             <p style="color: #64748b; font-size: 1rem; margin-top: 4px;">Docentes e Coordenação</p>
         </div>
         <form id="form-login">
-            <div class="input-grupo"><label>Usuário</label><input type="text" id="login-username" required placeholder="Digite seu usuário"></div>
-            <div class="input-grupo"><label>Senha</label><input type="password" id="login-password" required placeholder="••••••••"></div>
+            <div class="input-grupo">
+                <label>Usuário ou E-mail</label>
+                <input type="text" id="login-username" required placeholder="Digite seu usuário ou e-mail institucional">
+            </div>
+            <div class="input-grupo">
+                <label>Senha</label>
+                <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
             <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
         </form>
         <p style="text-align: center; font-size: 1rem; margin-top: 24px; color: #475569;">Novo? <a href="cadastro.html" style="color: #2563eb; font-weight: bold; text-decoration: underline;">Cadastre-se</a></p>
         <a href="mural.html" class="btn-voltar">← Voltar para o Mural</a>
     </div>
 
+    <!-- Script de Login Corrigido com Validação Assíncrona via Firebase -->
     <script type="module">
         import { initializeApp } from "https://gstatic.com";
         import { getDatabase, ref, get } from "https://gstatic.com";
@@ -66,17 +73,58 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // O evento foi marcado como 'async' para permitir que o navegador espere os dados da nuvem
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('login-username').value;
+            const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value;
 
-            if (username === 'admin' && password === 'admin123') { window.location.href = 'admin.html'; return; }
+            // Login Máster de Fábrica Livre para Testes Rápidos
+            if (username === 'admin' && password === 'admin123') { 
+                window.location.href = 'admin.html'; 
+                return; 
+            }
 
-            const userRef = ref(db, 'usuarios/' + username);
-            const snapshot = await get(userRef);
-            if (snapshot.exists() && snapshot.val().password === password) { window.location.href = 'admin.html'; }
-            else { alert('❌ Usuário ou senha incorretos.'); }
+            try {
+                // 1. Tenta fazer a busca direta assumindo que foi digitado o Nome de Usuário
+                const userRef = ref(db, 'usuarios/' + username);
+                const snapshot = await get(userRef);
+
+                if (snapshot.exists()) {
+                    // Valida se a senha confere com a salva no banco
+                    if (snapshot.val().password === password) {
+                        alert('🔓 Autenticação aceita! Entrando no painel gerenciador...');
+                        window.location.href = 'admin.html';
+                        return;
+                    }
+                }
+
+                // 2. Caso não encontre, faz uma varredura para validar se foi digitado o E-mail
+                const todosUsuariosRef = ref(db, 'usuarios');
+                const todosSnapshot = await get(todosUsuariosRef);
+                let usuarioEncontradoPorEmail = null;
+
+                if (todosSnapshot.exists()) {
+                    todosSnapshot.forEach((childSnapshot) => {
+                        if (childSnapshot.val().email === username && childSnapshot.val().password === password) {
+                            usuarioEncontradoPorEmail = childSnapshot.val();
+                        }
+                    });
+                }
+
+                if (usuarioEncontradoPorEmail) {
+                    alert('🔓 Autenticação aceita via e-mail! Entrando no painel gerenciador...');
+                    window.location.href = 'admin.html';
+                    return;
+                }
+
+                // Se falhar em ambas as travas do servidor, emite o bloqueio
+                alert('❌ Credenciais incorretas! Verifique os dados digitados.');
+
+            } catch (error) {
+                console.error("Erro no Firebase:", error);
+                alert('❌ Falha interna de comunicação com a nuvem.');
+            }
         });
     </script>
 </body>
