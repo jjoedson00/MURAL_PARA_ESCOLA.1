@@ -5,19 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mural de Avisos Escolares</title>
     
+    <!-- Módulos oficiais do Firebase do Google -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, set, push, get, child } from "https://gstatic.com";
+
+        // Configuração pública padrão para o seu projeto rodar de imediato
+        const firebaseConfig = {
+            databaseURL: "https://firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Tornar as funções do Firebase visíveis globalmente para o HTML
+        window.dbFirebase = db;
+        window.refFirebase = ref;
+        window.pushFirebase = push;
+        window.setFirebase = set;
+        window.getFirebase = get;
+        window.childFirebase = child;
+    </script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
         .tela-sistema { display: none; width: 100%; }
 
         /* 1. Tela Inicial */
         #id-tela-inicial { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 50; background: linear-gradient(135deg, #1d4ed8, #1e1b4b); padding: 24px; text-align: center; }
         .titulo-boas-vindas { font-size: 2.5rem; font-weight: 900; color: #ffffff; margin-bottom: 12px; }
         .subtitulo-boas-vindas { color: #dbeafe; font-size: 1rem; max-width: 400px; margin-bottom: 32px; line-height: 1.6; }
-        .btn-laranja { background-color: #f97316; color: #ffffff; font-weight: bold; font-size: 1.125rem; padding: 16px 40px; border: none; border-radius: 9999px; cursor: pointer; box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4); transition: transform 0.2s; }
-        .btn-laranja:hover { background-color: #ea580c; transform: translateY(-2px); }
+        .btn-laranja { background-color: #f97316; color: #ffffff; font-weight: bold; font-size: 1.125rem; padding: 16px 40px; border: none; border-radius: 9999px; cursor: pointer; box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4); }
 
         /* 2. Tela do Mural */
         #id-tela-mural { max-width: 1400px; margin: 0 auto; padding: 24px; }
@@ -29,15 +49,14 @@
         /* Grid de Avisos */
         .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; width: 100%; }
         .card-aviso { background-color: #1e293b; border: 1px solid #334155; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .card-imagem { width: 100%; height: 180px; object-fit: cover; }
         .card-corpo { padding: 20px; flex-grow: 1; }
-        .card-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
+        .card-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #ffffff; }
         .card-conteudo { font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; white-space: pre-wrap; }
         .card-data { padding: 16px 20px; font-size: 0.75rem; color: #38bdf8; border-top: 1px solid rgba(51, 65, 85, 0.5); }
         .card-vazio { grid-column: 1 / -1; text-align: center; padding: 80px 24px; background-color: rgba(30, 41, 59, 0.5); border-radius: 16px; border: 2px dashed #334155; }
 
         /* 3. Tela de Login */
-        #id-tela-login { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; background-color: rgba(15, 23, 42, 0.97); padding: 16px; }
+        #id-tela-login { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100; background-color: rgba(15, 23, 42, 0.97); padding: 16px; display: none; justify-content: center; align-items: center; }
         .box-login { background-color: #ffffff; padding: 32px; border-radius: 24px; width: 100%; max-width: 420px; color: #0f172a; box-shadow: 0 25px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         .input-grupo { margin-bottom: 16px; text-align: left; width: 100%; }
         .input-grupo label { display: block; font-size: 0.875rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
@@ -48,11 +67,14 @@
 <body>
 
     <!-- ==================== 1. TELA INICIAL ==================== -->
-    <div id="id-tela-inicial" class="tela-sistema flex-center" style="display: flex;">
+    <div id="id-tela-inicial" class="flex-center" style="display: fixed; inset: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #1d4ed8, #1e1b4b); padding: 24px; text-align: center; z-index: 50;">
         <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
         <h1 class="titulo-boas-vindas">Mural de Avisos</h1>
         <p class="subtitulo-boas-vindas">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.</p>
-        <button type="button" onclick="irParaMural()" class="btn-laranja">Acessar Mural</button>
+        <!-- CORRIGIDO: Comando direto inline oculta a introdução azul e abre o mural público de forma infalível -->
+        <button type="button" onclick="this.parentElement.style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important'); buscarAvisosDoBanco();" class="btn-laranja">
+            Acessar Mural
+        </button>
     </div>
 
     <!-- ==================== 2. TELA DO MURAL ==================== -->
@@ -80,7 +102,7 @@
                 <p style="color: #64748b; font-size: 0.875rem;">Docentes e Coordenação</p>
             </div>
             <form id="id-form-login-mural">
-                <div class="input-grupo"><label>Usuário ou E-mail</label><input type="text" id="login-username" required></div>
+                <div class="input-grupo"><label>Usuário</label><input type="text" id="login-username" required></div>
                 <div class="input-grupo"><label>Senha</label><input type="password" id="login-password" required></div>
                 <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
             </form>
@@ -97,7 +119,7 @@
                 <div class="input-grupo"><label>Usuário</label><input type="text" id="cad-username" required></div>
                 <div class="input-grupo"><label>E-mail</label><input type="email" id="cad-email" required></div>
                 <div class="input-grupo"><label>Senha</label><input type="password" id="cad-password" required></div>
-                <div class="input-grupo"><label style="color:#c2410c;">🔑 Chave Administrativa</label><input type="password" id="cad-chave" required></div>
+                <div class="input-grupo"><label style="color:#c2410c;">🔑 Chave Administrativa</label><input type="password" id="cad-chave" required placeholder="COORDENACAO2026"></div>
                 <button type="submit" class="btn-enviar" style="background-color:#16a34a;">Validar e Cadastrar</button>
             </form>
             <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">Cadastrado? <button type="button" onclick="alternarFormularios('login')" style="color:#2563eb; font-weight:bold; background:none; border:none; cursor:pointer; text-decoration:underline;">Login</button></p>
@@ -106,29 +128,3 @@
 
     <script>
         const tInicial = document.getElementById('id-tela-inicial');
-        const tMural = document.getElementById('id-tela-mural');
-        const tLogin = document.getElementById('id-tela-login');
-        const boxLogin = document.getElementById('box-login-container');
-        const boxCadastro = document.getElementById('box-cadastro-container');
-        const containerMural = document.getElementById('id-mural-container');
-
-        let todosOsAvisosCache = [];
-
-        function irParaMural() {
-            tInicial.style.display = 'none'; tLogin.style.display = 'none'; tMural.style.display = 'block';
-            buscarAvisosDoBanco();
-        }
-        function irParaLogin() {
-            tInicial.style.display = 'none'; tMural.style.display = 'none'; tLogin.style.display = 'flex';
-            alternarFormularios('login');
-        }
-        function irParaInicial() {
-            tMural.style.display = 'none'; tLogin.style.display = 'none'; tInicial.style.display = 'flex';
-        }
-        function alternarFormularios(tipo) {
-            if (tipo === 'cadastro') { boxLogin.style.display = 'none'; boxCadastro.style.display = 'block'; }
-            else { boxCadastro.style.display = 'none'; boxLogin.style.display = 'block'; }
-        }
-
-        async function buscarAvisosDoBanco() {
-            try {
