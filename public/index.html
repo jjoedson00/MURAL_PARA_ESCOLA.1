@@ -2,23 +2,99 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mural de Avisos Escolares - Boas-Vindas</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .tela-inicial { background: linear-gradient(135deg, #1d4ed8, #1e1b4b); width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center; }
-        .titulo { font-size: 2.5rem; font-weight: 900; margin-bottom: 12px; }
-        .subtitulo { color: #dbeafe; max-width: 400px; margin-bottom: 32px; line-height: 1.6; }
-        .btn-laranja { background-color: #f97316; color: #ffffff; font-weight: bold; font-size: 1.125rem; padding: 16px 40px; border-radius: 9999px; text-decoration: none; box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4); transition: background 0.2s; display: inline-block; }
-        .btn-laranja:hover { background-color: #ea580c; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: system-ui, -apple-system, sans-serif; 
+        }
+        
+        /* Ocupa a tela cheia e centraliza tudo em qualquer aparelho (TV, PC, Celular) */
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        /* CONSERTO RESPONSIVO: Fundo gradiente com largura flexível e padding adaptável */
+        .tela-inicial { 
+            background: linear-gradient(135deg, #1d4ed8, #1e1b4b); 
+            width: 100vw; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 40px 24px; 
+            text-align: center; 
+        }
+
+        /* Ícone grande e destacado */
+        .icone-mural {
+            font-size: clamp(4rem, 10vh, 6rem); /* Tamanho dinâmico conforme a tela */
+            margin-bottom: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        /* Título expandido proporcional ao monitor */
+        .titulo { 
+            font-size: clamp(2.2rem, 5vw, 4rem); 
+            font-weight: 900; 
+            margin-bottom: 16px; 
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            max-width: 800px;
+        }
+
+        /* Subtítulo com excelente leitura em televisores e monitores */
+        .subtitulo { 
+            color: #dbeafe; 
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            max-width: 650px; 
+            margin-bottom: 40px; 
+            line-height: 1.6; 
+        }
+
+        /* Botão Laranja Robusto e responsivo ao clique */
+        .btn-laranja { 
+            background-color: #f97316; 
+            color: #ffffff; 
+            font-weight: bold; 
+            font-size: clamp(1.1rem, 2vw, 1.4rem); 
+            padding: clamp(14px, 2vh, 20px) clamp(36px, 5vw, 64px); 
+            border-radius: 9999px; 
+            text-decoration: none; 
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4); 
+            transition: all 0.2s ease; 
+            display: inline-block; 
+        }
+
+        /* Efeito de destaque ao passar o mouse */
+        .btn-laranja:hover { 
+            background-color: #ea580c; 
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.6); 
+        }
+
+        /* Animação suave para o ícone */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
     <div class="tela-inicial">
-        <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
-        <h1 class="titulo">Mural de Avisos</h1>
+        <div class="icone-mural">📢</div>
+        <h1 class="titulo">Mural Digital de Avisos</h1>
         <p class="subtitulo">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.</p>
+        <!-- LINK DIRETO COMPATÍVEL COM O SEU SISTEMA DE ARQUIVOS FÍSICOS -->
         <a href="mural.html" class="btn-laranja">Acessar Mural</a>
     </div>
 </body>
