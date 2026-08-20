@@ -1,88 +1,95 @@
 import express from 'express';
-import sqlite3 from 'sqlite3';
+import pg from 'pg';
 import path from 'path';
-import { fileURLToPath } from 'url'; 
+import { fileURLToPath } from 'url';
 
 const app = express();
-const PORT = process.env.PORT || 3000; 
+// O Render define a porta automaticamente através de process.env.PORT
+const PORT = process.env.PORT || 3000;
 
-// Configuração de caminhos para ES Modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename); 
+const __dirname = path.dirname(__filename);
 
-// Middlewares para leitura de dados
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); 
-
-// Servir arquivos estáticos da pasta public
-app.use(express.static(path.join(__dirname, 'public'))); 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // -------------------------------------------------------------
-// CONFIGURAÇÃO DO BANCO DE DADOS
+// CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL do Render)
 // -------------------------------------------------------------
-const db = new sqlite3.Database(path.join(__dirname, 'database.db'), (err) => {
-if (err) {
-return console.error('Erro ao abrir o banco de dados:', err.message);
-}
-console.log('Conectado ao banco de dados SQLite local.');
-}); 
+// COLE AQUI a "External Database URL" que você copiou do painel do Render
+const DB_URL = "SUA_EXTERNAL_DATABASE_URL_AQUI";
 
-// Criar tabela de usuários
-db.serialize(() => {
-db.run(CREATE TABLE IF NOT EXISTS usuarios ( id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, senha TEXT NOT NULL ));
-}); 
+const pool = new pg.Pool({
+    connectionString: DB_URL,
+    ssl: {
+        rejectUnauthorized: false // Obrigatório para conexões seguras no Render
+    }
+});
+
+// Criar tabela de usuários caso ela não exista no PostgreSQL
+const criarTabela = async () => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                senha TEXT NOT NULL
+            )
+        `);
+        console.log('Tabela de usuários verificada/criada no Render.');
+    } catch (err) {
+        console.error('Erro ao criar tabela:', err.message);
+    }
+};
+criarTabela();
 
 // -------------------------------------------------------------
 // ROTAS DO SISTEMA
-// ------------------------------------------------------------- 
+// -------------------------------------------------------------
 
 // Rota de Cadastro
-app.post('/auth/cadastro', (req, res) => {
-const { email, senha } = req.body; 
+app.post('/auth/cadastro', async (req, res) => {
+    const { email, senha } = req.body;
 
-if (!email || !senha) {
-return res.status(400).json({ erro: 'Preencha todos os campos.' });
-}
+    if (!email || !senha) {
+        return res.status(400).json({ erro: 'Preencha todos os campos.' });
+    }
 
-const query = INSERT INTO usuarios (email, senha) VALUES (?, ?);
-
-db.run(query, [email, senha], function(err) {
-if (err) {
-if (err.message.includes('UNIQUE')) {
-return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
-}
-return res.status(500).json({ erro: 'Erro ao salvar no banco.' });
-}
-res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
+    try {
+        const query = 'INSERT INTO usuarios (email, senha) VALUES ($1, $2)';
+        await pool.query(query, [email, senha]);
+        res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
+    } catch (err) {
+        if (err.message.includes('unique') || err.code === '23505') {
+            return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
+        }
+        res.status(500).json({ erro: 'Erro ao salvar no banco do servidor.' });
+    }
 });
-
-}); 
 
 // Rota de Login
-app.post('/auth/login', (req, res) => {
-const { email, senha } = req.body; 
+app.post('/auth/login', async (req, res) => {
+    const { email, senha } = req.body;
 
-if (!email || !senha) {
-return res.status(400).json({ erro: 'Preencha todos os campos.' });
-}
+    if (!email || !senha) {
+        return res.status(400).json({ erro: 'Preencha todos os campos.' });
+    }
 
-const query = SELECT * FROM usuarios WHERE email = ? AND senha = ?;
+    try {
+        const query = 'SELECT * FROM usuarios WHERE email = $1 AND senha = $2';
+        const result = await pool.query(query, [email, senha]);
 
-db.get(query, [email, senha], (err, row) => {
-if (err) {
-return res.status(500).json({ erro: 'Erro interno no servidor.' });
-}
-if (row) {
-    res.json({ autenticado: true, usuario: row.email });
-} else {
-    res.status(401).json({ autenticado: false, erro: 'Credenciais incorretas.' });
-}
-
+        if (result.rows.length > 0) {
+            res.json({ autenticado: true, usuario: result.rows[0].email });
+        } else {
+            res.status(401).json({ autenticado: false, erro: 'Credenciais incorretas.' });
+        }
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro interno no servidor remoto.' });
+    }
 });
 
-}); 
-
-// Inicialização do Servidor
 app.listen(PORT, () => {
-console.log(Servidor rodando localmente em: http://localhost:${PORT});
+    console.log(`Servidor ativo na porta ${PORT}`);
 });
