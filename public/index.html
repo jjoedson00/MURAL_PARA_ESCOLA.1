@@ -27,28 +27,18 @@
             align-items: center;
         }
 
-        /* ----------------------------------------------------------------- */
-        /* MÁGICA DO CSS NATIVO ANTI-TRAVAMENTO (CONTROLE DE ABAS E TELAS)   */
-        /* ----------------------------------------------------------------- */
-        
-        /* Esconde os seletores de controle do topo da página */
+        /* Controle de Telas via CSS Nativo */
         .controlador-tela {
             display: none !important;
         }
 
-        /* Esconde todas as telas do sistema por padrão */
         .tela-inicial, .tela-mural, .tela-login {
             display: none;
         }
 
-        /* Lógica de exibição nativa baseada no clique dos botões */
         #checar-inicial:checked ~ .tela-inicial { display: flex; }
         #checar-mural:checked ~ .tela-mural { display: block; }
         #checar-login:checked ~ .tela-login { display: flex; }
-
-        /* ----------------------------------------------------------------- */
-        /* ESTILIZAÇÃO VISUAL COMPLETA                                       */
-        /* ----------------------------------------------------------------- */
 
         /* 1. Tela Inicial de Boas-Vindas */
         .tela-inicial {
@@ -78,7 +68,6 @@
             line-height: 1.6;
         }
 
-        /* Botões Estilizados como Tags Label para acionar o CSS */
         .btn-laranja-click {
             background-color: #f97316;
             color: #ffffff;
@@ -138,7 +127,7 @@
             background-color: #1e293b;
             color: #e2e8f0;
             border: 1px solid #475569;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 12px;
             font-weight: 600;
             font-size: 0.875rem;
@@ -159,6 +148,7 @@
             padding: 10px;
             font-size: 0.875rem;
             display: inline-block;
+            font-weight: 600;
         }
 
         .btn-voltar-click:hover {
@@ -304,7 +294,7 @@
 </head>
 <body class="flex-center">
 
-    <!-- CONTROLES INVISÍVEIS PARA MUDANÇA DE TELA SEM ALTERAR A URL -->
+    <!-- CONTROLES INVISÍVEIS PARA MUDANÇA DE TELA -->
     <input type="radio" name="abas-mural" id="checar-inicial" class="controlador-tela" checked>
     <input type="radio" name="abas-mural" id="checar-mural" class="controlador-tela">
     <input type="radio" name="abas-mural" id="checar-login" class="controlador-tela">
@@ -316,7 +306,6 @@
         <p class="subtitulo-boas-vindas">
             Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
-        <!-- O clique aqui aciona nativamente o input do mural pelo ID -->
         <label for="checar-mural" class="btn-laranja-click" onclick="buscarAvisosDoBanco()">
             Acessar Mural
         </label>
@@ -331,4 +320,20 @@
             </div>
             
             <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso específico..." oninput="filtrarAvisosNaTela()">
+
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <label for="checar-login" class="btn-restrita-click">⚙️ Área Restrita</label>
+                <label for="checar-inicial" class="btn-voltar-click">Voltar ↩</label>
+            </div>
+        </header>
+
+        <main>
+            <div id="id-mural-container" class="grid-mural">
+                <div class="card-vazio">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
+                    <p style="color: #94a3b8; font-size: 1.125rem;">Nenhum aviso ativo cadastrado pela coordenação.</p>
+                </div>
+            </div>
+        </main>
+    </div>
 
