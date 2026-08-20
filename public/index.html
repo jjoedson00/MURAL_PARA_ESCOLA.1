@@ -28,7 +28,7 @@
         }
 
         /* ----------------------------------------------------------------- */
-        /* GESTÃO DE TELAS E CAMADAS (Z-INDEX) CORRIGIDA                     */
+        /* GESTÃO DE TELAS NATIVAS VIA CSS                                   */
         /* ----------------------------------------------------------------- */
         
         .controlador-tela {
@@ -39,7 +39,7 @@
             display: none;
         }
 
-        /* Definição de prioridades de visualização para não cortar elementos */
+        /* Ativação das telas com base no rádio botão selecionado */
         #checar-inicial:checked ~ .tela-inicial { display: flex; }
         #checar-mural:checked ~ .tela-mural { display: block; }
         #checar-login:checked ~ .tela-login { display: flex; }
@@ -50,7 +50,7 @@
             inset: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 10; /* Camada base inicial */
+            z-index: 10;
             background: linear-gradient(135deg, #1d4ed8, #1e1b4b);
             padding: 24px;
             text-align: center;
@@ -96,7 +96,7 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 24px;
-            z-index: 20; /* Fica acima das boas-vindas */
+            z-index: 20;
         }
 
         .topo-mural {
@@ -222,13 +222,12 @@
         }
 
         /* 3. Modal de Login / Cadastro */
-        /* CORRIGIDO: O z-index foi para 100 para sobrepor de forma absoluta o fundo azul anterior */
         .tela-login {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 100; 
+            z-index: 100;
             background-color: rgba(15, 23, 42, 0.97);
             padding: 16px;
             display: flex;
@@ -309,7 +308,7 @@
         <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
         <h1 class="titulo-boas-vindas">Mural de Avisos</h1>
         <p class="subtitulo-boas-vindas">
-            Acompanhe in real time todas as atualizações, eventos e comunicados importantes da nossa escola.
+            Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.
         </p>
         <label for="checar-mural" class="btn-laranja-click" onclick="buscarAvisosDoBanco()">
             Acessar Mural
@@ -333,3 +332,6 @@
         </header>
 
         <main>
+            <div id="id-mural-container" class="grid-mural">
+                <div class="card-vazio">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 16px;">📭</span>
