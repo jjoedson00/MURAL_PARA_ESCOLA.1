@@ -10,7 +10,6 @@
         import { initializeApp } from "https://gstatic.com";
         import { getDatabase, ref, set, push, get, child } from "https://gstatic.com";
 
-        // Configuração pública padrão para o seu projeto rodar de imediato
         const firebaseConfig = {
             databaseURL: "https://firebaseio.com"
         };
@@ -18,7 +17,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Tornar as funções do Firebase visíveis globalmente para o HTML
         window.dbFirebase = db;
         window.refFirebase = ref;
         window.pushFirebase = push;
@@ -72,7 +70,6 @@
         <div style="font-size: 5rem; margin-bottom: 24px;">📢</div>
         <h1 class="titulo-boas-vindas">Mural de Avisos</h1>
         <p class="subtitulo-boas-vindas">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.</p>
-        <!-- CONSERTO 1: O clique agora esconde a introdução azul e abre o mural público na hora -->
         <button type="button" onclick="this.parentElement.style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important'); buscarAvisosDoBanco();" class="btn-laranja">
             Acessar Mural
         </button>
@@ -87,16 +84,17 @@
             </div>
             <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso específico..." oninput="filtrarAvisosNaTela()">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <!-- CONSERTO 2: O clique oculta o mural e abre a tela flutuante de login com display flex estruturado -->
-                <button type="button" onclick="document.getElementById('id-tela-mural').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-login').style.setProperty('display', 'flex', 'important'); alternarFormularios('login');" class="btn-restrita">⚙️ Área Restrita</button>
+                <button type="button" onclick="document.getElementById('id-tela-mural').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-login').style.setProperty('display', 'flex', 'important');" class="btn-restrita">⚙️ Área Restrita</button>
                 <button type="button" onclick="irParaInicial()" class="btn-voltar">Voltar ↩</button>
             </div>
         </header>
         <main><div id="id-mural-container" class="grid-mural"></div></main>
     </div>
 
-    <!-- ==================== 3. TELA DE LOGIN ==================== -->
+    <!-- ==================== 3. TELA DE LOGIN / CADASTRO ==================== -->
     <div id="id-tela-login" class="tela-sistema flex-center">
+        
+        <!-- Formulário de LOGIN -->
         <div id="box-login-container" class="box-login">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">🔐</span>
@@ -108,11 +106,14 @@
                 <div class="input-grupo"><label>Senha</label><input type="password" id="login-password" required></div>
                 <button type="submit" class="btn-enviar">Entrar no Gerenciador</button>
             </form>
-            <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">Novo? <button type="button" onclick="alternarFormularios('cadastro')" style="color:#2563eb; font-weight:bold; background:none; border:none; cursor:pointer; text-decoration:underline;">Cadastre-se</button></p>
-            <!-- CONSERTO 3: Botão de voltar fecha a caixa branca de login e faz o caminho reabrindo o mural público -->
+            <!-- ALTERADO: O clique agora oculta o login e mostra o cadastro instantaneamente por comando inline -->
+            <p style="text-align: center; font-size: 0.875rem; margin-top: 20px; color: #475569;">
+                Novo? <button type="button" onclick="document.getElementById('box-login-container').style.setProperty('display', 'none', 'important'); document.getElementById('box-cadastro-container').style.setProperty('display', 'block', 'important');" style="color:#2563eb; font-weight:bold; background:none; border:none; cursor:pointer; text-decoration:underline;">Cadastre-se</button>
+            </p>
             <button type="button" onclick="document.getElementById('id-tela-login').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important');" class="btn-voltar" style="margin-top:20px; width:100%;">← Voltar ao Mural</button>
         </div>
 
+        <!-- Formulário de CADASTRO -->
         <div id="box-cadastro-container" class="box-login" style="display: none;">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">👨‍🏫</span>
@@ -122,3 +123,4 @@
                 <div class="input-grupo"><label>Usuário</label><input type="text" id="cad-username" required></div>
                 <div class="input-grupo"><label>E-mail</label><input type="email" id="cad-email" required></div>
                 <div class="input-grupo"><label>Senha</label><input type="password" id="cad-password" required></div>
+                <div class="input-grupo"><label style="color:#c2410c;">🔑 Chave Administrativa</label><input type="password" id="cad-chave" required placeholder="COORDENACAO2026"></div>
