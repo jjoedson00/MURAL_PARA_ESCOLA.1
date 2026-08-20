@@ -113,8 +113,8 @@
             <button type="button" onclick="document.getElementById('id-tela-login').style.setProperty('display', 'none', 'important'); document.getElementById('id-tela-mural').style.setProperty('display', 'block', 'important');" class="btn-voltar" style="margin-top:20px; width:100%;">← Voltar ao Mural</button>
         </div>
 
-        <!-- Formulário de CADASTRO (CORRIGIDO: Removido o campo secreto e alinhada a div externa para o botão verde aparecer) -->
-        <div id="box-cadastro-container" class="box-login">
+        <!-- Formulário de CADASTRO (CORRIGIDO: Inicializado com display: none inline para corrigir a exibição dupla) -->
+        <div id="box-cadastro-container" class="box-login" style="display: none;">
             <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 2.5rem;">👨‍🏫</span>
                 <h2 style="font-size: 1.5rem; font-weight: 900; margin-top: 6px;">Registro do Corpo Docente</h2>
@@ -124,6 +124,5 @@
                 <div class="input-grupo"><label>E-mail</label><input type="email" id="cad-email" required></div>
                 <div class="input-grupo"><label>Senha</label><input type="password" id="cad-password" required></div>
                 
-                <!-- BOTÃO VERDE RECUPERADO COM SUCESSO -->
                 <button type="submit" class="btn-enviar" style="background-color:#16a34a;">Validar e Cadastrar</button>
             </form>
