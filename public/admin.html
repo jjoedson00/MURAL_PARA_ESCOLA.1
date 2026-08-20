@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gerenciador do Mural</title>
+    
+    <!-- Módulos oficiais do Firebase do Google -->
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, push, set, get, remove } from "https://gstatic.com";
+
+        const firebaseConfig = { databaseURL: "https://firebaseio.com" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.dbFirebase = db;
+        window.refFirebase = ref;
+        window.pushFirebase = push;
+        window.setFirebase = set;
+        window.getFirebase = get;
+        window.removeFirebase = remove;
+    </script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; padding: 24px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 32px; width: 100%; max-width: 1200px; }
+        .container-admin { width: 100%; max-width: 1200px; display: grid; grid-template-columns: 1fr; gap: 32px; }
+        @media (min-width: 768px) { .container-admin { grid-template-columns: 400px 1fr; } }
+        .box-card { background-color: #1e293b; border: 1px solid #334155; padding: 32px; border-radius: 24px; height: fit-content; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 24px; color: #ffffff; letter-spacing: -0.02em; }
+        .input-grupo { margin-bottom: 20px; }
+        .input-grupo label { display: block; font-size: 0.95rem; font-weight: 700; color: #94a3b8; margin-bottom: 8px; }
+        .input-grupo input, .input-grupo textarea { width: 100%; padding: 14px; border: 1px solid #475569; border-radius: 12px; background-color: #0f172a; color: white; font-size: 1rem; outline: none; }
+        .input-grupo input:focus, .input-grupo textarea:focus { border-color: #38bdf8; }
+        .btn-postar { width: 100%; background-color: #16a34a; color: white; font-weight: bold; padding: 16px; border: none; border-radius: 12px; cursor: pointer; font-size: 1.05rem; transition: background 0.2s; }
+        .btn-postar:hover { background-color: #15803d; }
+        .lista-gerenciamento { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        .item-aviso { background-color: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-apagar { background-color: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+        .btn-apagar:hover { background-color: #dc2626; }
+        .link-sair { color: #94a3b8; text-decoration: none; font-weight: 700; font-size: 1rem; transition: color 0.2s; }
+        .link-sair:hover { color: #f8fafc; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.03em;">⚙️ Painel do Corpo Docente</h1>
+        <a href="mural.html" class="link-sair">Sair do Painel →</a>
+    </header>
+
+    <div class="container-admin">
+        <div class="box-card">
+            <h2>📢 Criar Comunicado</h2>
+            <form id="form-criar-aviso">
+                <div class="input-grupo">
+                    <label>Título do Aviso</label>
+                    <input type="text" id="aviso-titulo" required placeholder="Ex: Reunião de Conselho">
+                </div>
+                <div class="input-grupo">
+                    <label>Conteúdo do Aviso</label>
+                    <textarea id="aviso-conteudo" rows="6" required placeholder="Digite as informações detalhadas aqui..."></textarea>
+                </div>
+                <button type="submit" class="btn-postar">Publicar no Mural</button>
+            </form>
+        </div>
+
+        <div>
+            <h2 style="font-size: 1.4rem; margin-bottom: 24px;">Gerenciar Comunicados Ativos</h2>
+            <div id="lista-admin-avisos" class="lista-gerenciamento"></div>
+        </div>
+    </div>
+
+    <script>
+        const formCriar = document.getElementById('form-criar-aviso');
+        const containerLista = document.getElementById('lista-admin-avisos');
+
+        formCriar.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const titulo = document.getElementById('aviso-titulo').value;
+            const conteudo = document.getElementById('aviso-conteudo').value;
+
+            if (!window.dbFirebase) return;
+
+            const avisosRef = window.refFirebase(window.dbFirebase, 'avisos');
+            const novoAvisoRef = window.pushFirebase(avisosRef);
+
+            window.setFirebase(novoAvisoRef, {
+                titulo: titulo,
+                conteudo: conteudo
+            }).then(() => {
+                alert('✅ Aviso publicado com sucesso no mural público!');
+                formCriar.reset();
+                carregarAvisosAdmin();
+            });
+        });
+
+        function carregarAvisosAdmin() {
+            setTimeout(() => {
+                if (!window.dbFirebase) return;
+                const dbRef = window.refFirebase(window.dbFirebase, 'avisos');
+                window.getFirebase(dbRef).then((snapshot) => {
+                    containerLista.innerHTML = '';
+                    if (snapshot.exists()) {
+                        snapshot.forEach((childSnapshot) => {
+                            const chaveAviso = childSnapshot.key;
+                            const aviso = childSnapshot.val();
+
+                            containerLista.innerHTML += `
+                                <div class="item-aviso">
+                                    <div style="flex-grow: 1;">
+                                        <h3 style="font-size:1.15rem; font-weight:700; color:white;">${aviso.titulo}</h3>
+                                        <p style="font-size:0.95rem; color:#cbd5e1; margin-top:6px; line-height:1.5; white-space:pre-wrap;">${aviso.conteudo}</p>
+                                    </div>
+                                    <button class="btn-apagar" onclick="deletarAviso('${chaveAviso}')">Apagar</button>
+                                </div>`;
+                        });
+                    } else {
+                        containerLista.innerHTML = '<p style="color:#64748b; font-style:italic; font-size:1.05rem;">Nenhum comunicado ativo publicado no momento.</p>';
+                    }
+                });
+            }, 800);
+        }
+
+        window.deletarAviso = function(chave) {
+            if (confirm('Tem certeza que deseja remover este comunicado de forma definitiva?')) {
+                const avisoRef = window.refFirebase(window.dbFirebase, 'avisos/' + chave);
+                window.removeFirebase(avisoRef).then(() => {
+                    alert('🗑️ Comunicado removido com sucesso!');
+                    carregarAvisosAdmin();
+                });
+            }
+        }
+
+        carregarAvisosAdmin();
+    </script>
+</body>
+</html>
