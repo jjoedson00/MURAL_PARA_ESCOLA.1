@@ -18,52 +18,63 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 
 let db;
 (async () => {
-    const SQL = await initSqlJs();
-    
-    if (fs.existsSync(DATABASE_PATH)) {
-        const fileBuffer = fs.readFileSync(DATABASE_PATH);
-        db = new SQL.Database(fileBuffer);
-    } else {
-        db = new SQL.Database();
-    }
+    try {
+        const SQL = await initSqlJs();
+        
+        if (fs.existsSync(DATABASE_PATH)) {
+            const fileBuffer = fs.readFileSync(DATABASE_PATH);
+            db = new SQL.Database(fileBuffer);
+            console.log('📦 Banco de dados SQLite (sql.js) carregado com sucesso.');
+        } else {
+            db = new SQL.Database();
+            console.log('📦 Novo banco de dados criado na memória.');
+        }
 
-    // Tabela com travas UNIQUE para username e email
-    db.run(`
-        CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            email TEXT UNIQUE,
-            password TEXT
-        );
-    `);
-    
-    db.run(`
-        CREATE TABLE IF NOT EXISTS avisos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            titulo TEXT,
-            conteudo TEXT,
-            imagem TEXT,
-            data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                email TEXT UNIQUE,
+                password TEXT
+            );
+        `);
+        
+        db.run(`
+            CREATE TABLE IF NOT EXISTS avisos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                titulo TEXT,
+                conteudo TEXT,
+                imagem TEXT,
+                data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
 
-    // Criar administrador master se não existir
-    const stmt = db.prepare('SELECT * FROM usuarios WHERE username = :user');
-    const adminExiste = stmt.getAsObject({ ':user': 'admin' });
-    stmt.free();
+        // Conta master master padrão pronta
+        const stmt = db.prepare('SELECT * FROM usuarios WHERE username = :user');
+        const adminExiste = stmt.getAsObject({ ':user': 'admin' });
+        stmt.free();
 
-    if (!adminExiste.id) {
-        const hash = await bcrypt.hash('admin123', 10);
-        db.run('INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)', ['admin', 'admin@escola.com', hash]);
-        salvarBancoNoDisco();
-        console.log('🛡️ Conta master padrão pronta: admin / admin123');
+        if (!adminExiste.id) {
+            const hash = await bcrypt.hash('admin123', 10);
+            db.run('INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)', ['admin', 'admin@escola.com', hash]);
+            salvarBancoNoDisco();
+            console.log('🛡️ Conta master padrão pronta: admin / admin123');
+        }
+    } catch (err) {
+        console.error("❌ Falha crítica ao iniciar o banco sql.js:", err);
     }
 })();
 
 function salvarBancoNoDisco() {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(DATABASE_PATH, buffer);
+    try {
+        if (db) {
+            const data = db.export();
+            const buffer = Buffer.from(data);
+            fs.writeFileSync(DATABASE_PATH, buffer);
+        }
+    } catch (err) {
+        console.error("❌ Falha ao salvar arquivo no disco:", err);
+    }
 }
 
 app.use(express.json());
@@ -86,66 +97,55 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// BLOQUEADOR: Impede alunos de acessarem ou enviarem comandos de postagem
 const requerAutenticacao = (req, res, next) => {
     if (req.session.usuarioId) return next();
-    res.status(401).json({ erro: 'Acesso negado. Apenas professores autenticados.' });
+    res.status(401).json({ erro: 'Não autorizado. Faça o login primeiro.' });
 };
 
-// ==================== ROTAS DO SISTEMA ====================
+// ==================== ROTAS DA API ====================
 
-// Cadastro Seguro (Checa duplicidade de usuário/e-mail e exige chave da coordenação)
 app.post('/api/cadastro', async (req, res) => {
     const { username, email, password, chaveAcesso } = req.body;
 
     if (chaveAcesso !== 'COORDENACAO2026') {
-        return res.status(403).json({ erro: 'Chave Administrativa inválida! Cadastro rejeitado.' });
-    }
-
-    if (!username || !email || !password) {
-        return res.status(400).json({ erro: 'Preencha todos os campos obrigatórios.' });
+        return res.status(403).json({ erro: 'Chave Administrativa inválida!' });
     }
 
     try {
-        // Validação de Usuário Único
         const stmtUser = db.prepare('SELECT * FROM usuarios WHERE username = :user');
         const userExiste = stmtUser.getAsObject({ ':user': username });
         stmtUser.free();
-        if (userExiste.id) {
-            return res.status(400).json({ erro: 'Este nome de usuário já está cadastrado.' });
-        }
+        if (userExiste.id) return res.status(400).json({ erro: 'Usuário já cadastrado.' });
 
-        // Validação de E-mail Único
         const stmtEmail = db.prepare('SELECT * FROM usuarios WHERE email = :email');
         const emailExiste = stmtEmail.getAsObject({ ':email': email });
         stmtEmail.free();
-        if (emailExiste.id) {
-            return res.status(400).json({ erro: 'Este e-mail institucional já está cadastrado.' });
-        }
+        if (emailExiste.id) return res.status(400).json({ erro: 'E-mail já cadastrado.' });
 
         const hash = await bcrypt.hash(password, 10);
         db.run('INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)', [username, email, hash]);
         salvarBancoNoDisco();
-        
         res.json({ sucesso: true });
     } catch (err) {
-        res.status(500).json({ erro: 'Erro interno ao salvar docente.' });
+        res.status(500).json({ erro: 'Erro no cadastro.' });
     }
 });
 
-// Login Administrativo (Aceita usuário ou e-mail)
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
-    
-    const stmt = db.prepare('SELECT * FROM usuarios WHERE username = :user OR email = :user');
-    const usuario = stmt.getAsObject({ ':user': username });
-    stmt.free();
+    try {
+        const stmt = db.prepare('SELECT * FROM usuarios WHERE username = :user OR email = :user');
+        const usuario = stmt.getAsObject({ ':user': username });
+        stmt.free();
 
-    if (usuario.id && await bcrypt.compare(password, usuario.password)) {
-        req.session.usuarioId = usuario.id;
-        return res.json({ sucesso: true });
+        if (usuario.id && await bcrypt.compare(password, usuario.password)) {
+            req.session.usuarioId = usuario.id;
+            return res.json({ sucesso: true });
+        }
+        res.status(400).json({ erro: 'Usuário ou senha incorretos.' });
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro interno ao processar login.' });
     }
-    res.status(400).json({ erro: 'Credenciais administrativas incorretas.' });
 });
 
 app.post('/api/logout', (req, res) => {
@@ -158,23 +158,26 @@ app.get('/api/checar-sessao', (req, res) => {
 });
 
 app.get('/api/avisos', (req, res) => {
-    const avisos = [];
-    const stmt = db.prepare('SELECT * FROM avisos ORDER BY data_criacao DESC');
-    while(stmt.step()) {
-        avisos.push(stmt.getAsObject());
+    try {
+        const avisos = [];
+        if (db) {
+            const stmt = db.prepare('SELECT * FROM avisos ORDER BY data_criacao DESC');
+            while(stmt.step()) {
+                avisos.push(stmt.getAsObject());
+            }
+            stmt.free();
+        }
+        res.json(avisos);
+    } catch (err) {
+        res.status(500).json([]);
     }
-    stmt.free();
-    res.json(avisos);
 });
 
-// Postagem de Aviso Protegida (Apenas Professores/Coordenação/Direção logados)
 app.post('/api/avisos', requerAutenticacao, upload.single('imagem'), async (req, res) => {
     const { titulo, conteudo } = req.body;
     const imagem = req.file ? `/uploads/${req.file.filename}` : null;
 
-    if (!titulo || !conteudo) {
-        return res.status(400).json({ erro: 'Título e conteúdo são obrigatórios.' });
-    }
+    if (!titulo || !conteudo) return res.status(400).json({ erro: 'Campos obrigatórios ausentes.' });
 
     db.run('INSERT INTO avisos (titulo, conteudo, imagem) VALUES (?, ?, ?)', [titulo, conteudo, imagem]);
     salvarBancoNoDisco();
@@ -183,7 +186,6 @@ app.post('/api/avisos', requerAutenticacao, upload.single('imagem'), async (req,
 
 app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
     const { id } = req.params;
-    
     const stmt = db.prepare('SELECT imagem FROM avisos WHERE id = :id');
     const aviso = stmt.getAsObject({ ':id': id });
     stmt.free();
@@ -200,6 +202,4 @@ app.delete('/api/avisos/:id', requerAutenticacao, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Mural Digital Escolar online na porta ${PORT}`);
-});
+app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Mural online na porta ${PORT}`));
