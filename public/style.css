@@ -21,184 +21,141 @@ body {
     color: var(--text-dark);
 }
 
-/* --- MURAL EXPANDIDO PARA MONITORES --- */
-.mural-container {
-    width: 96%;             
-    max-width: 2200px;      
-    margin: 30px auto;
-    padding: 0 10px;
-}
-
-/* --- CAIXA DE PUBLICAÇÃO AMPLIADA (CORREÇÃO DA SUA IMAGEM) --- */
-#areaCriacao {
+/* --- NOVO CONTAINER ULTRA AMPLO --- */
+.mural-container-gigante {
     width: 96% !important;
-    max-width: 1400px !important; /* Aumentado drasticamente para ocupar a tela */
-    margin: 40px auto !important;
+    max-width: 1800px !important;
+    margin: 30px auto !important;
+    padding: 0 10px !important;
 }
 
-#areaCriacao .form-box {
-    max-width: 100% !important;
-    padding: 50px !important;    /* Mais espaçamento interno */
-    border-radius: 20px;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+/* --- CAIXA DE PUBLICAÇÃO ULTRA LARGA --- */
+.painel-publicacao-gigante {
+    background: var(--card-bg) !important;
+    width: 100% !important;
+    padding: 50px !important; /* Espaço interno bem grande */
+    border-radius: 20px !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    margin-bottom: 40px !important;
 }
 
-#areaCriacao h3 {
-    font-size: 2.2rem !important; /* Título "Publicar Novo Aviso" bem maior */
+.painel-publicacao-gigante h3 {
+    font-size: 2.4rem !important;
+    color: #1e3c72 !important;
     margin-bottom: 25px !important;
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
-#areaCriacao .input-group {
-    margin-bottom: 30px;
+.campo-grupo-gigante {
+    margin-bottom: 25px !important;
 }
 
-#areaCriacao .input-group label {
-    font-size: 1.3rem;          /* Letras dos campos maiores */
-    margin-bottom: 12px;
-    color: #222;
+.campo-grupo-gigante label {
+    display: block !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 12px !important;
+    color: #222 !important;
 }
 
-#areaCriacao .input-group input[type="text"], 
-#areaCriacao .input-group textarea {
-    font-size: 1.25rem;         /* Texto digitado maior */
-    padding: 16px;              /* Caixas mais altas */
-    border: 2px solid #ccc;
-    border-radius: 10px;
+.campo-grupo-gigante input[type="text"],
+.campo-grupo-gigante textarea {
+    width: 100% !important;
+    font-size: 1.3rem !important;
+    padding: 18px !important;
+    border: 2.5px solid #bbb !important;
+    border-radius: 12px !important;
 }
 
-#areaCriacao .input-group input[type="file"] {
-    font-size: 1.2rem;
-    padding: 10px;
+.campo-grupo-gigante input[type="file"] {
+    font-size: 1.2rem !important;
+    padding: 10px !important;
 }
 
-#areaCriacao .btn-primary {
-    font-size: 1.4rem !important; /* Botão de postar gigante */
+.btn-postar-gigante {
+    background-color: var(--primary) !important;
+    color: white !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
     padding: 20px !important;
-    width: 100%;
-    border-radius: 12px;
-}
-
-/* --- GRID DE EXIBIÇÃO DOS AVISOS --- */
-.grid-avisos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); 
-    gap: 40px;              
-}
-
-.card-aviso {
-    background: var(--card-bg);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.card-aviso img {
-    width: 100%;
-    max-height: 400px;      
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 35px;          
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.card-body h3 {
-    font-size: 2.2rem;      
-    margin-bottom: 18px;
-    color: #1e3c72;
-    font-weight: 700;
-}
-
-.card-body p {
-    font-size: 1.4rem;      
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-bottom: 25px;
-    flex-grow: 1;
-    white-space: pre-line;
-}
-
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1rem;      
-    color: #777;
-    border-top: 2px solid #f0f0f0;
-    padding-top: 20px;
-}
-
-/* --- TELA INICIAL --- */
-.hero-container {
-    background: var(--bg-gradient);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 20px;
-}
-
-.hero-content h1 { font-size: 4.5rem; margin-bottom: 20px; }
-.hero-content p { font-size: 1.8rem; margin-bottom: 45px; opacity: 0.9; }
-
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
-    padding: 18px 55px;     
-    border: none;
-    border-radius: 40px;
-    font-size: 1.3rem;
-    font-weight: bold;
+    width: 100% !important;
+    border: none !important;
+    border-radius: 12px !important;
     cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-dark);
+.btn-postar-gigante:hover {
+    background-color: var(--primary-dark) !important;
 }
 
-/* --- FORMULÁRIOS DE ACESSO (LOGIN / CADASTRO) --- */
-.form-screen {
-    background: var(--bg-gradient);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+/* --- GRID DE AVISOS AMPLIADO --- */
+.grid-avisos-gigante {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)) !important;
+    gap: 40px !important;
+    margin-top: 30px !important;
 }
 
-.form-box {
-    background: var(--card-bg);
-    padding: 45px;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 550px;       
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+.card-aviso-gigante {
+    background: var(--card-bg) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-/* --- NAVBAR --- */
+.card-aviso-gigante img {
+    width: 100% !important;
+    max-height: 420px !important;
+    object-fit: cover !important;
+}
+
+.card-body-gigante {
+    padding: 35px !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.card-body-gigante h3 {
+    font-size: 2.2rem !important;
+    color: #1e3c72 !important;
+    margin-bottom: 15px !important;
+    font-weight: 700 !important;
+}
+
+.card-body-gigante p {
+    font-size: 1.4rem !important;
+    color: var(--text-muted) !important;
+    line-height: 1.7 !important;
+    margin-bottom: 25px !important;
+    white-space: pre-line !important;
+}
+
+.card-footer-gigante {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 1.1rem !important;
+    color: #666 !important;
+    border-top: 2px solid #f0f0f0 !important;
+    padding-top: 20px !important;
+}
+
+/* --- NAVBAR GIGANTE --- */
 .navbar {
     background: #1e3c72;
     color: white;
-    padding: 25px 50px;     
+    padding: 25px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 6px 15px rgba(0,0,0,0.12);
 }
 
-.navbar h2 { font-size: 2rem; }
-.nav-actions { display: flex; gap: 20px; align-items: center; font-size: 1.2rem; }
+.navbar h2 { font-size: 2.2rem; }
+.nav-actions { display: flex; gap: 15px; align-items: center; font-size: 1.2rem; }
 
 .btn-secundary {
     background: transparent;
@@ -212,24 +169,24 @@ body {
     font-size: 1.1rem;
 }
 
-.btn-delete {
-    background: var(--danger);
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1.1rem;
+.btn-delete-professor {
+    background: var(--danger) !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
 }
 
-/* --- RESPONSIVIDADE ADAPTATIVA --- */
-@media (max-width: 1024px) {
-    #areaCriacao { max-width: 100% !important; }
-    .grid-avisos { grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
-}
-
-@media (max-width: 600px) {
-    .grid-avisos { grid-template-columns: 1fr; }
-    .navbar { flex-direction: column; gap: 15px; text-align: center; }
+/* --- BARRA DE PESQUISA --- */
+.search-container { width: 100%; margin-bottom: 30px; }
+.search-input {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.3rem;
+    border: 2.5px solid #1e3c72;
+    border-radius: 12px;
+    outline: none;
 }

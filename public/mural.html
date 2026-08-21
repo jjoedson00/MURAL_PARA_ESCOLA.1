@@ -5,79 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Estilos adicionais para a barra de pesquisa gigante */
-        .search-container {
-            width: 96%;
-            max-width: 1400px;
-            margin: 20px auto;
-            padding: 0 10px;
-        }
-        .search-input {
-            width: 100%;
-            padding: 18px;
-            font-size: 1.3rem;
-            border: 2px solid #1e3c72;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            outline: none;
-            transition: box-shadow 0.2s;
-        }
-        .search-input:focus {
-            box-shadow: 0 6px 20px rgba(255,140,0,0.25);
-            border-color: #ff8c00;
-        }
-    </style>
 </head>
 <body>
 
-    <!-- Barra de Navegação Superior -->
+    <!-- Barra Superior com botão de Voltar/Atualizar -->
     <nav class="navbar">
         <h2>Mural de Avisos Digitais</h2>
         <div class="nav-actions" id="navActions">
+            <button onclick="carregarAvisos()" class="btn-secundary">🔄 Ver Mural (Atualizar)</button>
             <a href="login.html" class="btn-secundary">Acesso Administrativo</a>
         </div>
     </nav>
 
-    <!-- Área de Publicação (Aparece em tamanho grande no topo se estiver logado) -->
-    <div class="mural-container" id="areaCriacao" style="display: none;">
-        <div class="form-box">
+    <div class="mural-container-gigante">
+        
+        <!-- Área de Publicação Gigante (Visível apenas para logados) -->
+        <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
             <h3>Publicar Novo Aviso</h3>
             <form id="avisoForm" enctype="multipart/form-data">
-                <div class="input-group">
+                <div class="campo-grupo-gigante">
                     <label>Título do Aviso</label>
-                    <input type="text" id="tituloAviso" name="titulo" placeholder="Digite um título claro" required>
+                    <input type="text" id="tituloAviso" name="titulo" placeholder="Digite um título bem visível" required>
                 </div>
-                <div class="input-group">
+                <div class="campo-grupo-gigante">
                     <label>Conteúdo / Texto do Comunicado</label>
-                    <textarea id="conteudoAviso" name="conteudo" rows="4" placeholder="Escreva os detalhes do aviso aqui..." required></textarea>
+                    <textarea id="conteudoAviso" name="conteudo" rows="5" placeholder="Escreva os detalhes do aviso aqui..." required></textarea>
                 </div>
-                <div class="input-group">
+                <div class="campo-grupo-gigante">
                     <label>Imagem de Referência (Opcional)</label>
                     <input type="file" id="imagemAviso" name="imagem" accept="image/*">
                 </div>
-                <button type="submit" class="btn-primary">Postar no Mural</button>
+                <button type="submit" class="btn-postar-gigante">Postar no Mural</button>
             </form>
         </div>
-    </div>
 
-    <!-- Barra de Pesquisa Integrada em Tempo Real -->
-    <div class="search-container">
-        <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Digite aqui para pesquisar avisos por título ou conteúdo...">
-    </div>
-
-    <!-- Grid de Exibição dos Avisos (Aparece logo abaixo) -->
-    <main class="mural-container">
-        <div class="grid-avisos" id="muralGrid">
-            <!-- Os avisos salvos no banco entram aqui via JavaScript -->
+        <!-- Barra de Pesquisa -->
+        <div class="search-container">
+            <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
-    </main>
+
+        <!-- Grid Onde Aparecem os Avisos Postados -->
+        <div class="grid-avisos-gigante" id="muralGrid">
+            <!-- Inseridos via JS -->
+        </div>
+    </div>
 
     <script>
         let usuarioLogado = false;
-        let todosOsAvisos = []; // Guarda a lista vinda do banco para pesquisar rápido
+        let todosOsAvisos = [];
 
-        // 1. Checa se o professor está logado para liberar a área de postar e apagar
         async function checarStatus() {
             try {
                 const res = await fetch('/api/usuario-atual');
@@ -88,53 +64,56 @@
 
                 if (status.logado) {
                     usuarioLogado = true;
-                    areaCriacao.style.display = 'block'; // Mostra a caixa de criação no topo
+                    areaCriacao.style.display = 'block'; 
                     navActions.innerHTML = `
-                        <span style="margin-right: 10px;">Olá, Prof. <b>${status.nome}</b></span>
-                        <button onclick="logout()" class="btn-secundary" style="background:#dc3545; border:none;">Sair</button>
+                        <button onclick="carregarAvisos()" class="btn-secundary">📋 Voltar para o Mural</button>
+                        <span style="color: white; font-weight: bold; margin-left: 10px;">Prof. ${status.nome}</span>
+                        <button onclick="logout()" class="btn-secundary" style="background:#dc3545; border:none; margin-left:10px;">Sair</button>
                     `;
                 }
             } catch (err) {
-                console.error("Erro ao verificar login:", err);
+                console.error(err);
             }
-            // Carrega os avisos logo em seguida de forma automática
             carregarAvisos();
         }
 
-        // 2. Busca os avisos no banco de dados e renderiza na tela automaticamente
         async function carregarAvisos() {
             try {
                 const res = await fetch('/api/avisos');
                 todosOsAvisos = await res.json();
                 exibirAvisos(todosOsAvisos);
+                
+                // Rola a tela suavemente para baixo para focar nos avisos pós-postagem
+                if(usuarioLogado) {
+                    window.scrollTo({ top: document.getElementById('campoPesquisa').offsetTop - 20, behavior: 'smooth' });
+                }
             } catch (err) {
-                console.error("Erro ao buscar avisos:", err);
+                console.error(err);
             }
         }
 
-        // 3. Função responsável por montar os cards estruturados na tela
         function exibirAvisos(listaDeAvisos) {
             const grid = document.getElementById('muralGrid');
             grid.innerHTML = '';
 
             if (listaDeAvisos.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#666; font-size: 1.3rem; margin-top: 20px;">Nenhum aviso correspondente encontrado.</p>';
+                grid.innerHTML = '<p style="text-align:center; color:#666; font-size: 1.4rem; grid-column: 1/-1;">Nenhum aviso postado.</p>';
                 return;
             }
 
             listaDeAvisos.forEach(aviso => {
                 const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
                 const card = document.createElement('div');
-                card.className = 'card-aviso';
+                card.className = 'card-aviso-gigante';
                 
                 card.innerHTML = `
-                    ${aviso.imagem ? `<img src="${aviso.imagem}" alt="Imagem de Referência">` : ''}
-                    <div class="card-body">
+                    ${aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : ''}
+                    <div class="card-body-gigante">
                         <h3>${aviso.titulo}</h3>
                         <p>${aviso.conteudo}</p>
-                        <div class="card-footer">
+                        <div class="card-footer-gigante">
                             <span>Postado em: ${dataFormatada}</span>
-                            ${usuarioLogado ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : ''}
+                            ${usuarioLogado ? `<button class="btn-delete-professor" onclick="deletarAviso(${aviso.id})">🗑️ Apagar Aviso</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -142,21 +121,14 @@
             });
         }
 
-        // 4. Mecanismo de Pesquisa Inteligente por digitação
         document.getElementById('campoPesquisa').addEventListener('input', (e) => {
-            const termoPesquisa = e.target.value.toLowerCase().trim();
-            
-            // Filtra os avisos se o termo bater com o título ou corpo do texto
-            const avisosFiltrados = todosOsAvisos.filter(aviso => {
-                const tituloBate = aviso.titulo.toLowerCase().includes(termoPesquisa);
-                const conteudoBate = aviso.conteudo.toLowerCase().includes(termoPesquisa);
-                return tituloBate || conteudoBate;
-            });
-
-            exibirAvisos(avisosFiltrados);
+            const termo = e.target.value.toLowerCase().trim();
+            const filtrados = todosOsAvisos.filter(aviso => 
+                aviso.titulo.toLowerCase().includes(termo) || aviso.conteudo.toLowerCase().includes(termo)
+            );
+            exibirAvisos(filtrados);
         });
 
-        // 5. Enviar um novo aviso sem recarregar a página inteira
         document.getElementById('avisoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -167,31 +139,25 @@
             });
 
             if (res.ok) {
-                e.target.reset(); // Limpa as caixas preenchidas
-                carregarAvisos(); // Recarrega os avisos inserindo o novo no topo na hora!
-            } else {
-                alert('Ocorreu um erro ao postar o aviso no banco de dados.');
+                e.target.reset();
+                alert('Aviso postado com sucesso!');
+                carregarAvisos(); 
             }
         });
 
-        // 6. Apagar aviso direto da tela
         async function deletarAviso(id) {
-            if (confirm('Tem certeza de que deseja apagar permanentemente este aviso?')) {
+            if (confirm('Deseja apagar permanentemente este aviso do mural escolar?')) {
                 const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
                 if (res.ok) carregarAvisos();
             }
         }
 
-        // 7. Efetuar logout voluntário
         async function logout() {
             await fetch('/api/logout');
             window.location.reload();
         }
 
-        // Dispara a checagem automática assim que a página abre no computador/celular
         checarStatus();
-        
-        // Atualização automática silenciosa em segundo plano a cada 30 segundos (útil para Monitores/TVs da escola)
         setInterval(carregarAvisos, 30000);
     </script>
 </body>
