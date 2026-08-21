@@ -57,6 +57,7 @@
             const senha = document.getElementById('senha').value;
             const caixaMensagem = document.getElementById('mensagemFeedback');
             caixaMensagem.style.display = 'none';
+
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST',
@@ -64,15 +65,17 @@
                     body: JSON.stringify({ email, senha })
                 });
                 const dados = await res.json();
-                if (dados.sucesso) {
+                
+                if (dados.sucesso && dados.usuario) {
+                    // Armazena com segurança na memória do navegador
                     localStorage.setItem('professor_conectado', JSON.stringify(dados.usuario));
-                    // Redirecionamento relativo corrigido para o Render
-                    window.location.href = 'mural.html'; 
+                    // Força a navegação imediata mudando o link do navegador de forma direta
+                    window.location.replace('mural.html');
                 } else {
-                    caixaMensagem.textContent = dados.erro;
+                    caixaMensagem.textContent = dados.erro || 'Credenciais inválidas.';
                     caixaMensagem.style.display = 'block';
                 }
-            } catch {
+            } catch (err) {
                 caixaMensagem.textContent = 'Erro ao se conectar com o servidor.';
                 caixaMensagem.style.display = 'block';
             }
