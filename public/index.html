@@ -1,101 +1,59 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mural de Avisos Escolares - Boas-Vindas</title>
-    <style>
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: system-ui, -apple-system, sans-serif; 
-        }
-        
-        /* Ocupa a tela cheia e centraliza tudo em qualquer aparelho (TV, PC, Celular) */
-        body { 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-        }
-
-        /* CONSERTO RESPONSIVO: Fundo gradiente com largura flexível e padding adaptável */
-        .tela-inicial { 
-            background: linear-gradient(135deg, #1d4ed8, #1e1b4b); 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 40px 24px; 
-            text-align: center; 
-        }
-
-        /* Ícone grande e destacado */
-        .icone-mural {
-            font-size: clamp(4rem, 10vh, 6rem); /* Tamanho dinâmico conforme a tela */
-            margin-bottom: 24px;
-            animation: bounce 2s infinite;
-        }
-
-        /* Título expandido proporcional ao monitor */
-        .titulo { 
-            font-size: clamp(2.2rem, 5vw, 4rem); 
-            font-weight: 900; 
-            margin-bottom: 16px; 
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-            max-width: 800px;
-        }
-
-        /* Subtítulo com excelente leitura em televisores e monitores */
-        .subtitulo { 
-            color: #dbeafe; 
-            font-size: clamp(1rem, 2.5vw, 1.35rem);
-            max-width: 650px; 
-            margin-bottom: 40px; 
-            line-height: 1.6; 
-        }
-
-        /* Botão Laranja Robusto e responsivo ao clique */
-        .btn-laranja { 
-            background-color: #f97316; 
-            color: #ffffff; 
-            font-weight: bold; 
-            font-size: clamp(1.1rem, 2vw, 1.4rem); 
-            padding: clamp(14px, 2vh, 20px) clamp(36px, 5vw, 64px); 
-            border-radius: 9999px; 
-            text-decoration: none; 
-            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4); 
-            transition: all 0.2s ease; 
-            display: inline-block; 
-        }
-
-        /* Efeito de destaque ao passar o mouse */
-        .btn-laranja:hover { 
-            background-color: #ea580c; 
-            transform: scale(1.05);
-            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.6); 
-        }
-
-        /* Animação suave para o ícone */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural de Avisos</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="tela-inicial">
-        <div class="icone-mural">📢</div>
-        <h1 class="titulo">Mural Digital de Avisos</h1>
-        <p class="subtitulo">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes da nossa escola.</p>
-        <!-- LINK DIRETO COMPATÍVEL COM O SEU SISTEMA DE ARQUIVOS FÍSICOS -->
-        <a href="mural.html" class="btn-laranja">Acessar Mural</a>
+    <div class="mural-wrapper">
+        <header class="mural-header">
+            <div class="icon-container">
+                <span class="emoji-megafone">📢</span>
+            </div>
+            <h1>Mural de Avisos</h1>
+            <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
+            <a href="/login.html" class="btn-acessar">Acessar Mural</a>
+        </header>
+
+        <main class="mural-container" id="lista-avisos">
+            <p class="carregando">Conectando ao banco remoto e buscando atualizações...</p>
+        </main>
     </div>
+
+    <script>
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            try {
+                const response = await fetch('/api/avisos');
+                const avisos = await response.json();
+
+                if (avisos.length === 0) {
+                    container.innerHTML = '<p class="aviso-vazio">Nenhum aviso publicado por enquanto.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                avisos.forEach(aviso => {
+                    const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'card-aviso';
+                    card.innerHTML = `
+                        <h3>${aviso.titulo}</h3>
+                        <p>${aviso.conteudo}</p>
+                        <small>Publicado em: ${dataFormatada}</small>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Erro na busca de avisos:", error);
+                container.innerHTML = '<p class="aviso-erro">Não foi possível carregar o mural. Verifique a conexão.</p>';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarAvisos);
+    </script>
 </body>
 </html>

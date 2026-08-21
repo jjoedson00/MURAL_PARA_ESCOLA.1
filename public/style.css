@@ -1,394 +1,156 @@
-/* ==========================================================================
-   🎨 DESIGN PREMIUM MINIMALISTA - VERSÃO MAX EXPANDIDA E RESPONSIVA (TCC)
-   ========================================================================== */
-   :root {
-    --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-    --gradient-header: linear-gradient(135deg, #1e293b 0%, #334155 100%); 
-    --primary: #2563eb;       
-    --primary-hover: #1d4ed8; 
-    --accent: #334155;        
-    --danger: #ef4444;        
-    --card-bg: #f8fafc;       
-    --text-main: #0f172a;     
-    --text-muted: #64748b;    
+* {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--gradient-bg);
-    min-height: 100vh;
     margin: 0;
-    padding: 15px;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #10253c, #1a365d, #2a4365);
+    color: #ffffff;
+    min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    box-sizing: border-box;
+    align-items: flex-start;
 }
 
-/* Painel Principal (Ampliando para ocupar melhor o espaço horizontal nas telas) */
-.container {
+.mural-wrapper {
     width: 100%;
-    max-width: 650px; /* ALTERADO: Aumentado de 550px para 650px para preencher muito mais a tela */
-    background-color: var(--card-bg);
-    padding: 0 45px 50px 45px; /* ALTERADO: Aumentado o espaçamento interno lateral e inferior */
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
-    overflow: hidden; 
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-/* Extensão do Mural (Se adapta e aproveita telas grandes, monitores e TVs) */
-.container-mural {
-    max-width: 1100px !important; /* ALTERADO: Ampliado de 950px para 1100px */
-    background-color: #f1f5f9; 
-    padding: 0 50px 55px 50px !important; 
-}
-
-/* Faixa Escura do Topo perfeitamente alinhada às novas larguras */
-.form-header {
-    background: var(--gradient-header);
-    margin-left: -45px; /* Sincronizado com o novo padding do contêiner */
-    margin-right: -45px;
-    padding: 30px;
+    max-width: 800px;
     text-align: center;
-    margin-bottom: 35px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 60px 20px;
 }
 
-.container-mural .form-header {
-    margin-left: -50px;
-    margin-right: -50px;
-    padding: 35px;
+.mural-header h1 {
+    font-size: 2.8rem;
+    margin: 15px 0 10px 0;
+    font-weight: 700;
 }
 
-.form-header h2 {
-    color: #ffffff !important;
-    font-size: 26px; /* Fonte ligeiramente maior para equilibrar o painel robusto */
-    font-weight: 600;
-    margin: 0 !important;
-    letter-spacing: -0.5px;
+.mural-header p {
+    font-size: 1.1rem;
+    color: #cbd5e0;
+    margin-bottom: 25px;
 }
 
-h3 {
-    color: #1e293b;
-    font-size: 19px;
-    font-weight: 600;
-    margin-top: 20px;
+.emoji-megafone {
+    font-size: 3.5rem;
 }
 
-/* Campos de Entrada - Otimizados e elegantes */
-input, select, textarea {
-    width: 100%;
-    padding: 16px; /* ALTERADO: Aumentado de 14px para 16px para dar mais presença e conforto visual */
-    margin: 10px 0 22px 0;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    box-sizing: border-box;
-    font-size: 16px;
-    background-color: #ffffff;
-    color: var(--text-main);
-    transition: all 0.2s ease;
+.btn-acessar {
+    display: inline-block;
+    background-color: #ff8c00;
+    color: #ffffff;
+    padding: 14px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
 }
 
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.12);
-}
-
-/* Botões robustos acompanhando o novo layout expandido */
-button {
-    width: 100%;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 16px; /* Aumentado para equilibrar com os inputs */
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-button:hover {
-    background-color: var(--primary-hover);
+.btn-acessar:hover {
+    background-color: #e07b00;
     transform: translateY(-1px);
 }
 
-.hidden {
-    display: none !important;
+.mural-container {
+    margin-top: 50px;
 }
 
-p {
-    text-align: center;
-    margin-top: 25px;
-    color: var(--text-muted);
-    font-size: 15px;
-}
-
-a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* 📥 ÁREA DE POSTAGEM DO MURAL */
-#area-postagem {
-    background-color: #ffffff; 
-    border: 1px solid #e2e8f0;
-    padding: 30px;
-    border-radius: 16px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-}
-
-#area-postagem h3 {
-    color: #0f172a;
-    margin-top: 0;
-    margin-bottom: 18px;
-}
-
-#area-postagem button {
-    background-color: #1e293b; 
-}
-
-#area-postagem button:hover {
-    background-color: #0f172a;
-}
-
-/* 📄 CARDS DE VISUALIZAÇÃO DOS AVISOS (Fluídos e Amplos) */
-.aviso-card {
-    background: #ffffff; 
-    padding: 30px;
-    border-left: 5px solid #0f172a; 
+.card-aviso {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
     margin-bottom: 20px;
-    border-radius: 14px;
-    position: relative;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    box-sizing: border-box;
-    word-wrap: break-word;
-}
-
-.aviso-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-}
-
-.aviso-card h4 {
-    margin: 0 0 12px 0;
-    color: #0f172a; 
-    font-size: 22px;
-    font-weight: 700;
-    padding-right: 75px;
-}
-
-.aviso-card p {
     text-align: left;
-    margin: 0 0 16px 0;
-    color: #334155;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-aviso h3 {
+    margin-top: 0;
+    color: #ff8c00;
+    font-size: 1.4rem;
+}
+
+.card-aviso p {
+    color: #e2e8f0;
     line-height: 1.6;
-    font-size: 17px;
 }
 
-/* Imagens Escolares - Agora ganham muito mais destaque na tela cheia */
-.aviso-card img {
-    width: 100%;
-    max-height: 550px; /* Expandido para aproveitar a largura sem perder proporção */
-    object-fit: cover;
-    border-radius: 10px;
-    margin-top: 14px;
+.card-aviso small {
+    color: #a0aec0;
     display: block;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.aviso-card small {
-    color: #475569;
-    font-size: 13px;
-    background-color: #f1f5f9; 
-    padding: 6px 14px;
-    border-radius: 20px; 
-    display: inline-block;
-    margin-top: 14px;
-    font-weight: 500;
-}
-
-/* Controles Superiores */
-.controle-superior {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-top: 15px;
-    margin-bottom: -5px;
 }
 
-.btn-tv {
-    background-color: #0f172a;
-    color: #ffffff;
-    width: auto;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 8px;
-    box-shadow: none;
+.container-form {
+    background: #ffffff;
+    color: #2d3748;
+    padding: 40px 30px;
+    border-radius: 12px;
+    margin-top: 15vh;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.btn-tv:hover {
-    background-color: #334155;
+.container-form h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #1a365d;
 }
 
-.btn-delete {
-    background-color: transparent;
-    color: #94a3b8; 
-    width: auto;
-    padding: 6px 14px;
-    font-size: 13px;
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    border: 1px solid #e2e8f0;
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.campo input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e0;
     border-radius: 6px;
-    box-shadow: none;
+    font-size: 1rem;
 }
 
-.btn-delete:hover {
-    background-color: var(--danger);
-    color: white;
-    border-color: var(--danger);
+.container-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a365d;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
-.logout-lnk {
-    float: right;
-    color: #475569;
+.container-form button:hover {
+    background-color: #2a4365;
+}
+
+.container-form p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.container-form a {
+    color: #1a365d;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
-    padding: 8px 16px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    margin-top: 12px;
-    background-color: #ffffff;
-    transition: all 0.2s;
-}
-
-.logout-lnk:hover {
-    background-color: var(--danger);
-    color: white;
-    border-color: var(--danger);
-}
-
-.user-info {
-    background: #ffffff; 
-    padding: 8px 16px;
-    border-radius: 20px;
-    color: #334155;
-    font-size: 14px;
-    margin-bottom: 25px;
-    display: inline-block;
-    border: 1px solid #e2e8f0;
-    font-weight: 500;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.search-container {
-    margin-bottom: 25px;
-}
-
-#campo-busca {
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    margin-top: 8px;
-    margin-bottom: 12px;
-}
-
-#campo-busca:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
-}
-
-/* ==========================================================================
-   📺 MODO TV / TELA CHEIA TOTALMENTE MAXIMIZADO
-   ========================================================================== */
-.modo-totem-ativo {
-    max-width: 100% !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    border-radius: 0 !important;
-    padding: 50px 80px !important; /* Espaçamento expandido para televisões monumentais */
-    overflow-y: auto !important; 
-    background-color: #f1f5f9 !important; 
-}
-
-.modo-totem-ativo #area-postagem,
-.modo-totem-ativo .user-info,
-.modo-totem-ativo #linha-separadora,
-.modo-totem-ativo .logout-lnk,
-.modo-totem-ativo #titulo-lista-avisos,
-.modo-totem-ativo #area-busca-alunos {
-    display: none !important;
-}
-
-.modo-totem-ativo .form-header {
-    margin-left: -80px;
-    margin-right: -80px;
-    margin-top: -50px;
-    padding: 35px;
-}
-
-.modo-totem-ativo .form-header h2 {
-    font-size: 36px;
-}
-
-.modo-totem-ativo .aviso-card {
-    margin-bottom: 30px;
-    border-left-width: 8px;
-    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.12);
-}
-
-.modo-totem-ativo .aviso-card h4 {
-    font-size: 30px;
-}
-
-.modo-totem-ativo .aviso-card p {
-    font-size: 22px;
-}
-
-/* ==========================================================================
-   📱 ADAPTAÇÃO AUTOMÁTICA EM CELULARES (Evita estouros laterais)
-   ========================================================================== */
-@media (max-width: 600px) {
-    body {
-        padding: 8px;
-    }
-    .container {
-        padding: 0 15px 30px 15px; /* Encolhe os espaçamentos internos para caber tudo no display do celular */
-        border-radius: 12px;
-    }
-    .form-header {
-        margin-left: -15px;
-        margin-right: -15px;
-        padding: 18px;
-    }
-    .form-header h2 {
-        font-size: 20px;
-    }
-    input, select, textarea {
-        padding: 12px;
-        font-size: 15px;
-    }
-    button {
-        padding: 14px;
-        font-size: 15px;
-    }
-}
-
-@media (min-width: 601px) and (max-width: 1024px) {
-    .container-mural {
-        max-width: 780px !important;
-    }
 }

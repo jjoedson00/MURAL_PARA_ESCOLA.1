@@ -4,7 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const app = express();
-// O Render define a porta automaticamente através de process.env.PORT
 const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,22 +13,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// -------------------------------------------------------------
-// CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL do Render)
-// -------------------------------------------------------------
-// COLE AQUI a "External Database URL" que você copiou do painel do Render
-const DB_URL = "SUA_EXTERNAL_DATABASE_URL_AQUI";
+// CONEXÃO COM O BANCO DE DADOS (PostgreSQL do Render)
+const DB_URL = process.env.DATABASE_URL;
 
 const pool = new pg.Pool({
     connectionString: DB_URL,
     ssl: {
-        rejectUnauthorized: false // Obrigatório para conexões seguras no Render
+        rejectUnauthorized: false
     }
 });
 
-// Criar tabela de usuários caso ela não exista no PostgreSQL
-const criarTabela = async () => {
+// Inicialização automática das tabelas no Render
+const inicializarBanco = async () => {
     try {
+        if (!DB_URL) {
+            console.error('AVISO: A variável DATABASE_URL não foi configurada no painel do Render.');
+            return;
+        }
+        
+        // 1. Tabela de usuários para Login e Cadastro
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id SERIAL PRIMARY KEY,
@@ -37,59 +39,74 @@ const criarTabela = async () => {
                 senha TEXT NOT NULL
             )
         `);
-        console.log('Tabela de usuários verificada/criada no Render.');
+
+        // 2. Tabela de avisos para alimentar o Mural da tela azul
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS avisos (
+                id SERIAL PRIMARY KEY,
+                titulo TEXT NOT NULL,
+                conteudo TEXT NOT NULL,
+                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        
+        console.log('Banco de dados PostgreSQL conectado e tabelas prontas.');
     } catch (err) {
-        console.error('Erro ao criar tabela:', err.message);
+        console.error('Erro ao inicializar tabelas no banco:', err.message);
     }
 };
-criarTabela();
+inicializarBanco();
 
-// -------------------------------------------------------------
-// ROTAS DO SISTEMA
-// -------------------------------------------------------------
-
-// Rota de Cadastro
+// ROTAS DE LOGIN E CADASTRO
 app.post('/auth/cadastro', async (req, res) => {
-    const { email, senha } = req.body;
-
-    if (!email || !senha) {
-        return res.status(400).json({ erro: 'Preencha todos os campos.' });
-    }
+    const { email, senate } = req.body;
+    if (!email || !senate) return res.status(400).json({ erro: 'Preencha todos os campos.' });
 
     try {
-        const query = 'INSERT INTO usuarios (email, senha) VALUES ($1, $2)';
-        await pool.query(query, [email, senha]);
+        await pool.query('INSERT INTO usuarios (email, senha) VALUES ($1, $2)', [email, senate]);
         res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
     } catch (err) {
-        if (err.message.includes('unique') || err.code === '23505') {
-            return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
-        }
-        res.status(500).json({ erro: 'Erro ao salvar no banco do servidor.' });
+        if (err.code === '23505') return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
+        res.status(500).json({ erro: 'Erro interno ao salvar administrador.' });
     }
 });
 
-// Rota de Login
 app.post('/auth/login', async (req, res) => {
-    const { email, senha } = req.body;
-
-    if (!email || !senha) {
-        return res.status(400).json({ erro: 'Preencha todos os campos.' });
-    }
+    const { email, senate } = req.body;
+    if (!email || !senate) return res.status(400).json({ erro: 'Preencha todos os campos.' });
 
     try {
-        const query = 'SELECT * FROM usuarios WHERE email = $1 AND senha = $2';
-        const result = await pool.query(query, [email, senha]);
-
+        const result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2', [email, senate]);
         if (result.rows.length > 0) {
-            res.json({ autenticado: true, usuario: result.rows[0].email });
+            res.json({ autenticado: true, usuario: result.rows.email });
         } else {
-            res.status(401).json({ autenticado: false, erro: 'Credenciais incorretas.' });
+            res.status(401).json({ autenticado: false, erro: 'E-mail ou senha incorretos.' });
         }
     } catch (err) {
-        res.status(500).json({ erro: 'Erro interno no servidor remoto.' });
+        res.status(500).json({ erro: 'Erro interno na validação de login.' });
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor ativo na porta ${PORT}`);
+// ROTAS DO MURAL DE AVISOS
+app.get('/api/avisos', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM avisos ORDER BY data_criacao DESC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro ao buscar os avisos do mural.' });
+    }
 });
+
+app.post('/api/avisos', async (req, res) => {
+    const { titulo, conteudo } = req.body;
+    if (!titulo || !conteudo) return res.status(400).json({ erro: 'Preencha título e conteúdo.' });
+
+    try {
+        await pool.query('INSERT INTO avisos (titulo, conteudo) VALUES ($1, $2)', [titulo, conteudo]);
+        res.status(201).json({ mensagem: 'Aviso publicado com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ erro: 'Erro ao publicar no banco.' });
+    }
+});
+
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
