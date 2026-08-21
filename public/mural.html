@@ -5,23 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural Escolar</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Caixa de mensagem interna na tela */
+        .mensagem-postagem {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            display: none; 
+        }
+        .sucesso-postagem {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .erro-postagem {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Barra Superior com botão de Voltar/Atualizar -->
+    <!-- Barra Superior -->
     <nav class="navbar">
         <h2>Mural de Avisos Digitais</h2>
         <div class="nav-actions" id="navActions">
-            <button onclick="carregarAvisos()" class="btn-secundary">🔄 Ver Mural (Atualizar)</button>
-            <a href="login.html" class="btn-secundary">Acesso Administrativo</a>
+            <button onclick="irParaOsAvisos()" class="btn-secundary">🔄 Ver Mural (Atualizar)</button>
+            <a href="login.html" class="btn-secundary">Acesso Administrative</a>
         </div>
     </nav>
 
     <div class="mural-container-gigante">
         
-        <!-- Área de Publicação Gigante (Visível apenas para logados) -->
+        <!-- Área de Publicação Gigante -->
         <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
-            <h3>Publicar Novo Aviso</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="margin-bottom: 0;">Publicar Novo Aviso</h3>
+                <!-- Botão de Apagar Todo o Mural -->
+                <button onclick="limparTodoOMural()" class="btn-delete-professor" style="background-color: #bb2d3b !important;">🗑️ Limpar Todo o Mural</button>
+            </div>
+            
+            <!-- Alerta nativo integrado na tela (NUNCA MAIS ALERT CINZA) -->
+            <div id="mensagemFeedbackAviso" class="mensagem-postagem"></div>
+
             <form id="avisoForm" enctype="multipart/form-data">
                 <div class="campo-grupo-gigante">
                     <label>Título do Aviso</label>
@@ -40,13 +70,13 @@
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="search-container">
+        <div class="search-container" id="ancoraPesquisa">
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
 
-        <!-- Grid Onde Aparecem os Avisos Postados -->
+        <!-- Grid de Avisos -->
         <div class="grid-avisos-gigante" id="muralGrid">
-            <!-- Inseridos via JS -->
+            <!-- Os cards entram aqui -->
         </div>
     </div>
 
@@ -66,7 +96,7 @@
                     usuarioLogado = true;
                     areaCriacao.style.display = 'block'; 
                     navActions.innerHTML = `
-                        <button onclick="carregarAvisos()" class="btn-secundary">📋 Voltar para o Mural</button>
+                        <button onclick="irParaOsAvisos()" class="btn-secundary">📋 Voltar para o Mural</button>
                         <span style="color: white; font-weight: bold; margin-left: 10px;">Prof. ${status.nome}</span>
                         <button onclick="logout()" class="btn-secundary" style="background:#dc3545; border:none; margin-left:10px;">Sair</button>
                     `;
@@ -77,16 +107,19 @@
             carregarAvisos();
         }
 
+        function irParaOsAvisos() {
+            carregarAvisos();
+            const elementoAlvo = document.getElementById('ancoraPesquisa');
+            if (elementoAlvo) {
+                elementoAlvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
         async function carregarAvisos() {
             try {
                 const res = await fetch('/api/avisos');
                 todosOsAvisos = await res.json();
                 exibirAvisos(todosOsAvisos);
-                
-                // Rola a tela suavemente para baixo para focar nos avisos pós-postagem
-                if(usuarioLogado) {
-                    window.scrollTo({ top: document.getElementById('campoPesquisa').offsetTop - 20, behavior: 'smooth' });
-                }
             } catch (err) {
                 console.error(err);
             }
@@ -97,7 +130,7 @@
             grid.innerHTML = '';
 
             if (listaDeAvisos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; color:#666; font-size: 1.4rem; grid-column: 1/-1;">Nenhum aviso postado.</p>';
+                grid.innerHTML = '<p style="text-align:center; color:#666; font-size: 1.4rem; grid-column: 1/-1; padding: 40px 0;">Nenhum aviso publicado no momento.</p>';
                 return;
             }
 
@@ -129,25 +162,55 @@
             exibirAvisos(filtrados);
         });
 
+        // ENVIO CORRIGIDO: NENHUM ALERT() INTERNO EXISTE MAIS AQUI
         document.getElementById('avisoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            const caixaMensagem = document.getElementById('mensagemFeedbackAviso');
 
-            const res = await fetch('/api/avisos', {
-                method: 'POST',
-                body: formData
-            });
+            caixaMensagem.style.display = 'none';
 
-            if (res.ok) {
-                e.target.reset();
-                alert('Aviso postado com sucesso!');
-                carregarAvisos(); 
+            try {
+                const res = await fetch('/api/avisos', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    e.target.reset(); 
+                    
+                    caixaMensagem.textContent = '🎉 Aviso publicado com sucesso no mural!';
+                    caixaMensagem.className = 'mensagem-postagem sucesso-postagem';
+                    caixaMensagem.style.display = 'block';
+                    
+                    carregarAvisos();
+
+                    setTimeout(() => {
+                        caixaMensagem.style.display = 'none';
+                    }, 4000);
+                } else {
+                    caixaMensagem.textContent = '❌ Erro ao salvar o aviso no banco de dados.';
+                    caixaMensagem.className = 'mensagem-postagem erro-postagem';
+                    caixaMensagem.style.display = 'block';
+                }
+            } catch {
+                caixaMensagem.textContent = '❌ Erro ao se conectar com o servidor.';
+                caixaMensagem.className = 'mensagem-postagem erro-postagem';
+                caixaMensagem.style.display = 'block';
             }
         });
 
         async function deletarAviso(id) {
-            if (confirm('Deseja apagar permanentemente este aviso do mural escolar?')) {
+            if (confirm('Deseja apagar permanentemente este aviso do mural?')) {
                 const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+                if (res.ok) carregarAvisos();
+            }
+        }
+
+        // Nova função para deletar em massa todos os avisos escolares salvos
+        async function limparTodoOMural() {
+            if (confirm('⚠️ ATENÇÃO: Tem certeza de que deseja apagar absolutamente TODOS os avisos e imagens do mural escolar? Esta ação não pode ser desfeita.')) {
+                const res = await fetch('/api/limpar-mural', { method: 'DELETE' });
                 if (res.ok) carregarAvisos();
             }
         }
