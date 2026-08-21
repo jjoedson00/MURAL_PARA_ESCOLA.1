@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    scroll-behavior: smooth; /* Faz a rolagem de tela ser suave ao clicar no botão */
 }
 
 body {
@@ -9,36 +10,73 @@ body {
     background: linear-gradient(135deg, #10253c, #1a365d, #2a4365);
     color: #ffffff;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
 }
 
-/* Estrutura do Mural Principal */
-.mural-wrapper {
+/* Posicionamento do Botão Restrito no Canto Superior */
+.topo-restrito {
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    z-index: 10;
+}
+
+.btn-professor {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.btn-professor:hover {
+    background: #ff8c00;
+    border-color: #ff8c00;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+}
+
+/* Primeira Tela (Igual à imagem enviada) */
+.mural-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 60px 20px;
+    padding: 20px;
 }
 
 .mural-header h1 {
-    font-size: 3.2rem;
-    margin: 15px 0 10px 0;
+    font-size: 3.5rem;
+    margin: 15px 0 15px 0;
     font-weight: 700;
 }
 
+@media (max-width: 600px) {
+    .mural-header h1 {
+        font-size: 2.3rem;
+    }
+}
+
 .mural-header p {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     color: #cbd5e0;
-    margin-bottom: 25px;
+    margin-bottom: 35px;
 }
 
 .emoji-megafone {
     font-size: 4rem;
 }
 
-/* Botão Laranja */
+/* Botão Laranja Central */
 .btn-acessar {
     display: inline-block;
     background-color: #ff8c00;
@@ -54,12 +92,29 @@ body {
 
 .btn-acessar:hover {
     background-color: #e07b00;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
 }
 
-/* Estilo dos Cards de Avisos no Mural */
-.mural-container {
-    margin-top: 50px;
+/* SEÇÃO DO MURAL QUE APARECE ABAIXO */
+.secao-avisos {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 80px 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.container-avisos {
+    width: 100%;
+    max-width: 800px;
+}
+
+.container-avisos h2 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #ffffff;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
 }
 
 .card-aviso {
@@ -67,7 +122,7 @@ body {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    padding: 30px;
+    padding: 25px;
     margin-bottom: 20px;
     text-align: left;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -76,60 +131,67 @@ body {
 .card-aviso h3 {
     margin-top: 0;
     color: #ff8c00;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
 }
 
 .card-aviso p {
     color: #e2e8f0;
     line-height: 1.6;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 .card-aviso small {
     color: #a0aec0;
     display: block;
     margin-top: 15px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
-/* CORREÇÃO DO TAMANHO: Formulários (Login / Cadastro) */
+/* FORMULÁRIOS (Login / Cadastro) */
 .container-form {
     background: #ffffff;
     color: #2d3748;
-    padding: 50px 45px;          /* Mais espaçamento interno */
+    padding: 40px 30px;
     border-radius: 16px;
-    margin-top: 12vh;
-    width: 92%;                  /* Adaptável para telas menores */
-    max-width: 520px;            /* Largura ideal para monitores */
+    margin: 12vh auto;
+    width: 90%;
+    max-width: 460px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 1000px) {
+    .container-form {
+        padding: 50px 40px;
+        max-width: 500px;
+    }
 }
 
 .container-form h2 {
     margin-top: 0;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     text-align: center;
     color: #1a365d;
-    font-size: 2rem;             /* Título maior e mais visível */
+    font-size: 1.8rem;
 }
 
 .campo {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .campo label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 600;
-    font-size: 1.05rem;          /* Nome do campo maior */
+    font-size: 1rem;
     color: #4a5568;
 }
 
 .campo input {
     width: 100%;
-    padding: 14px;               /* Caixa de texto mais alta e confortável */
-    border: 2px solid #cbd5e0;   /* Borda mais evidente */
+    padding: 12px;
+    border: 2px solid #cbd5e0;
     border-radius: 8px;
-    font-size: 1.1rem;           /* Texto interno maior */
+    font-size: 1rem;
 }
 
 .campo input:focus {
@@ -139,12 +201,12 @@ body {
 
 .container-form button {
     width: 100%;
-    padding: 16px;               /* Botão maior */
+    padding: 14px;
     background-color: #1a365d;
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    font-size: 1.15rem;          /* Texto do botão maior */
+    font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -157,8 +219,8 @@ body {
 
 .container-form p {
     text-align: center;
-    margin-top: 25px;
-    font-size: 1.05rem;          /* Links inferiores maiores */
+    margin-top: 20px;
+    font-size: 1rem;
     color: #718096;
 }
 

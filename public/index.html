@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
+    <!-- Botão de Acesso Restrito no Canto Superior Direito -->
+    <div class="topo-restrito">
+        <a href="/login.html" class="btn-professor">🔒 Área do Professor</a>
+    </div>
+
+    <!-- TELA DE INÍCIO (Sua tela atual) -->
     <div class="mural-wrapper">
         <header class="mural-header">
             <div class="icon-container">
@@ -14,13 +21,20 @@
             </div>
             <h1>Mural de Avisos</h1>
             <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-            <a href="/login.html" class="btn-acessar">Acessar Mural</a>
+            <!-- O botão agora rola a tela suavemente para a seção do mural abaixo -->
+            <a href="#secao-mural" class="btn-acessar">Acessar Mural</a>
         </header>
-
-        <main class="mural-container" id="lista-avisos">
-            <p class="carregando">Conectando ao banco remoto e buscando atualizações...</p>
-        </main>
     </div>
+
+    <!-- SEÇÃO DO MURAL (Aparece logo após a tela inicial) -->
+    <section id="secao-mural" class="secao-avisos">
+        <div class="container-avisos">
+            <h2>📢 Publicações Recentes</h2>
+            <div class="mural-container" id="lista-avisos">
+                <p class="carregando">Conectando ao banco remoto e buscando atualizações...</p>
+            </div>
+        </div>
+    </section>
 
     <script>
         async function carregarAvisos() {
@@ -34,7 +48,7 @@
                     return;
                 }
 
-                container.innerHTML = '';
+                container.innerHTML = ''; 
                 avisos.forEach(aviso => {
                     const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
                     
