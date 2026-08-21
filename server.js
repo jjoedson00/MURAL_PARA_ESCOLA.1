@@ -9,13 +9,15 @@ const fs = require('fs');
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
+// Garante que a pasta de uploads exista antes de qualquer coisa para não quebrar o mural
+const dir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir, { recursive: true });
+}
+
 // Configuração do Multer para Upload de Imagens
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = './public/uploads';
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir, { recursive: true });
-        }
         cb(null, dir);
     },
     filename: (req, file, cb) => {
@@ -27,7 +29,7 @@ const upload = multer({ storage: storage });
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
     secret: 'chave-secreta-do-mural',
@@ -56,7 +58,7 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
-// Cadastro de Usuário com Login Automático
+// Cadastro de Usuário
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
     if (token !== 'coordenacao2026') {
@@ -110,11 +112,11 @@ app.get('/api/usuario-atual', (req, res) => {
 
 // --- ROTAS DOS AVISOS ---
 
-// Listar todos os avisos
+// Listar todos os avisos (Protegido contra travamentos)
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT * FROM avisos ORDER BY data_criacao DESC`, [], (err, rows) => {
-        if (err) return res.status(500).json({ erro: err.message });
-        res.json(rows);
+        if (err) return res.status(500).json([]);
+        res.json(rows || []);
     });
 });
 
@@ -146,20 +148,17 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// --- NOVA ROTA: Apagar TODOS os avisos (Limpar Mural) ---
+// Limpar todo o mural com segurança
 app.delete('/api/limpar-mural', (req, res) => {
     if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     
-    // Apaga os arquivos físicos de imagem da pasta uploads
-    const uploadDir = path.join(__dirname, 'public', 'uploads');
-    if (fs.existsSync(uploadDir)) {
-        const files = fs.readdirSync(uploadDir);
+    if (fs.existsSync(dir)) {
+        const files = fs.readdirSync(dir);
         for (const file of files) {
-            fs.unlinkSync(path.join(uploadDir, file));
+            fs.unlinkSync(path.join(dir, file));
         }
     }
 
-    // Apaga todos os registros do banco de dados
     db.run(`DELETE FROM avisos`, function(err) {
         if (err) return res.status(500).json({ erro: err.message });
         res.json({ sucesso: true });
