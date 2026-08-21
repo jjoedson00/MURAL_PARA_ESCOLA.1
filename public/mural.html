@@ -41,7 +41,7 @@
             align-items: center;
             box-shadow: 0 6px 15px rgba(0,0,0,0.12);
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
         }
 
         .navbar h2 {
@@ -52,7 +52,7 @@
             display: flex;
             gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             font-size: clamp(1rem, 1.2vw, 1.2rem);
         }
 
@@ -60,13 +60,14 @@
             background: transparent;
             border: 2px solid white;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
             white-space: nowrap;
             transition: background 0.2s, color 0.2s;
+            display: inline-block;
         }
 
         .btn-secundary:hover {
@@ -251,13 +252,14 @@
         <h2>Mural de Avisos Digitais</h2>
         <div class="nav-actions" id="navActions">
             <button onclick="irParaOsAvisos()" class="btn-secundary">🔄 Ver Mural (Atualizar)</button>
-            <!-- ALTERADO AQUI: Link corrigido sem a barra para o Render responder -->
+            <!-- CORREÇÃO AQUI: Link direto agora chama a página sem recarregar a atual -->
             <a href="login.html" class="btn-secundary">Acesso Administrativo</a>
         </div>
     </nav>
 
     <div class="mural-container-gigante">
         
+        <!-- Área de Publicação Gigante -->
         <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
             <h3>Publicar Novo Aviso</h3>
             
@@ -280,6 +282,7 @@
             </form>
         </div>
 
+        <!-- Barra de Pesquisa -->
         <div class="search-container" id="ancoraPesquisa">
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
@@ -291,5 +294,3 @@
         <div class="modal-box-custom">
             <h4>🗑️ Confirmar Exclusão</h4>
             <p>Tem certeza de que deseja apagar voluntariamente este aviso específico do mural escolar?</p>
-            <div class="modal-botoes-grupo">
-                <button id="btnModalConfirmar" class="btn-modal btn-modal-confirmar">Sim, Apagar</button>
