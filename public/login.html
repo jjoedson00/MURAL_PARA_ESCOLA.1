@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Professor</title>
-    <!-- Vinculação direta com o arquivo de estilo -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Barra adicionada para carregar na nuvem -->
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body class="form-screen">
     
-    <!-- Caixa branca de formulário usando as classes ampliadas do style.css -->
     <div class="form-box-grande">
         <h2>Acesso do Professor</h2>
         
-        <!-- Caixa de feedback para mensagens de erro integrada à tela -->
         <div id="mensagemFeedback" class="mensagem-alerta-tela alerta-erro-tela"></div>
 
         <form id="loginForm">
@@ -43,7 +41,6 @@
             const senha = document.getElementById('senha').value;
             const caixaMensagem = document.getElementById('mensagemFeedback');
 
-            // Esconde avisos anteriores
             caixaMensagem.style.display = 'none';
 
             try {
@@ -56,10 +53,8 @@
                 const dados = await res.json();
                 
                 if (dados.sucesso) {
-                    // Vai direto para o painel de publicar avisos
                     window.location.href = 'mural.html'; 
                 } else {
-                    // Mostra o erro de senha ou usuário grande na própria tela
                     caixaMensagem.textContent = dados.erro;
                     caixaMensagem.style.display = 'block';
                 }

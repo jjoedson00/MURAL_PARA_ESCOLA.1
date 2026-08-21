@@ -4,83 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Professor</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .form-box-grande {
-            background: #ffffff;
-            padding: 50px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 650px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-        }
-
-        .form-box-grande h2 {
-            font-size: 2.5rem;
-            margin-bottom: 35px;
-            text-align: center;
-            color: #1e3c72;
-            font-weight: 700;
-        }
-
-        .input-group-grande {
-            margin-bottom: 30px;
-        }
-
-        .input-group-grande label {
-            display: block;
-            margin-bottom: 12px;
-            font-weight: 600;
-            font-size: 1.3rem;
-            color: #333;
-        }
-
-        .input-group-grande input {
-            width: 100%;
-            padding: 18px;
-            border: 2px solid #bbb;
-            border-radius: 12px;
-            font-size: 1.25rem;
-        }
-
-        .btn-grande {
-            background-color: #ff8c00;
-            color: white;
-            padding: 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-grande:hover {
-            background-color: #e07b00;
-        }
-
-        .mensagem-alerta-tela {
-            padding: 18px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-align: center;
-            display: none;
-        }
-
-        .alerta-erro-tela {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
-
-        .alerta-sucesso-tela {
-            background-color: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
-        }
-    </style>
+    <!-- Barra adicionada para carregar na nuvem -->
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body class="form-screen">
     
@@ -145,7 +70,7 @@
                     caixaMensagem.style.display = 'block';
                     
                     setTimeout(() => {
-                        window.location.href = 'mural.html'; // Vai direto para o mural logado
+                        window.location.href = 'mural.html'; 
                     }, 1500);
                 } else {
                     caixaMensagem.textContent = dados.erro;

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural Escolar</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Barra adicionada para carregar na nuvem -->
+    <link rel="stylesheet" href="/style.css">
     <style>
         .mensagem-postagem {
             padding: 15px;
@@ -21,7 +22,6 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <nav class="navbar">
         <h2>Mural de Avisos Digitais</h2>
         <div class="nav-actions" id="navActions">
@@ -32,7 +32,6 @@
 
     <div class="mural-container-gigante">
         
-        <!-- Área de Publicação Gigante -->
         <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
             <h3>Publicar Novo Aviso</h3>
             
@@ -55,18 +54,13 @@
             </form>
         </div>
 
-        <!-- Barra de Pesquisa -->
         <div class="search-container" id="ancoraPesquisa">
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
 
-        <!-- Grid de Avisos -->
-        <div class="grid-avisos-gigante" id="muralGrid">
-            <!-- Cards dinâmicos -->
-        </div>
+        <div class="grid-avisos-gigante" id="muralGrid"></div>
     </div>
 
-    <!-- JANELA DE CONFIRMAÇÃO CUSTOMIZADA (MODAL NA TELA) -->
     <div id="modalConfirmacao" class="modal-overlay-custom">
         <div class="modal-box-custom">
             <h4>🗑️ Confirmar Exclusão</h4>
@@ -81,7 +75,7 @@
     <script>
         let usuarioLogado = false;
         let todosOsAvisos = [];
-        let idAvisoParaDeletar = null; // Armazena temporariamente o ID selecionado
+        let idAvisoParaDeletar = null;
 
         async function checarStatus() {
             try {
@@ -145,7 +139,6 @@
                         <p>${aviso.conteudo}</p>
                         <div class="card-footer-gigante">
                             <span>Postado em: ${dataFormatada}</span>
-                            <!-- Dispara o modal próprio em vez de alert() do navegador -->
                             ${usuarioLogado ? `<button class="btn-delete-professor" onclick="abrirModalExclusao(${aviso.id})">🗑️ Apagar Aviso</button>` : ''}
                         </div>
                     </div>
@@ -198,7 +191,6 @@
             }
         });
 
-        // --- FUNÇÕES DO NOVO MODAL DE EXCLUSÃO SELETIVA ---
         function abrirModalExclusao(id) {
             idAvisoParaDeletar = id;
             document.getElementById('modalConfirmacao').classList.add('active');
