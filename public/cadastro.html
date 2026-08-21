@@ -5,53 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Professor</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .form-box-grande {
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+
+        .form-box-grande h2 {
+            font-size: 2.5rem;
+            margin-bottom: 35px;
+            text-align: center;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .input-group-grande {
+            margin-bottom: 30px;
+        }
+
+        .input-group-grande label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .input-group-grande input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #bbb;
+            border-radius: 12px;
+            font-size: 1.25rem;
+        }
+
+        .btn-grande {
+            background-color: #ff8c00;
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-grande:hover {
+            background-color: #e07b00;
+        }
+
+        .mensagem-alerta-tela {
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+
+        .alerta-erro-tela {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .alerta-sucesso-tela {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+    </style>
 </head>
 <body class="form-screen">
-    <div class="form-box">
+    
+    <div class="form-box-grande">
         <h2>Cadastro de Professor</h2>
+        
+        <div id="mensagemFeedback" class="mensagem-alerta-tela"></div>
+
         <form id="cadastroForm">
-            <div class="input-group">
+            <div class="input-group-grande">
                 <label>Nome Completo</label>
-                <input type="text" id="nome" required>
+                <input type="text" id="nome" placeholder="Digite seu nome completo" required>
             </div>
-            <div class="input-group">
+            
+            <div class="input-group-grande">
                 <label>E-mail Institucional</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" placeholder="exemplo@email.com" required>
             </div>
-            <div class="input-group">
+            
+            <div class="input-group-grande">
                 <label>Senha de Acesso</label>
-                <input type="password" id="senha" required>
+                <input type="password" id="senha" placeholder="Crie uma senha forte" required>
             </div>
-            <div class="input-group">
+            
+            <div class="input-group-grande">
                 <label>Token Secreto da Coordenação</label>
-                <input type="password" id="token" placeholder="Insira o código secreto" required>
+                <input type="password" id="token" placeholder="Insira o código secreto exigido" required>
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px;">Cadastrar Professor</button>
+            
+            <button type="submit" class="btn-grande">Cadastrar e Entrar</button>
         </form>
-        <p style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
-            Já possui uma conta? <a href="login.html" style="color: #1e3c72; font-weight: bold;">Faça Login</a>
+        
+        <p style="margin-top: 25px; text-align: center; font-size: 1.15rem;">
+            Já possui uma conta? <a href="login.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Faça Login</a>
         </p>
     </div>
 
     <script>
         document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const token = document.getElementById('token').value;
+            const caixaMensagem = document.getElementById('mensagemFeedback');
 
-            const res = await fetch('/api/cadastro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, token })
-            });
-            const dados = await res.json();
-            if (dados.sucesso) {
-                alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
-                window.location.href = 'login.html';
-            } else {
-                alert(dados.erro);
+            caixaMensagem.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, token })
+                });
+                
+                const dados = await res.json();
+                
+                if (dados.sucesso) {
+                    caixaMensagem.textContent = 'Cadastro realizado! Entrando no painel de avisos...';
+                    caixaMensagem.className = 'mensagem-alerta-tela alerta-sucesso-tela';
+                    caixaMensagem.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'mural.html'; // Vai direto para o mural logado
+                    }, 1500);
+                } else {
+                    caixaMensagem.textContent = dados.erro;
+                    caixaMensagem.className = 'mensagem-alerta-tela alerta-erro-tela';
+                    caixaMensagem.style.display = 'block';
+                }
+            } catch {
+                caixaMensagem.textContent = 'Erro ao se conectar com o servidor.';
+                caixaMensagem.className = 'mensagem-alerta-tela alerta-erro-tela';
+                caixaMensagem.style.display = 'block';
             }
         });
     </script>

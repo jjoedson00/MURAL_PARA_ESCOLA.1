@@ -56,17 +56,15 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
-// Cadastro de Usuário com Token Secreto e Verificação de E-mail Único
+// Cadastro de Usuário com Login Automático Integrado
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
 
-    // Validação do Token Secreto
     if (token !== 'coordenacao2026') {
         return res.status(400).json({ erro: 'Token secreto inválido! Apenas professores autorizados podem se cadastrar.' });
     }
 
     try {
-        // Verificar se o e-mail já existe
         db.get(`SELECT id FROM usuarios WHERE email = ?`, [email], async (err, row) => {
             if (row) {
                 return res.status(400).json({ erro: 'Este e-mail já está cadastrado por outro professor.' });
@@ -74,8 +72,14 @@ app.post('/api/cadastro', async (req, res) => {
 
             const hashedPassword = await bcrypt.hash(senha, 10);
             const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
+            
             db.run(query, [nome, email, hashedPassword], function(err) {
                 if (err) return res.status(500).json({ erro: 'Erro ao salvar o cadastro.' });
+                
+                // LOGIN AUTOMÁTICO APÓS O CADASTRO
+                req.session.usuarioId = this.lastID;
+                req.session.usuarioNome = nome;
+                
                 res.json({ sucesso: true });
             });
         });
@@ -84,7 +88,7 @@ app.post('/api/cadastro', async (req, res) => {
     }
 });
 
-// Login
+// Login Tradicional
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
     const query = `SELECT * FROM usuarios WHERE email = ?`;
@@ -126,7 +130,7 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
-// Criar novo aviso (Requer estar logado)
+// Criar novo aviso
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     
@@ -140,7 +144,7 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     });
 });
 
-// Apagar aviso (Requer estar logado)
+// Apagar aviso
 app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     
@@ -159,7 +163,7 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Porta dinâmica para o Render
+// Porta dinâmica do Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
