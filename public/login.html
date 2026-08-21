@@ -65,6 +65,8 @@
                 });
                 const dados = await res.json();
                 if (dados.sucesso) {
+                    // Guarda o crachá digital no navegador e vai para o mural
+                    localStorage.setItem('professor_conectado', JSON.stringify(dados.usuario));
                     window.location.href = '/mural.html'; 
                 } else {
                     caixaMensagem.textContent = dados.erro;

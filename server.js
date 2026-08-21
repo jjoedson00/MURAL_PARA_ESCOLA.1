@@ -1,7 +1,6 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
-const session = require('express-session');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -25,17 +24,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// MIDDLEWARES CORRIGIDOS COM PATH ABSOLUTO
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(session({
-    secret: 'chave-secreta-do-mural',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }
-}));
 
 // Criar Tabelas
 db.serialize(() => {
@@ -55,7 +46,8 @@ db.serialize(() => {
     )`);
 });
 
-// --- ROTAS ---
+// --- ROTAS DE AUTENTICAÇÃO ---
+
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
     if (token !== 'coordenacao2026') {
@@ -68,9 +60,8 @@ app.post('/api/cadastro', async (req, res) => {
             const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
             db.run(query, [nome, email, hashedPassword], function(err) {
                 if (err) return res.status(500).json({ erro: 'Erro ao salvar cadastro.' });
-                req.session.usuarioId = this.lastID;
-                req.session.usuarioNome = nome;
-                res.json({ sucesso: true });
+                // Retorna os dados para o LocalStorage logar direto
+                res.json({ sucesso: true, usuario: { id: this.lastID, nome: nome } });
             });
         });
     } catch {
@@ -85,24 +76,12 @@ app.post('/api/login', (req, res) => {
         if (err || !usuario) return res.status(400).json({ erro: 'Usuário não encontrado.' });
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
         if (!senhaValida) return res.status(400).json({ erro: 'Senha incorreta.' });
-        req.session.usuarioId = usuario.id;
-        req.session.usuarioNome = usuario.nome;
-        res.json({ sucesso: true });
+        // Retorna os dados do usuário para salvar no navegador
+        res.json({ sucesso: true, usuario: { id: usuario.id, nome: usuario.nome } });
     });
 });
 
-app.get('/api/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ sucesso: true });
-});
-
-app.get('/api/usuario-atual', (req, res) => {
-    if (req.session.usuarioId) {
-        res.json({ logado: true, nome: req.session.usuarioNome });
-    } else {
-        res.json({ logado: false });
-    }
-});
+// --- ROTAS DOS AVISOS ---
 
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT * FROM avisos ORDER BY data_criacao DESC`, [], (err, rows) => {
@@ -112,7 +91,6 @@ app.get('/api/avisos', (req, res) => {
 });
 
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
-    if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     const { titulo, conteudo } = req.body;
     const imagemPath = req.file ? `/uploads/${req.file.filename}` : null;
     const query = `INSERT INTO avisos (titulo, conteudo, imagem) VALUES (?, ?, ?)`;
@@ -123,7 +101,6 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
 });
 
 app.delete('/api/avisos/:id', (req, res) => {
-    if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     const id = req.params.id;
     db.get(`SELECT imagem FROM avisos WHERE id = ?`, [id], (err, row) => {
         if (row && row.imagem) {

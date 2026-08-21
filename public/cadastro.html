@@ -80,6 +80,9 @@
                     caixaMensagem.textContent = 'Cadastro realizado! Entrando no painel de avisos...';
                     caixaMensagem.className = 'mensagem-alerta-tela alerta-sucesso-tela';
                     caixaMensagem.style.display = 'block';
+                    
+                    // Salva o crachá digital no navegador e vai direto pro painel
+                    localStorage.setItem('professor_conectado', JSON.stringify(dados.usuario));
                     setTimeout(() => {
                         window.location.href = '/mural.html'; 
                     }, 1500);
