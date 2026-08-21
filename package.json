@@ -1,19 +1,16 @@
 {
-  "name": "mural-escolar",
+  "name": "tcc_original",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Mural de avisos escolares digitais",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "express": "^4.22.2",
-    "express-session": "^1.19.0",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
     "multer": "^1.4.5-lts.1",
-    "path": "^0.12.7",
-    "pg": "^8.23.0",
-    "sql.js": "^1.12.0",
-    "sqlite3": "^6.0.1"
+    "sqlite3": "^5.1.7"
   }
 }

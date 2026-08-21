@@ -148,8 +148,8 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Iniciar o Servidor
-const PORT = 3000;
+// --- ALTERAÇÃO AQUI: Porta dinâmica para o Render ---
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
