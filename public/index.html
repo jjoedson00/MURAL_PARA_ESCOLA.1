@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* --- ESTILO EMBUTIDO PARA FICAR IGUAL À IMAGEM --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Fundo azul degradê idêntico ao do print */
         .hero-container {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #182848 0%, #2980b9 100%);
             min-height: 100vh;
             width: 100%;
             display: flex;
@@ -16,39 +30,70 @@
             justify-content: center;
             text-align: center;
             color: white;
-            padding: 30px 5%;
+            padding: 20px;
         }
-        .hero-content { max-width: 800px; width: 100%; }
-        .hero-content h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 20px; font-weight: 800; }
-        .hero-content p { font-size: clamp(1.2rem, 2vw, 1.8rem); margin-bottom: 45px; opacity: 0.95; }
+
+        .hero-content {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Título grande e imponente */
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        /* Subtítulo com opacidade suave */
+        .hero-content p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Botão laranja arredondado idêntico ao da foto */
         .btn-primary {
-            background-color: #ff8c00;
+            background-color: #ff9200;
             color: white;
-            padding: clamp(15px, 2vw, 20px) clamp(35px, 5vw, 60px);
+            padding: 16px 50px;
             border: none;
-            border-radius: 40px;
-            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
-            font-weight: bold;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            transition: background 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        .btn-primary:hover { background-color: #e07b00; }
+
+        .btn-primary:hover {
+            background-color: #e07b00;
+            transform: scale(1.03);
+        }
     </style>
 </head>
 <body>
+
     <div class="hero-container">
         <div class="hero-content">
-            <svg width="100" height="100" viewBox="0 0 24 24" fill="#ff4d6d" xmlns="http://w3.org" style="margin-bottom:25px;">
-                <path d="M12 5L4 9H2V15H4L12 19V5Z" fill="#ff4d6d" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M12 9C13.5 10 13.5 14 12 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            
+            <!-- Desenho do megafone rosa e branco idêntico ao ícone da foto -->
+            <svg width="85" height="85" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org" style="margin-bottom: 30px;">
+                <path d="M17.5 12c0 .482-.058.948-.165 1.398l1.45 1.054A5.962 5.962 0 0019.5 12a5.962 5.962 0 00-.715-2.852l-1.45 1.054c.107.45.165.916.165 1.398z" fill="#ffffff"/>
+                <path d="M14 5.25L7.667 10H4.5A1.5 1.5 0 003 11.5v1a1.5 1.5 0 001.5 1.5h3.167L14 18.75V5.25z" fill="#ff4d6d" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M14 8.5c.828 0 1.5 1.567 1.5 3.5s-.672 3.5-1.5 3.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
+
             <h1>Mural de Avisos</h1>
             <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-            <a href="mural.html" class="btn-primary">Acessar Mural</a>
+            
+            <a href="/mural.html" class="btn-primary">Acessar Mural</a>
         </div>
     </div>
+
 </body>
 </html>
