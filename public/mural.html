@@ -146,7 +146,6 @@
             outline: none;
         }
 
-        /* --- AQUI É ONDE OS CARDS VÃO ENTRAR --- */
         .grid-avisos-gigante {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
@@ -252,7 +251,8 @@
         <h2>Mural de Avisos Digitais</h2>
         <div class="nav-actions" id="navActions">
             <button onclick="irParaOsAvisos()" class="btn-secundary">🔄 Ver Mural (Atualizar)</button>
-            <a href="login.html" class="btn-secundary">Acesso Administrativo</a>
+            <!-- CORRIGIDO: Rota absoluta com barra para encontrar o login na nuvem -->
+            <a href="/login.html" class="btn-secundary">Acesso Administrativo</a>
         </div>
     </nav>
 
@@ -284,7 +284,6 @@
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
 
-        <!-- LISTA GIGANTE DE CARDS DE AVISOS -->
         <div class="grid-avisos-gigante" id="muralGrid"></div>
     </div>
 

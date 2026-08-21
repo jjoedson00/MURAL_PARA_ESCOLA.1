@@ -47,7 +47,7 @@
             <button type="submit" class="btn-grande">Entrar no Painel</button>
         </form>
         <p style="margin-top: 30px; text-align: center; font-size: 1.2rem;">
-            Ainda não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Cadastre-se aqui</a>
+            Ainda não tem conta? <a href="/cadastro.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Cadastre-se aqui</a>
         </p>
     </div>
     <script>
@@ -65,7 +65,7 @@
                 });
                 const dados = await res.json();
                 if (dados.sucesso) {
-                    window.location.href = 'mural.html'; 
+                    window.location.href = '/mural.html'; 
                 } else {
                     caixaMensagem.textContent = dados.erro;
                     caixaMensagem.style.display = 'block';
