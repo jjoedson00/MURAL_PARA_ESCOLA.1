@@ -4,9 +4,218 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural Escolar</title>
-    <!-- Barra adicionada para carregar na nuvem -->
-    <link rel="stylesheet" href="/style.css">
     <style>
+        /* --- ESTILO EMBUTIDO COMPLETO E RESPONSIVO --- */
+        :root {
+            --primary: #ff8c00;
+            --primary-dark: #e07b00;
+            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --light-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-dark: #111111;
+            --text-muted: #444444;
+            --danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: #1e3c72;
+            color: white;
+            padding: 20px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .navbar h2 {
+            font-size: clamp(1.4rem, 2vw, 2.2rem);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: clamp(1rem, 1.2vw, 1.2rem);
+        }
+
+        .btn-secundary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-secundary:hover {
+            background: white;
+            color: #1e3c72;
+        }
+
+        .mural-container-gigante {
+            width: 100%;
+            max-width: 2200px;
+            margin: 0 auto;
+            padding: 30px 4%;
+            flex-grow: 1;
+        }
+
+        .painel-publicacao-gigante {
+            background: var(--card-bg);
+            width: 100%;
+            padding: clamp(20px, 4vw, 50px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .painel-publicacao-gigante h3 {
+            font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .campo-grupo-gigante {
+            margin-bottom: 25px;
+        }
+
+        .campo-grupo-gigante label {
+            display: block;
+            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .campo-grupo-gigante input[type="text"],
+        .campo-grupo-gigante textarea {
+            width: 100%;
+            font-size: clamp(1rem, 1.3vw, 1.3rem);
+            padding: 16px;
+            border: 2.5px solid #bbb;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .btn-postar-gigante {
+            background-color: var(--primary);
+            color: white;
+            font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+            font-weight: bold;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .search-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px;
+            font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+            border: 2.5px solid #1e3c72;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        /* --- AQUI É ONDE OS CARDS VÃO ENTRAR --- */
+        .grid-avisos-gigante {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+            gap: clamp(20px, 3vw, 40px);
+            margin-top: 30px;
+        }
+
+        .card-aviso-gigante {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-aviso-gigante img {
+            width: 100%;
+            height: clamp(200px, 25vw, 420px);
+            object-fit: cover;
+        }
+
+        .card-body-gigante {
+            padding: clamp(20px, 3vw, 35px);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-body-gigante h3 {
+            font-size: clamp(1.5rem, 2.2vw, 2.2rem);
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .card-body-gigante p {
+            font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+            white-space: pre-line;
+        }
+
+        .card-footer-gigante {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+            color: #666;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-delete-professor {
+            background: var(--danger) !important;
+            color: white !important;
+            border: none !important;
+            padding: 10px 18px !important;
+            border-radius: 8px !important;
+            cursor: pointer !important;
+            font-weight: bold !important;
+            font-size: clamp(0.9rem, 1.1vw, 1.1rem) !important;
+        }
+
         .mensagem-postagem {
             padding: 15px;
             border-radius: 10px;
@@ -18,6 +227,23 @@
         }
         .sucesso-postagem { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
         .erro-postagem { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+
+        .modal-overlay-custom {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .modal-overlay-custom.active { opacity: 1; pointer-events: auto; }
+        .modal-box-custom { background: white; padding: 35px; border-radius: 16px; max-width: 500px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-box-custom h4 { font-size: 1.6rem; color: #1e3c72; margin-bottom: 15px; }
+        .modal-box-custom p { font-size: 1.15rem; color: #555; margin-bottom: 25px; }
+        .modal-botoes-grupo { display: flex; justify-content: center; gap: 15px; }
+        .btn-modal { padding: 12px 25px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-modal-confirmar { background: var(--danger); color: white; }
+        .btn-modal-cancelar { background: #ccc; color: #333; }
     </style>
 </head>
 <body>
@@ -58,6 +284,7 @@
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
 
+        <!-- LISTA GIGANTE DE CARDS DE AVISOS -->
         <div class="grid-avisos-gigante" id="muralGrid"></div>
     </div>
 
@@ -66,158 +293,3 @@
             <h4>🗑️ Confirmar Exclusão</h4>
             <p>Tem certeza de que deseja apagar voluntariamente este aviso específico do mural escolar?</p>
             <div class="modal-botoes-grupo">
-                <button id="btnModalConfirmar" class="btn-modal btn-modal-confirmar">Sim, Apagar</button>
-                <button onclick="fecharModalExclusao()" class="btn-modal btn-modal-cancelar">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let usuarioLogado = false;
-        let todosOsAvisos = [];
-        let idAvisoParaDeletar = null;
-
-        async function checarStatus() {
-            try {
-                const res = await fetch('/api/usuario-atual');
-                const status = await res.json();
-                
-                const navActions = document.getElementById('navActions');
-                const areaCriacao = document.getElementById('areaCriacao');
-
-                if (status.logado) {
-                    usuarioLogado = true;
-                    areaCriacao.style.display = 'block'; 
-                    navActions.innerHTML = `
-                        <button onclick="irParaOsAvisos()" class="btn-secundary">📋 Voltar para o Mural</button>
-                        <span style="color: white; font-weight: bold; margin-left: 10px;">Prof. ${status.nome}</span>
-                        <button onclick="logout()" class="btn-secundary" style="background:#dc3545; border:none; margin-left:10px;">Sair</button>
-                    `;
-                }
-            } catch (err) {
-                console.error(err);
-            }
-            carregarAvisos();
-        }
-
-        function irParaOsAvisos() {
-            carregarAvisos();
-            const elementoAlvo = document.getElementById('ancoraPesquisa');
-            if (elementoAlvo) {
-                elementoAlvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        async function carregarAvisos() {
-            try {
-                const res = await fetch('/api/avisos');
-                todosOsAvisos = await res.json();
-                exibirAvisos(todosOsAvisos);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function exibirAvisos(listaDeAvisos) {
-            const grid = document.getElementById('muralGrid');
-            grid.innerHTML = '';
-
-            if (!listaDeAvisos || listaDeAvisos.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; color:#666; font-size: 1.4rem; grid-column: 1/-1; padding: 40px 0;">Nenhum aviso publicado no momento.</p>';
-                return;
-            }
-
-            listaDeAvisos.forEach(aviso => {
-                const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
-                const card = document.createElement('div');
-                card.className = 'card-aviso-gigante';
-                
-                card.innerHTML = `
-                    ${aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : ''}
-                    <div class="card-body-gigante">
-                        <h3>${aviso.titulo}</h3>
-                        <p>${aviso.conteudo}</p>
-                        <div class="card-footer-gigante">
-                            <span>Postado em: ${dataFormatada}</span>
-                            ${usuarioLogado ? `<button class="btn-delete-professor" onclick="abrirModalExclusao(${aviso.id})">🗑️ Apagar Aviso</button>` : ''}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        document.getElementById('campoPesquisa').addEventListener('input', (e) => {
-            const termo = e.target.value.toLowerCase().trim();
-            const filtrados = todosOsAvisos.filter(aviso => 
-                aviso.titulo.toLowerCase().includes(termo) || aviso.conteudo.toLowerCase().includes(termo)
-            );
-            exibirAvisos(filtrados);
-        });
-
-        document.getElementById('avisoForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const caixaMensagem = document.getElementById('mensagemFeedbackAviso');
-
-            caixaMensagem.style.display = 'none';
-
-            try {
-                const res = await fetch('/api/avisos', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (res.ok) {
-                    e.target.reset(); 
-                    caixaMensagem.textContent = '🎉 Aviso publicado com sucesso no mural!';
-                    caixaMensagem.className = 'mensagem-postagem sucesso-postagem';
-                    caixaMensagem.style.display = 'block';
-                    
-                    carregarAvisos();
-
-                    setTimeout(() => {
-                        caixaMensagem.style.display = 'none';
-                    }, 4000);
-                } else {
-                    caixaMensagem.textContent = '❌ Erro ao salvar o aviso no banco de dados.';
-                    caixaMensagem.className = 'mensagem-postagem erro-postagem';
-                    caixaMensagem.style.display = 'block';
-                }
-            } catch {
-                caixaMensagem.textContent = '❌ Erro ao se conectar com o servidor.';
-                caixaMensagem.className = 'mensagem-postagem erro-postagem';
-                caixaMensagem.style.display = 'block';
-            }
-        });
-
-        function abrirModalExclusao(id) {
-            idAvisoParaDeletar = id;
-            document.getElementById('modalConfirmacao').classList.add('active');
-        }
-
-        function fecharModalExclusao() {
-            idAvisoParaDeletar = null;
-            document.getElementById('modalConfirmacao').classList.remove('active');
-        }
-
-        document.getElementById('btnModalConfirmar').addEventListener('click', async () => {
-            if (idAvisoParaDeletar) {
-                const res = await fetch(`/api/avisos/${idAvisoParaDeletar}`, { method: 'DELETE' });
-                if (res.ok) {
-                    carregarAvisos();
-                }
-                fecharModalExclusao();
-            }
-        });
-
-        async function logout() {
-            await fetch('/api/logout');
-            window.location.reload();
-        }
-
-        checarStatus();
-        setInterval(carregarAvisos, 30000);
-    </script>
-</body>
-</html>
