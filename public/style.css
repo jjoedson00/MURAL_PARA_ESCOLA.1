@@ -25,7 +25,7 @@ body {
     flex-direction: column;
 }
 
-/* --- BARRA SUPERIOR (NAVBAR) ADAPTÁVEL --- */
+/* --- BARRA SUPERIOR (NAVBAR) --- */
 .navbar {
     background: #1e3c72;
     color: white;
@@ -34,12 +34,12 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+    flex-wrap: wrap;
     gap: 15px;
 }
 
 .navbar h2 {
-    font-size: clamp(1.4rem, 2vw, 2.2rem); /* Diminui no celular e aumenta na TV */
+    font-size: clamp(1.4rem, 2vw, 2.2rem);
 }
 
 .nav-actions {
@@ -68,20 +68,20 @@ body {
     color: #1e3c72;
 }
 
-/* --- CONTAINER PRINCIPAL DO MURAL --- */
+/* --- CONTAINER PRINCIPAL --- */
 .mural-container-gigante {
     width: 100%;
-    max-width: 2200px; /* Largura gigante ideal para TVs 4K e Monitores */
+    max-width: 2200px;
     margin: 0 auto;
     padding: 30px 4%;
     flex-grow: 1;
 }
 
-/* --- CAIXA DE PUBLICAÇÃO TOTALMENTE FLEXÍVEL --- */
+/* --- PAINEL DE PUBLICAÇÃO --- */
 .painel-publicacao-gigante {
     background: var(--card-bg);
     width: 100%;
-    padding: clamp(20px, 4vw, 50px); /* Espaçamento menor em celular, gigante em monitor */
+    padding: clamp(20px, 4vw, 50px);
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.08);
     margin-bottom: 40px;
@@ -91,15 +91,6 @@ body {
     font-size: clamp(1.6rem, 2.5vw, 2.4rem);
     color: #1e3c72;
     font-weight: 700;
-}
-
-/* Cabeçalho da publicação que organiza os botões em linha ou coluna */
-.painel-publicacao-gigante > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
     margin-bottom: 25px;
 }
 
@@ -123,7 +114,6 @@ body {
     border: 2.5px solid #bbb;
     border-radius: 12px;
     outline: none;
-    transition: border-color 0.2s;
 }
 
 .campo-grupo-gigante input[type="text"]:focus,
@@ -141,14 +131,9 @@ body {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
-.btn-postar-gigante:hover {
-    background-color: var(--primary-dark);
-}
-
-/* --- BARRA DE PESQUISA RESPONSIVA --- */
+/* --- BARRA DE PESQUISA --- */
 .search-container {
     width: 100%;
     margin-bottom: 30px;
@@ -161,24 +146,16 @@ body {
     border: 2.5px solid #1e3c72;
     border-radius: 12px;
     outline: none;
-    transition: box-shadow 0.2s;
 }
 
-.search-input:focus {
-    box-shadow: 0 6px 20px rgba(255,140,0,0.2);
-    border-color: var(--primary);
-}
-
-/* --- GRID DE AVISOS MÁGICO (AQUI ACONTECE A RESPONSIVIDADE AUTOMÁTICA) --- */
+/* --- GRID DE AVISOS RESPONSIVO AUTOMÁTICO --- */
 .grid-avisos-gigante {
     display: grid;
-    /* auto-fit cria colunas automáticas de no mínimo 450px se houver espaço (TVs), senão espreme para 100% (Celular) */
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
-    gap: clamp(20px, 3vw, 40px); /* Ajusta o espaçamento conforme o tamanho da tela */
+    gap: clamp(20px, 3vw, 40px);
     margin-top: 30px;
 }
 
-/* --- CARDS AUTOMÁTICOS --- */
 .card-aviso-gigante {
     background: var(--card-bg);
     border-radius: 20px;
@@ -186,12 +163,12 @@ body {
     box-shadow: 0 12px 30px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
-    height: 100%; /* Força todos os cards a terem a mesma altura na linha da TV */
+    height: 100%;
 }
 
 .card-aviso-gigante img {
     width: 100%;
-    height: clamp(200px, 25vw, 420px); /* Imagem ganha proporção de acordo com a tela */
+    height: clamp(200px, 25vw, 420px);
     object-fit: cover;
 }
 
@@ -239,109 +216,66 @@ body {
     cursor: pointer !important;
     font-weight: bold !important;
     font-size: clamp(0.9rem, 1.1vw, 1.1rem) !important;
-    white-space: nowrap;
 }
 
-/* --- TELA INICIAL (INDEX) CENTRALIZADA --- */
-.hero-container {
-    background: var(--bg-gradient);
-    min-height: 100vh;
+/* --- NOVA JANELA DE CONFIRMAÇÃO EM TELA (MODAL) --- */
+.modal-overlay-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 30px 5%;
-}
-
-.hero-content {
-    max-width: 800px;
-    width: 100%;
-}
-
-.hero-content h1 {
-    font-size: clamp(2.2rem, 5vw, 4.5rem);
-    margin-bottom: 20px;
-    font-weight: 800;
-}
-
-.hero-content p {
-    font-size: clamp(1.1rem, 2vw, 1.8rem);
-    margin-bottom: 45px;
-    opacity: 0.95;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: white;
-    padding: clamp(15px, 2vw, 20px) clamp(35px, 5vw, 60px);
-    border: none;
-    border-radius: 40px;
-    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-}
-
-/* --- FORMULÁRIOS (LOGIN / CADASTRO) --- */
-.form-screen {
-    background: var(--bg-gradient);
-    min-height: 100vh;
-    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px 4%;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
 }
 
-.form-box-grande {
-    background: var(--card-bg);
-    padding: clamp(25px, 5vw, 50px);
-    border-radius: 20px;
-    width: 100%;
-    max-width: 700px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+.modal-overlay-custom.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-.form-box-grande h2 {
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    margin-bottom: 30px;
+.modal-box-custom {
+    background: white;
+    padding: 35px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-box-custom h4 {
+    font-size: 1.6rem;
     color: #1e3c72;
-    font-weight: 700;
+    margin-bottom: 15px;
 }
 
-.input-group-grande {
+.modal-box-custom p {
+    font-size: 1.15rem;
+    color: #555;
     margin-bottom: 25px;
 }
 
-.input-group-grande label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+.modal-botoes-grupo {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
-.input-group-grande input {
-    width: 100%;
-    padding: 18px;
-    border: 2.5px solid #bbb;
-    border-radius: 12px;
-    font-size: clamp(1rem, 1.3vw, 1.3rem);
-}
-
-.btn-grande {
-    background-color: var(--primary);
-    color: white;
-    padding: 20px;
-    border: none;
-    border-radius: 12px;
-    font-size: clamp(1.2rem, 1.5vw, 1.5rem);
+.btn-modal {
+    padding: 12px 25px;
+    font-size: 1.1rem;
     font-weight: bold;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    width: 100%;
 }
+
+.btn-modal-confirmar { background: var(--danger); color: white; }
+.btn-modal-cancelar { background: #ccc; color: #333; }

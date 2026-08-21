@@ -34,10 +34,7 @@
         
         <!-- Área de Publicação Gigante -->
         <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="margin-bottom: 0;">Publicar Novo Aviso</h3>
-                <button onclick="limparTodoOMural()" class="btn-delete-professor" style="background-color: #bb2d3b !important;">🗑️ Limpar Todo o Mural</button>
-            </div>
+            <h3>Publicar Novo Aviso</h3>
             
             <div id="mensagemFeedbackAviso" class="mensagem-postagem"></div>
 
@@ -65,13 +62,26 @@
 
         <!-- Grid de Avisos -->
         <div class="grid-avisos-gigante" id="muralGrid">
-            <!-- Os cards entram aqui via JS -->
+            <!-- Cards dinâmicos -->
+        </div>
+    </div>
+
+    <!-- JANELA DE CONFIRMAÇÃO CUSTOMIZADA (MODAL NA TELA) -->
+    <div id="modalConfirmacao" class="modal-overlay-custom">
+        <div class="modal-box-custom">
+            <h4>🗑️ Confirmar Exclusão</h4>
+            <p>Tem certeza de que deseja apagar voluntariamente este aviso específico do mural escolar?</p>
+            <div class="modal-botoes-grupo">
+                <button id="btnModalConfirmar" class="btn-modal btn-modal-confirmar">Sim, Apagar</button>
+                <button onclick="fecharModalExclusao()" class="btn-modal btn-modal-cancelar">Cancelar</button>
+            </div>
         </div>
     </div>
 
     <script>
         let usuarioLogado = false;
         let todosOsAvisos = [];
+        let idAvisoParaDeletar = null; // Armazena temporariamente o ID selecionado
 
         async function checarStatus() {
             try {
@@ -135,7 +145,8 @@
                         <p>${aviso.conteudo}</p>
                         <div class="card-footer-gigante">
                             <span>Postado em: ${dataFormatada}</span>
-                            ${usuarioLogado ? `<button class="btn-delete-professor" onclick="deletarAviso(${aviso.id})">🗑️ Apagar Aviso</button>` : ''}
+                            <!-- Dispara o modal próprio em vez de alert() do navegador -->
+                            ${usuarioLogado ? `<button class="btn-delete-professor" onclick="abrirModalExclusao(${aviso.id})">🗑️ Apagar Aviso</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -187,19 +198,26 @@
             }
         });
 
-        async function deletarAviso(id) {
-            if (confirm('Deseja apagar permanentemente este aviso do mural?')) {
-                const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
-                if (res.ok) carregarAvisos();
-            }
+        // --- FUNÇÕES DO NOVO MODAL DE EXCLUSÃO SELETIVA ---
+        function abrirModalExclusao(id) {
+            idAvisoParaDeletar = id;
+            document.getElementById('modalConfirmacao').classList.add('active');
         }
 
-        async function limparTodoOMural() {
-            if (confirm('⚠️ ATENÇÃO: Tem certeza de que deseja apagar absolutamente TODOS os avisos e imagens do mural escolar?')) {
-                const res = await fetch('/api/limpar-mural', { method: 'DELETE' });
-                if (res.ok) carregarAvisos();
-            }
+        function fecharModalExclusao() {
+            idAvisoParaDeletar = null;
+            document.getElementById('modalConfirmacao').classList.remove('active');
         }
+
+        document.getElementById('btnModalConfirmar').addEventListener('click', async () => {
+            if (idAvisoParaDeletar) {
+                const res = await fetch(`/api/avisos/${idAvisoParaDeletar}`, { method: 'DELETE' });
+                if (res.ok) {
+                    carregarAvisos();
+                }
+                fecharModalExclusao();
+            }
+        });
 
         async function logout() {
             await fetch('/api/logout');
