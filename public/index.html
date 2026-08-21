@@ -4,13 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos</title>
-    <!-- Barra adicionada para carregar na nuvem -->
-    <link rel="stylesheet" href="/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        .hero-container {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 30px 5%;
+        }
+        .hero-content { max-width: 800px; width: 100%; }
+        .hero-content h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 20px; font-weight: 800; }
+        .hero-content p { font-size: clamp(1.2rem, 2vw, 1.8rem); margin-bottom: 45px; opacity: 0.95; }
+        .btn-primary {
+            background-color: #ff8c00;
+            color: white;
+            padding: clamp(15px, 2vw, 20px) clamp(35px, 5vw, 60px);
+            border: none;
+            border-radius: 40px;
+            font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background-color: #e07b00; }
+    </style>
 </head>
 <body>
     <div class="hero-container">
         <div class="hero-content">
-            <!-- Ícone de megafone rosa/vermelho igual ao da foto -->
             <svg width="100" height="100" viewBox="0 0 24 24" fill="#ff4d6d" xmlns="http://w3.org" style="margin-bottom:25px;">
                 <path d="M12 5L4 9H2V15H4L12 19V5Z" fill="#ff4d6d" stroke="white" stroke-width="2" stroke-linejoin="round"/>
                 <path d="M12 9C13.5 10 13.5 14 12 15" stroke="white" stroke-width="2" stroke-linecap="round"/>

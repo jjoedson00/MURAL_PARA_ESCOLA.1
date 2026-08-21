@@ -9,13 +9,12 @@ const fs = require('fs');
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
-// Garante que a pasta de uploads exista antes de qualquer coisa para não quebrar o mural
+// Garante que a pasta de uploads exista
 const dir = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir, { recursive: true });
 }
 
-// Configuração do Multer para Upload de Imagens
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, dir);
@@ -26,7 +25,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Middlewares
+// MIDDLEWARES CORRIGIDOS COM PATH ABSOLUTO
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,7 +37,7 @@ app.use(session({
     cookie: { secure: false }
 }));
 
-// Criar Tabelas no Banco de Dados se não existirem
+// Criar Tabelas
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,21 +55,19 @@ db.serialize(() => {
     )`);
 });
 
-// --- ROTAS DE AUTENTICAÇÃO ---
-
-// Cadastro de Usuário
+// --- ROTAS ---
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
     if (token !== 'coordenacao2026') {
-        return res.status(400).json({ erro: 'Token secreto inválido! Apenas professores autorizados podem se cadastrar.' });
+        return res.status(400).json({ erro: 'Token secreto inválido!' });
     }
     try {
         db.get(`SELECT id FROM usuarios WHERE email = ?`, [email], async (err, row) => {
-            if (row) return res.status(400).json({ erro: 'Este e-mail já está cadastrado por outro professor.' });
+            if (row) return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
             const hashedPassword = await bcrypt.hash(senha, 10);
             const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
             db.run(query, [nome, email, hashedPassword], function(err) {
-                if (err) return res.status(500).json({ erro: 'Erro ao salvar o cadastro.' });
+                if (err) return res.status(500).json({ erro: 'Erro ao salvar cadastro.' });
                 req.session.usuarioId = this.lastID;
                 req.session.usuarioNome = nome;
                 res.json({ sucesso: true });
@@ -81,7 +78,6 @@ app.post('/api/cadastro', async (req, res) => {
     }
 });
 
-// Login
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
     const query = `SELECT * FROM usuarios WHERE email = ?`;
@@ -95,13 +91,11 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Logout
 app.get('/api/logout', (req, res) => {
     req.session.destroy();
     res.json({ sucesso: true });
 });
 
-// Verificar usuário logado
 app.get('/api/usuario-atual', (req, res) => {
     if (req.session.usuarioId) {
         res.json({ logado: true, nome: req.session.usuarioNome });
@@ -110,9 +104,6 @@ app.get('/api/usuario-atual', (req, res) => {
     }
 });
 
-// --- ROTAS DOS AVISOS ---
-
-// Listar todos os avisos (Protegido contra travamentos)
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT * FROM avisos ORDER BY data_criacao DESC`, [], (err, rows) => {
         if (err) return res.status(500).json([]);
@@ -120,7 +111,6 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
-// Criar novo aviso
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     const { titulo, conteudo } = req.body;
@@ -132,7 +122,6 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     });
 });
 
-// Apagar um único aviso
 app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
     const id = req.params.id;
@@ -148,24 +137,6 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Limpar todo o mural com segurança
-app.delete('/api/limpar-mural', (req, res) => {
-    if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
-    
-    if (fs.existsSync(dir)) {
-        const files = fs.readdirSync(dir);
-        for (const file of files) {
-            fs.unlinkSync(path.join(dir, file));
-        }
-    }
-
-    db.run(`DELETE FROM avisos`, function(err) {
-        if (err) return res.status(500).json({ erro: err.message });
-        res.json({ sucesso: true });
-    });
-});
-
-// Porta do Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
