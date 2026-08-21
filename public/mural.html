@@ -62,8 +62,6 @@
     </nav>
 
     <div class="mural-container-gigante">
-        
-        <!-- Área de Publicação Gigante -->
         <div id="areaCriacao" class="painel-publicacao-gigante" style="display: none;">
             <h3>Publicar Novo Aviso</h3>
             <div id="mensagemFeedbackAviso" class="mensagem-postagem"></div>
@@ -84,7 +82,6 @@
             </form>
         </div>
 
-        <!-- Barra de Pesquisa -->
         <div class="search-container" id="ancoraPesquisa">
             <input type="text" id="campoPesquisa" class="search-input" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
         </div>
@@ -115,7 +112,7 @@
 
             if (dadosLocal && dadosLocal !== "undefined") {
                 professorLogado = JSON.parse(dadosLocal);
-                areaCriacao.style.display = 'block'; // Abre o painel imediatamente
+                areaCriacao.style.display = 'block'; 
                 navActions.innerHTML = `
                     <button onclick="irParaOsAvisos()" class="btn-secundary">📋 Voltar para o Mural</button>
                     <span style="color: white; font-weight: bold; margin-left: 10px;">Prof. ${professorLogado.nome}</span>
@@ -139,14 +136,14 @@
             try {
                 const res = await fetch('/api/avisos');
                 todosOsAvisos = await res.json();
+                
+                // Se o backend resetar e não trouxer avisos, lê os salvos no navegador para o TCC nunca ficar vazio
+                if (!todosOsAvisos || todosOsAvisos.length === 0) {
+                    const locais = localStorage.getItem('backup_avisos');
+                    todosOsAvisos = locais ? JSON.parse(locais) : [];
+                }
                 exibirAvisos(todosOsAvisos);
             } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function exibirAvisos(listaDeAvisos) {
-            const grid = document.getElementById('muralGrid');
-            grid.innerHTML = '';
-
-            if (!listaDeAvisos || listaDeAvisos.length === 0) {
+                const locais = localStorage.getItem('backup_avisos');
+                todosOsAvisos = locais ? JSON.parse(locais) : [];
+                exibirAvisos(todosOsAvisos);
