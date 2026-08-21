@@ -1,235 +1,223 @@
+:root {
+    --primary: #ff8c00;
+    --primary-dark: #e07b00;
+    --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --light-bg: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-dark: #333333;
+    --text-muted: #666666;
+    --danger: #dc3545;
+}
+
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth; /* Faz a rolagem de tela ser suave ao clicar no botão */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #10253c, #1a365d, #2a4365);
-    color: #ffffff;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+}
+
+/* Tela Inicial / Hero Section */
+.hero-container {
+    background: var(--bg-gradient);
     min-height: 100vh;
-}
-
-/* Posicionamento do Botão Restrito no Canto Superior */
-.topo-restrito {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    max-width: 1200px;
     display: flex;
-    justify-content: flex-end;
-    padding: 20px;
-    z-index: 10;
-}
-
-.btn-professor {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-}
-
-.btn-professor:hover {
-    background: #ff8c00;
-    border-color: #ff8c00;
-    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
-}
-
-/* Primeira Tela (Igual à imagem enviada) */
-.mural-wrapper {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
+    color: white;
     padding: 20px;
 }
 
-.mural-header h1 {
-    font-size: 3.5rem;
-    margin: 15px 0 15px 0;
-    font-weight: 700;
+.hero-content img {
+    width: 80px;
+    margin-bottom: 20px;
 }
 
-@media (max-width: 600px) {
-    .mural-header h1 {
-        font-size: 2.3rem;
-    }
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
 }
 
-.mural-header p {
-    font-size: 1.25rem;
-    color: #cbd5e0;
-    margin-bottom: 35px;
-}
-
-.emoji-megafone {
-    font-size: 4rem;
-}
-
-/* Botão Laranja Central */
-.btn-acessar {
-    display: inline-block;
-    background-color: #ff8c00;
-    color: #ffffff;
-    padding: 16px 50px;
-    border-radius: 35px;
-    text-decoration: none;
-    font-weight: bold;
+.hero-content p {
     font-size: 1.2rem;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
-}
-
-.btn-acessar:hover {
-    background-color: #e07b00;
-    transform: translateY(-2px);
-}
-
-/* SEÇÃO DO MURAL QUE APARECE ABAIXO */
-.secao-avisos {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 80px 20px;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-}
-
-.container-avisos {
-    width: 100%;
-    max-width: 800px;
-}
-
-.container-avisos h2 {
-    font-size: 2rem;
-    margin-bottom: 40px;
-    color: #ffffff;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
-}
-
-.card-aviso {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 20px;
-    text-align: left;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.card-aviso h3 {
-    margin-top: 0;
-    color: #ff8c00;
-    font-size: 1.4rem;
-}
-
-.card-aviso p {
-    color: #e2e8f0;
-    line-height: 1.6;
-    font-size: 1.05rem;
-}
-
-.card-aviso small {
-    color: #a0aec0;
-    display: block;
-    margin-top: 15px;
-    font-size: 0.9rem;
-}
-
-/* FORMULÁRIOS (Login / Cadastro) */
-.container-form {
-    background: #ffffff;
-    color: #2d3748;
-    padding: 40px 30px;
-    border-radius: 16px;
-    margin: 12vh auto;
-    width: 90%;
-    max-width: 460px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-}
-
-@media (min-width: 1000px) {
-    .container-form {
-        padding: 50px 40px;
-        max-width: 500px;
-    }
-}
-
-.container-form h2 {
-    margin-top: 0;
     margin-bottom: 30px;
-    text-align: center;
-    color: #1a365d;
-    font-size: 1.8rem;
+    opacity: 0.9;
 }
 
-.campo {
-    margin-bottom: 20px;
-}
-
-.campo label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #4a5568;
-}
-
-.campo input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
-.campo input:focus {
-    outline: none;
-    border-color: #1a365d;
-}
-
-.container-form button {
-    width: 100%;
-    padding: 14px;
-    background-color: #1a365d;
-    color: #ffffff;
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    padding: 14px 40px;
     border: none;
-    border-radius: 8px;
+    border-radius: 30px;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 10px;
-}
-
-.container-form button:hover {
-    background-color: #2a4365;
-}
-
-.container-form p {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1rem;
-    color: #718096;
-}
-
-.container-form a {
-    color: #1a365d;
     text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Formulários (Login / Cadastro / Publicação) */
+.form-screen {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.form-box {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.form-box h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #1e3c72;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
-.container-form a:hover {
-    text-decoration: underline;
+.input-group input, .input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+/* Navbar do Dashboard/Mural */
+.navbar {
+    background: #1e3c72;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-secundary {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-secundary:hover {
+    background: white;
+    color: #1e3c72;
+}
+
+/* Grid de Avisos */
+.mural-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.grid-avisos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.card-aviso {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.card-aviso:hover {
+    transform: translateY(-5px);
+}
+
+.card-aviso img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body h3 {
+    margin-bottom: 10px;
+    color: #1e3c72;
+}
+
+.card-body p {
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.btn-delete {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Modo Monitor / TV de Exibição Completa */
+@media (min-width: 1920px) {
+    .grid-avisos {
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        gap: 40px;
+    }
+    .card-body h3 { font-size: 1.8rem; }
+    .card-body p { font-size: 1.3rem; }
 }

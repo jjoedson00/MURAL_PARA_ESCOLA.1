@@ -1,54 +1,46 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mural Escolar</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Login - Administrador</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container-form">
-        <form id="form-login">
-            <h2>Acessar Painel</h2>
-            <div class="campo">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required placeholder="Digite seu e-mail">
+<body class="form-screen">
+    <div class="form-box">
+        <h2>Acesso Restrito</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" id="email" required>
             </div>
-            <div class="campo">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" required placeholder="Digite sua senha">
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="senha" required>
             </div>
-            <button type="submit">Entrar</button>
-            <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+            <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px;">Entrar</button>
         </form>
+        <p style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
+            Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold;">Cadastre-se</a>
+        </p>
     </div>
 
-    <script type="module">
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
 
-            const emailInput = document.getElementById('email').value;
-            const senhaInput = document.getElementById('senha').value;
-
-            try {
-                const response = await fetch('/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput, senha: senhaInput })
-                });
-
-                const resultado = await response.json();
-
-                if (response.ok && resultado.autenticado) {
-                    alert('🔓 Autenticação aceita! Entrando no painel gerenciador...');
-                    window.location.href = 'admin.html';
-                } else {
-                    alert(`❌ ${resultado.erro || 'Credenciais incorretas!'}`);
-                }
-
-            } catch (error) {
-                console.error("Erro de conexão com o login:", error);
-                alert('❌ Falha interna de comunicação com o servidor.');
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
+            const dados = await res.json();
+            if (dados.sucesso) {
+                window.location.href = 'mural.html';
+            } else {
+                alert(dados.erro);
             }
         });
     </script>

@@ -1,73 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- Botão de Acesso Restrito no Canto Superior Direito -->
-    <div class="topo-restrito">
-        <a href="/login.html" class="btn-professor">🔒 Área do Professor</a>
-    </div>
-
-    <!-- TELA DE INÍCIO (Sua tela atual) -->
-    <div class="mural-wrapper">
-        <header class="mural-header">
-            <div class="icon-container">
-                <span class="emoji-megafone">📢</span>
-            </div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <!-- Ícone de Megafone Simplificado -->
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#ff4d4d" xmlns="http://w3.org" style="margin-bottom:20px;">
+                <path d="M20 12L12 5V9H4V15H12V19L20 12Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
             <h1>Mural de Avisos</h1>
             <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-            <!-- O botão agora rola a tela suavemente para a seção do mural abaixo -->
-            <a href="#secao-mural" class="btn-acessar">Acessar Mural</a>
-        </header>
-    </div>
-
-    <!-- SEÇÃO DO MURAL (Aparece logo após a tela inicial) -->
-    <section id="secao-mural" class="secao-avisos">
-        <div class="container-avisos">
-            <h2>📢 Publicações Recentes</h2>
-            <div class="mural-container" id="lista-avisos">
-                <p class="carregando">Conectando ao banco remoto e buscando atualizações...</p>
-            </div>
+            <a href="mural.html" class="btn-primary">Acessar Mural</a>
         </div>
-    </section>
-
-    <script>
-        async function carregarAvisos() {
-            const container = document.getElementById('lista-avisos');
-            try {
-                const response = await fetch('/api/avisos');
-                const avisos = await response.json();
-
-                if (avisos.length === 0) {
-                    container.innerHTML = '<p class="aviso-vazio">Nenhum aviso publicado por enquanto.</p>';
-                    return;
-                }
-
-                container.innerHTML = ''; 
-                avisos.forEach(aviso => {
-                    const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
-                    
-                    const card = document.createElement('div');
-                    card.className = 'card-aviso';
-                    card.innerHTML = `
-                        <h3>${aviso.titulo}</h3>
-                        <p>${aviso.conteudo}</p>
-                        <small>Publicado em: ${dataFormatada}</small>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (error) {
-                console.error("Erro na busca de avisos:", error);
-                container.innerHTML = '<p class="aviso-erro">Não foi possível carregar o mural. Verifique a conexão.</p>';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', carregarAvisos);
-    </script>
+    </div>
 </body>
 </html>

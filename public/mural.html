@@ -3,87 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural Digital Escolar</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; padding: 24px; }
-        .tela-mural { width: 100%; max-width: 1400px; margin: 0 auto; }
-        .topo-mural { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 24px; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-        .barra-pesquisa { width: 100%; max-width: 400px; padding: 12px 18px; border: 1px solid #475569; border-radius: 14px; background-color: #1e293b; color: #f8fafc; outline: none; font-size: 0.95rem; }
-        .btn-restrita { background-color: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 12px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 0.875rem; }
-        .btn-restrita:hover { background-color: #334155; }
-        .btn-voltar { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
-        .grid-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; width: 100%; }
-        .card-aviso { background-color: #1e293b; border: 1px solid #334155; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
-        .card-corpo { padding: 20px; flex-grow: 1; }
-        .card-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #ffffff; }
-        .card-conteudo { font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; white-space: pre-wrap; }
-        .card-data { padding: 16px 20px; font-size: 0.75rem; color: #38bdf8; border-top: 1px solid rgba(51, 65, 85, 0.5); }
-        .card-vazio { grid-column: 1 / -1; text-align: center; padding: 80px 24px; background-color: rgba(30, 41, 59, 0.5); border-radius: 16px; border: 2px dashed #334155; }
-    </style>
+    <title>Mural Escolar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="tela-mural">
-        <header class="topo-mural">
-            <div>
-                <h1 style="font-size: 2rem; font-weight: 800;">🏫 Mural Digital Escolar</h1>
-                <p style="color: #94a3b8; font-size: 0.875rem; margin-top: 4px;">Monitores e Celulares</p>
-            </div>
-            <input type="text" id="campo-busca" class="barra-pesquisa" placeholder="🔍 Pesquisar aviso..." oninput="filtrarAvisosNaTela()">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="login.html" class="btn-restrita">⚙️ Área Restrita</a>
-                <a href="index.html" class="btn-voltar">Voltar ↩</a>
-            </div>
-        </header>
-        <main><div id="id-mural-container" class="grid-mural"></div></main>
+
+    <nav class="navbar">
+        <h2>Mural de Avisos Digitais</h2>
+        <div class="nav-actions" id="navActions">
+            <!-- Atualizado via JS -->
+            <a href="login.html" class="btn-secundary">Acesso Administrativo</a>
+        </div>
+    </nav>
+
+    <!-- Área de publicação de avisos (Oculta por padrão, visível apenas para logados) -->
+    <div class="mural-container" id="areaCriacao" style="display: none; max-width: 600px;">
+        <div class="form-box" style="max-width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom:15px; color:#1e3c72;">Publicar Novo Aviso</h3>
+            <form id="avisoForm" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label>Título do Aviso</label>
+                    <input type="text" id="tituloAviso" name="titulo" required>
+                </div>
+                <div class="input-group">
+                    <label>Conteúdo / Texto</label>
+                    <textarea id="conteudoAviso" name="conteudo" rows="4" required></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Imagem de Referência (Opcional)</label>
+                    <input type="file" id="imagemAviso" name="imagem" accept="image/*">
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; border-radius:8px;">Postar no Mural</button>
+            </form>
+        </div>
     </div>
 
-    <!-- Sincronização do Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-        import { getDatabase, ref, get } from "https://gstatic.com";
+    <!-- O Mural Exibível -->
+    <main class="mural-container">
+        <div class="grid-avisos" id="muralGrid">
+            <!-- Carregado via JS dinamicamente -->
+        </div>
+    </main>
 
-        const firebaseConfig = { databaseURL: "https://firebaseio.com" };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    <script>
+        let usuarioLogado = false;
 
-        const containerMural = document.getElementById('id-mural-container');
-        let todosOsAvisosCache = [];
+        async function checarStatus() {
+            const res = await fetch('/api/usuario-atual');
+            const status = await res.json();
+            
+            const navActions = document.getElementById('navActions');
+            const areaCriacao = document.getElementById('areaCriacao');
 
-        async function buscarAvisosDoBanco() {
-            try {
-                const dbRef = ref(db, 'avisos');
-                const snapshot = await get(dbRef);
-                todosOsAvisosCache = [];
-                if (snapshot.exists()) {
-                    snapshot.forEach((childSnapshot) => { todosOsAvisosCache.push(childSnapshot.val()); });
-                }
-                renderizarAvisos(todosOsAvisosCache);
-            } catch (err) { console.log("Banco offline."); }
+            if(status.logado) {
+                usuarioLogado = true;
+                areaCriacao.style.display = 'block';
+                navActions.innerHTML = `
+                    <span>Olá, <b>${status.nome}</b></span>
+                    <button onclick="logout()" class="btn-secundary" style="background:#dc3545; border:none;">Sair</button>
+                `;
+            }
+            carregarAvisos();
         }
 
-        function renderizarAvisos(lista) {
-            containerMural.innerHTML = '';
-            if (!lista || lista.length === 0) {
-                containerMural.innerHTML = `<div class="card-vazio"><span style="font-size:3rem;display:block;margin-bottom:16px;">📭</span><p style="color:#94a3b8;font-size:1.125rem;">Nenhum aviso ativo.</p></div>`;
+        async function carregarAvisos() {
+            const res = await fetch('/api/avisos');
+            const avisos = await res.json();
+            const grid = document.getElementById('muralGrid');
+            grid.innerHTML = '';
+
+            if(avisos.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#888;">Nenhum aviso publicado no momento.</p>';
                 return;
             }
-            lista.forEach(aviso => {
-                containerMural.innerHTML += `
-                    <div class="card-aviso">
-                        <div class="card-corpo"><h3>${aviso.titulo}</h3><p>${aviso.conteudo}</p></div>
-                        <div class="card-data">🕒 Publicado recentemente</div>
-                    </div>`;
+
+            avisos.forEach(aviso => {
+                const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
+                const card = document.createElement('div');
+                card.className = 'card-aviso';
+                
+                card.innerHTML = `
+                    ${aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : ''}
+                    <div class="card-body">
+                        <h3>${aviso.titulo}</h3>
+                        <p>${aviso.conteudo}</p>
+                        <div class="card-footer">
+                            <span>Postado em: ${dataFormatada}</span>
+                            ${usuarioLogado ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
             });
         }
 
-        window.filtrarAvisosNaTela = function() {
-            const termo = document.getElementById('campo-busca').value.toLowerCase().trim();
-            const filtrados = todosOsAvisosCache.filter(a => a.titulo.toLowerCase().includes(termo) || a.conteudo.toLowerCase().includes(termo));
-            renderizarAvisos(filtrados);
+        document.getElementById('avisoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const res = await fetch('/api/avisos', {
+                method: 'POST',
+                body: formData
+            });
+
+            if(res.ok) {
+                e.target.reset();
+                carregarAvisos();
+            } else {
+                alert('Erro ao postar aviso');
+            }
+        });
+
+        async function deletarAviso(id) {
+            if(confirm('Tem certeza que deseja apagar este aviso?')) {
+                const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+                if(res.ok) carregarAvisos();
+            }
         }
 
-        buscarAvisosDoBanco();
+        async function logout() {
+            await fetch('/api/logout');
+            window.location.reload();
+        }
+
+        // Executar ao abrir a tela
+        checarStatus();
+        
+        // Auto-refresh a cada 30 segundos para manter os monitores escolares atualizados
+        setInterval(carregarAvisos, 30000);
     </script>
 </body>
 </html>

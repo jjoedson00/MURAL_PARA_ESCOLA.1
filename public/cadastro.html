@@ -1,54 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Mural Escolar</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Cadastro - Administrador</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container-form">
-        <form id="form-cadastro">
-            <h2>Criar Conta</h2>
-            <div class="campo">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required placeholder="Escolha um e-mail">
+<body class="form-screen">
+    <div class="form-box">
+        <h2>Criar Conta</h2>
+        <form id="cadastroForm">
+            <div class="input-group">
+                <label>Nome Completo</label>
+                <input type="text" id="nome" required>
             </div>
-            <div class="campo">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" required placeholder="Crie uma senha estável">
+            <div class="input-group">
+                <label>E-mail</label>
+                <input type="email" id="email" required>
             </div>
-            <button type="submit">Cadastrar Administrador</button>
-            <p>Já possui cadastro? <a href="login.html">Fazer Login</a></p>
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="senha" required>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px;">Cadastrar</button>
         </form>
+        <p style="margin-top: 15px; text-align: center; font-size: 0.9rem;">
+            Já tem conta? <a href="login.html" style="color: #1e3c72; font-weight: bold;">Faça Login</a>
+        </p>
     </div>
 
-    <script type="module">
-        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
 
-            const emailInput = document.getElementById('email').value;
-            const senhaInput = document.getElementById('senha').value;
-
-            try {
-                const response = await fetch('/auth/cadastro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailInput, senha: senhaInput })
-                });
-
-                const resultado = await response.json();
-
-                if (response.ok) {
-                    alert('✅ Administrador cadastrado com sucesso!');
-                    window.location.href = 'login.html';
-                } else {
-                    alert(`❌ Erro: ${resultado.erro}`);
-                }
-
-            } catch (error) {
-                console.error("Erro na comunicação de cadastro:", error);
-                alert('❌ Falha de comunicação com o servidor.');
+            const res = await fetch('/api/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha })
+            });
+            const dados = await res.json();
+            if (dados.sucesso) {
+                alert('Conta criada com sucesso!');
+                window.location.href = 'login.html';
+            } else {
+                alert(dados.erro);
             }
         });
     </script>

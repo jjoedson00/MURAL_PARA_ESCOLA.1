@@ -1,113 +1,155 @@
-import express from 'express';
-import pg from 'pg';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const db = new sqlite3.Database('./database.db');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Configuração do Multer para Upload de Imagens
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const dir = './public/uploads';
+        if (!fs.existsSync(dir)){
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// CONEXÃO COM O BANCO DE DADOS (PostgreSQL do Render)
-const DB_URL = process.env.DATABASE_URL;
+app.use(session({
+    secret: 'chave-secreta-do-mural',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // mude para true se usar HTTPS
+}));
 
-const pool = new pg.Pool({
-    connectionString: DB_URL,
-    ssl: {
-        rejectUnauthorized: false
+// Criar Tabelas no Banco de Dados se não existirem
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT,
+        email TEXT UNIQUE,
+        senha TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS avisos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT,
+        conteudo TEXT,
+        imagem TEXT,
+        data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+});
+
+// --- ROTAS DE AUTENTICAÇÃO ---
+
+// Cadastro de Usuário
+app.post('/api/cadastro', async (req, res) => {
+    const { nome, email, senha } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(senha, 10);
+        const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
+        db.run(query, [nome, email, hashedPassword], function(err) {
+            if (err) return res.status(400).json({ erro: 'Email já cadastrado.' });
+            res.json({ sucesso: true });
+        });
+    } catch {
+        res.status(500).json({ erro: 'Erro no servidor.' });
     }
 });
 
-// Inicialização automática das tabelas no Render
-const inicializarBanco = async () => {
-    try {
-        if (!DB_URL) {
-            console.error('AVISO: A variável DATABASE_URL não foi configurada no painel do Render.');
-            return;
-        }
-        
-        // 1. Tabela de usuários para Login e Cadastro
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS usuarios (
-                id SERIAL PRIMARY KEY,
-                email TEXT UNIQUE NOT NULL,
-                senha TEXT NOT NULL
-            )
-        `);
-
-        // 2. Tabela de avisos para alimentar o Mural da tela azul
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS avisos (
-                id SERIAL PRIMARY KEY,
-                titulo TEXT NOT NULL,
-                conteudo TEXT NOT NULL,
-                data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-        
-        console.log('Banco de dados PostgreSQL conectado e tabelas prontas.');
-    } catch (err) {
-        console.error('Erro ao inicializar tabelas no banco:', err.message);
-    }
-};
-inicializarBanco();
-
-// ROTAS DE LOGIN E CADASTRO
-app.post('/auth/cadastro', async (req, res) => {
+// Login
+app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
-    if (!email || !senha) return res.status(400).json({ erro: 'Preencha todos os campos.' });
+    const query = `SELECT * FROM usuarios WHERE email = ?`;
+    
+    db.get(query, [email], async (err, usuario) => {
+        if (err || !usuario) return res.status(400).json({ erro: 'Usuário não encontrado.' });
+        
+        const senhaValida = await bcrypt.compare(senha, usuario.senha);
+        if (!senhaValida) return res.status(400).json({ erro: 'Senha incorreta.' });
+        
+        req.session.usuarioId = usuario.id;
+        req.session.usuarioNome = usuario.nome;
+        res.json({ sucesso: true });
+    });
+});
 
-    try {
-        await pool.query('INSERT INTO usuarios (email, senha) VALUES ($1, $2)', [email, senha]);
-        res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
-    } catch (err) {
-        if (err.code === '23505') return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
-        res.status(500).json({ erro: 'Erro interno ao salvar administrador.' });
+// Logout
+app.get('/api/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ sucesso: true });
+});
+
+// Verificar se usuário está logado
+app.get('/api/usuario-atual', (req, res) => {
+    if (req.session.usuarioId) {
+        res.json({ logado: true, nome: req.session.usuarioNome });
+    } else {
+        res.json({ logado: false });
     }
 });
 
-app.post('/auth/login', async (req, res) => {
-    const { email, senha } = req.body;
-    if (!email || !senha) return res.status(400).json({ erro: 'Preencha todos os campos.' });
+// --- ROTAS DOS AVISOS ---
 
-    try {
-        const result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2', [email, senha]);
-        if (result.rows.length > 0) {
-            res.json({ autenticado: true, usuario: result.rows[0].email });
-        } else {
-            res.status(401).json({ autenticado: false, erro: 'E-mail ou senha incorretos.' });
-        }
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro interno na validação de login.' });
-    }
+// Listar todos os avisos
+app.get('/api/avisos', (req, res) => {
+    db.all(`SELECT * FROM avisos ORDER BY data_criacao DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ erro: err.message });
+        res.json(rows);
+    });
 });
 
-// ROTAS DO MURAL DE AVISOS
-app.get('/api/avisos', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM avisos ORDER BY data_criacao DESC');
-        res.json(result.rows);
-    } catch (err) {
-        console.error("Erro na rota GET /api/avisos:", err.message);
-        res.status(500).json({ erro: 'Erro ao buscar os avisos do mural.' });
-    }
-});
-
-app.post('/api/avisos', async (req, res) => {
+// Criar novo aviso (Requer estar logado)
+app.post('/api/avisos', upload.single('imagem'), (req, res) => {
+    if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
+    
     const { titulo, conteudo } = req.body;
-    if (!titulo || !conteudo) return res.status(400).json({ erro: 'Preencha título e conteúdo.' });
-
-    try {
-        await pool.query('INSERT INTO avisos (titulo, conteudo) VALUES ($1, $2)', [titulo, conteudo]);
-        res.status(201).json({ mensagem: 'Aviso publicado com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ erro: 'Erro ao publicar no banco.' });
-    }
+    const imagemPath = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    const query = `INSERT INTO avisos (titulo, conteudo, imagem) VALUES (?, ?, ?)`;
+    db.run(query, [titulo, conteudo, imagemPath], function(err) {
+        if (err) return res.status(500).json({ erro: err.message });
+        res.json({ sucesso: true, id: this.lastID });
+    });
 });
 
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// Apagar aviso (Requer estar logado)
+app.delete('/api/avisos/:id', (req, res) => {
+    if (!req.session.usuarioId) return res.status(401).json({ erro: 'Não autorizado.' });
+    
+    const id = req.params.id;
+    
+    // Primeiro buscar a imagem para deletar o arquivo do servidor
+    db.get(`SELECT imagem FROM avisos WHERE id = ?`, [id], (err, row) => {
+        if (row && row.imagem) {
+            const fullPath = path.join(__dirname, 'public', row.imagem);
+            if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+        }
+        
+        // Deletar do banco
+        db.run(`DELETE FROM avisos WHERE id = ?`, [id], function(err) {
+            if (err) return res.status(500).json({ erro: err.message });
+            res.json({ sucesso: true });
+        });
+    });
+});
+
+// Iniciar o Servidor
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
