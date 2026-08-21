@@ -59,11 +59,11 @@ inicializarBanco();
 
 // ROTAS DE LOGIN E CADASTRO
 app.post('/auth/cadastro', async (req, res) => {
-    const { email, senate } = req.body;
-    if (!email || !senate) return res.status(400).json({ erro: 'Preencha todos os campos.' });
+    const { email, senha } = req.body;
+    if (!email || !senha) return res.status(400).json({ erro: 'Preencha todos os campos.' });
 
     try {
-        await pool.query('INSERT INTO usuarios (email, senha) VALUES ($1, $2)', [email, senate]);
+        await pool.query('INSERT INTO usuarios (email, senha) VALUES ($1, $2)', [email, senha]);
         res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
     } catch (err) {
         if (err.code === '23505') return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
@@ -72,13 +72,13 @@ app.post('/auth/cadastro', async (req, res) => {
 });
 
 app.post('/auth/login', async (req, res) => {
-    const { email, senate } = req.body;
-    if (!email || !senate) return res.status(400).json({ erro: 'Preencha todos os campos.' });
+    const { email, senha } = req.body;
+    if (!email || !senha) return res.status(400).json({ erro: 'Preencha todos os campos.' });
 
     try {
-        const result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2', [email, senate]);
+        const result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2', [email, senha]);
         if (result.rows.length > 0) {
-            res.json({ autenticado: true, usuario: result.rows.email });
+            res.json({ autenticado: true, usuario: result.rows[0].email });
         } else {
             res.status(401).json({ autenticado: false, erro: 'E-mail ou senha incorretos.' });
         }
@@ -93,6 +93,7 @@ app.get('/api/avisos', async (req, res) => {
         const result = await pool.query('SELECT * FROM avisos ORDER BY data_criacao DESC');
         res.json(result.rows);
     } catch (err) {
+        console.error("Erro na rota GET /api/avisos:", err.message);
         res.status(500).json({ erro: 'Erro ao buscar os avisos do mural.' });
     }
 });
