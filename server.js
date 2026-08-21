@@ -33,7 +33,7 @@ app.use(session({
     secret: 'chave-secreta-do-mural',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // mude para true se usar HTTPS
+    cookie: { secure: false }
 }));
 
 // Criar Tabelas no Banco de Dados se não existirem
@@ -56,15 +56,28 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
-// Cadastro de Usuário
+// Cadastro de Usuário com Token Secreto e Verificação de E-mail Único
 app.post('/api/cadastro', async (req, res) => {
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, token } = req.body;
+
+    // Validação do Token Secreto
+    if (token !== 'coordenacao2026') {
+        return res.status(400).json({ erro: 'Token secreto inválido! Apenas professores autorizados podem se cadastrar.' });
+    }
+
     try {
-        const hashedPassword = await bcrypt.hash(senha, 10);
-        const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
-        db.run(query, [nome, email, hashedPassword], function(err) {
-            if (err) return res.status(400).json({ erro: 'Email já cadastrado.' });
-            res.json({ sucesso: true });
+        // Verificar se o e-mail já existe
+        db.get(`SELECT id FROM usuarios WHERE email = ?`, [email], async (err, row) => {
+            if (row) {
+                return res.status(400).json({ erro: 'Este e-mail já está cadastrado por outro professor.' });
+            }
+
+            const hashedPassword = await bcrypt.hash(senha, 10);
+            const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
+            db.run(query, [nome, email, hashedPassword], function(err) {
+                if (err) return res.status(500).json({ erro: 'Erro ao salvar o cadastro.' });
+                res.json({ sucesso: true });
+            });
         });
     } catch {
         res.status(500).json({ erro: 'Erro no servidor.' });
@@ -133,14 +146,12 @@ app.delete('/api/avisos/:id', (req, res) => {
     
     const id = req.params.id;
     
-    // Primeiro buscar a imagem para deletar o arquivo do servidor
     db.get(`SELECT imagem FROM avisos WHERE id = ?`, [id], (err, row) => {
         if (row && row.imagem) {
             const fullPath = path.join(__dirname, 'public', row.imagem);
             if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
         }
         
-        // Deletar do banco
         db.run(`DELETE FROM avisos WHERE id = ?`, [id], function(err) {
             if (err) return res.status(500).json({ erro: err.message });
             res.json({ sucesso: true });
@@ -148,7 +159,7 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// --- ALTERAÇÃO AQUI: Porta dinâmica para o Render ---
+// Porta dinâmica para o Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
