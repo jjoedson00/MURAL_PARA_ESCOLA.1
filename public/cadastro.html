@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center;">
+    
+    <!-- Caixa de mensagens nativa na tela -->
+    <div id="notification-container"></div>
+
     <div class="form-container">
         <h2>Criar Conta de Professor</h2>
         <form id="cadastroForm">
@@ -32,6 +36,15 @@
     </div>
 
     <script>
+        function mostrarNotificacao(mensagem, tipo = 'error') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${tipo}`;
+            toast.innerText = mensagem;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 4000);
+        }
+
         document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nome = document.getElementById('nome').value;
@@ -47,7 +60,6 @@
             const dadosCadastro = await resCadastro.json();
             
             if (dadosCadastro.sucesso) {
-                // Login Automático Imediato
                 const resLogin = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -61,7 +73,8 @@
                     window.location.href = 'login.html';
                 }
             } else {
-                alert(dadosCadastro.erro);
+                // Exibe erro na tela caso o token esteja errado ou o e-mail já exista
+                mostrarNotificacao(dadosCadastro.erro, 'error');
             }
         });
     </script>

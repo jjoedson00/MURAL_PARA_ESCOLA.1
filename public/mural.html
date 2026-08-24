@@ -6,7 +6,8 @@
     <title>Mural de Avisos Escolares</title>
     <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
+    
     <div id="notification-container"></div>
 
     <div class="container">
@@ -47,11 +48,12 @@
         let usuarioLogado = false;
         let todosAvisos = [];
 
+        // Alertas estilizados direto na tela do mural
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('notification-container');
             const toast = document.createElement('div');
             toast.className = `toast ${tipo}`;
-            toast.innerText = mensaje || mensagem;
+            toast.innerText = mensagem;
             container.appendChild(toast);
             setTimeout(() => { toast.remove(); }, 4000);
         }
@@ -62,7 +64,7 @@
             if (dados.logado) {
                 usuarioLogado = true;
                 document.getElementById('authActions').innerHTML = `
-                    <span style="margin-right:20px; font-size: 1.25rem;">Olá, Professor(a) <b>${dados.nome}</b></span>
+                    <span style="margin-right:20px; font-size: 1.25rem; color: #1e3c72;">Olá, Professor(a) <b>${dados.nome}</b></span>
                     <button onclick="logout()" class="btn-delete">Sair</button>
                 `;
                 document.getElementById('areaPublicar').style.display = 'block';
@@ -86,7 +88,7 @@
             grid.innerHTML = '';
 
             if (listaDeAvisos.length === 0) {
-                grid.innerHTML = `<p style="font-size: 1.3rem; color: #64748b; grid-column: 1/-1; text-align: center; margin-top: 20px;">Nenhum aviso encontrado.</p>`;
+                grid.innerHTML = `<p style="font-size: 1.4rem; color: #ffffff; grid-column: 1/-1; text-align: center; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">Nenhum aviso encontrado no sistema.</p>`;
                 return;
             }
 
@@ -131,7 +133,7 @@
             
             if (res.ok) {
                 e.target.reset();
-                mostrarNotificacao('Aviso publicado com sucesso!');
+                mostrarNotificacao('Aviso publicado com sucesso!', 'success');
                 carregarAvisos();
             } else {
                 mostrarNotificacao('Erro ao publicar o seu aviso.', 'error');
@@ -142,7 +144,7 @@
             if (confirm('Deseja realmente excluir este aviso?')) {
                 const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
                 if (res.ok) {
-                    mostrarNotificacao('O aviso foi removido!');
+                    mostrarNotificacao('O aviso foi removido!', 'success');
                     carregarAvisos();
                 } else {
                     mostrarNotificacao('Falha ao tentar apagar.', 'error');

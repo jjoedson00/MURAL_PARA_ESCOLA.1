@@ -33,6 +33,7 @@ app.use(session({
 
 // Criar Tabelas no Banco de Dados
 db.serialize(() => {
+    // O campo 'email' possui a regra UNIQUE para evitar duplicados
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
@@ -53,6 +54,7 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
+// Cadastro de Usuários (Professores) com validação de e-mail duplicado
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
 
@@ -64,7 +66,8 @@ app.post('/api/cadastro', async (req, res) => {
         const hashSenha = await bcrypt.hash(senha, 10);
         db.run(`INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`, [nome, email, hashSenha], function(err) {
             if (err) {
-                return res.status(400).json({ erro: 'E-mail já cadastrado.' });
+                // Se o SQLite retornar erro de restrição UNIQUE do e-mail, responde com a mensagem limpa
+                return res.status(400).json({ erro: 'Este endereço de e-mail já está cadastrado no sistema!' });
             }
             res.json({ sucesso: true });
         });
@@ -73,6 +76,7 @@ app.post('/api/cadastro', async (req, res) => {
     }
 });
 
+// Rota de Login modificada para responder com JSON em vez de travar o navegador
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
 
