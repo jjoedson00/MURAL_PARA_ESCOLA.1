@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos Escolares</title>
-    <link rel="stylesheet" href="./style.css">
+    <!-- Adicionado ?v=2 para aplicar o tamanho esticado de ponta a ponta -->
+    <link rel="stylesheet" href="./style.css?v=2">
 </head>
 <body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
     
@@ -18,7 +19,6 @@
             </div>
         </div>
 
-        <!-- Seção de Publicação -->
         <div id="areaPublicar" class="form-container" style="display: none;">
             <h3>Nova Publicação</h3>
             <form id="formAviso" enctype="multipart/form-data">
@@ -36,11 +36,7 @@
                 </div>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
                     <button type="submit" class="btn-primary">Publicar no Mural</button>
-                    
-                    <!-- NOVO: Botão para rolar a tela -->
                     <button type="button" onclick="rolarParaMural()" class="btn-primary" style="background-color: #334155; box-shadow: 0 8px 25px rgba(51, 65, 85, 0.35);">Rolar para Avisos</button>
-                    
-                    <!-- NOVO: Botão para ocultar o painel e ver como aluno -->
                     <button type="button" id="btnAlternarModo" onclick="alternarVisualizacao()" class="btn-primary" style="background-color: #475569; box-shadow: 0 8px 25px rgba(71, 85, 105, 0.35);">Ver como Aluno/Responsável</button>
                 </div>
             </form>
@@ -71,8 +67,7 @@
             document.getElementById('secaoMural').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Função que esconde/mostra a tela de publicação para simular o aluno
-        function alternarVisualizacao() {
+            function alternarVisualizacao() {
             const area = document.getElementById('areaPublicar');
             const btn = document.getElementById('btnAlternarModo');
             
@@ -101,7 +96,6 @@
                 `;
                 document.getElementById('areaPublicar').style.display = 'block';
             } else {
-                // Se NÃO estiver logado (Aluno/Responsável), limpa as ações de professor
                 usuarioLogado = false;
                 document.getElementById('areaPublicar').style.display = 'none';
                 document.getElementById('authActions').innerHTML = `
@@ -111,12 +105,10 @@
             carregarAvisos();
         }
 
-        // Modificado para deslogar sem recarregar a tela inteira com o formulário aberto
         async function logout() {
             const res = await fetch('/api/logout');
             if (res.ok) {
                 mostrarNotificacao('Você saiu do sistema de publicação.', 'success');
-                // Re-executa o checador para atualizar o layout para o modo aluno de forma limpa
                 checarLogin(); 
             }
         }
@@ -139,8 +131,6 @@
             listaDeAvisos.forEach(aviso => {
                 const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
                 const imgTag = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
-                
-                // Botão de deletar só aparece se o usuário estiver logado e NÃO estiver em modo de simulação de aluno
                 const btnDeletar = (usuarioLogado && !modoAlunoAtivo) ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : '';
 
                 grid.innerHTML += `
