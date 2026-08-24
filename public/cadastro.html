@@ -4,47 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="./style.css?v=3">
+    <link rel="stylesheet" href="./style.css?v=4">
     
-    <!-- 🎯 ESTILO INJETADO DIRETAMENTE PARA FORÇAR O TAMANHO GIGANTE -->
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-size: 1.6rem !important;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
         }
+
+        #notification-container {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 650px;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            background: #ff3b30;
+            color: #ffffff;
+            padding: 24px 45px;
+            border-radius: 18px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+        }
+
+        /* 🎯 CORREÇÃO PRINCIPAL: Caixa expandida na horizontal para ficar larga */
         .form-container {
-            width: 90% !important;
-            max-width: 850px !important; 
-            padding: 65px !important;
-            border-radius: 28px !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
             background: #ffffff !important;
+            width: 95% !important; /* Usa a largura quase cheia da tela */
+            max-width: 1200px !important; /* Alargado substancialmente de 850px para 1200px */
+            padding: 60px 80px !important; /* Mais espaçamento nas laterais internas */
+            border-radius: 32px !important;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35) !important;
+            border-top: 12px solid #ff8c00 !important;
         }
+
         .form-container h2 {
-            font-size: 3rem !important;
+            font-size: 3.4rem !important;
             font-weight: 800 !important;
-            margin-bottom: 45px !important;
+            margin-bottom: 50px !important;
+            color: #1e3c72;
+            text-align: center;
         }
+
+        .form-group {
+            margin-bottom: 35px;
+        }
+
         .form-group label {
-            font-size: 1.6rem !important;
-            font-weight: 700 !important;
-            margin-bottom: 15px !important;
+            display: block;
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 1.7rem !important;
+            color: #334155;
         }
+
         .form-group input {
+            width: 100% !important;
             padding: 24px !important;
-            font-size: 1.5rem !important;
-            border: 3px solid #cbd5e1 !important;
-            border-radius: 16px !important;
-            height: auto !important;
-        }
-        .btn-primary {
-            padding: 24px !important;
+            border: 3.5px solid #cbd5e1 !important;
+            border-radius: 18px !important;
             font-size: 1.6rem !important;
-            border-radius: 16px !important;
+            outline: none;
+            background-color: #ffffff !important;
+            color: #222222 !important;
+        }
+
+        .form-group input:focus {
+            border-color: #2a5298 !important;
+            box-shadow: 0 0 0 6px rgba(42, 82, 152, 0.15) !important;
+        }
+
+        .btn-primary {
+            width: 100% !important;
+            background-color: #ff8c00 !important;
+            color: #ffffff !important;
+            padding: 26px !important;
+            border: none;
+            border-radius: 18px !important;
+            font-size: 1.7rem !important;
             font-weight: bold !important;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.4) !important;
+            text-align: center;
+        }
+
+        p.link-inferior {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 1.5rem !important;
+            color: #334155;
+        }
+
+        p.link-inferior a {
+            color: #1e3c72;
+            font-weight: bold;
+            text-decoration: none;
         }
     </style>
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+<body>
     
     <div id="notification-container"></div>
 
@@ -67,21 +147,12 @@
                 <label>Token de Autenticação</label>
                 <input type="password" id="token" placeholder="Digite o código da coordenação" required>
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Cadastrar e Entrar</button>
+            <button type="submit" class="btn-primary">Cadastrar e Entrar</button>
         </form>
-        <p style="margin-top: 35px; text-align: center; font-size: 1.3rem;"><a href="login.html" style="color: #1e3c72; font-weight: bold;">Voltar para Login</a></p>
+        <p class="link-inferior"><a href="login.html">Voltar para Login</a></p>
     </div>
 
     <script>
-        function mostrarNotificacao(mensagem, tipo = 'error') {
-            const container = document.getElementById('notification-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            toast.innerText = mensagem;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 4000);
-        }
-
         document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nome = document.getElementById('nome').value;
@@ -110,7 +181,9 @@
                     window.location.href = 'login.html';
                 }
             } else {
-                mostrarNotificacao(dadosCadastro.erro, 'error');
+                const container = document.getElementById('notification-container');
+                container.innerHTML = `<div class="toast">${dadosCadastro.erro}</div>`;
+                setTimeout(() => { container.innerHTML = ''; }, 4000);
             }
         });
     </script>
