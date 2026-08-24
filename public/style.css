@@ -20,11 +20,10 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    font-size: 1.3rem; /* Aumentado o texto geral para excelente leitura */
+    font-size: 1.3rem; 
     line-height: 1.6;
 }
 
-/* Telas com fundo azul completo (Inicial, Login, Cadastro) */
 .hero-screen {
     background: var(--bg-gradient) !important;
     min-height: 100vh;
@@ -38,14 +37,12 @@ body {
     color: var(--white) !important;
 }
 
-/* CONTAINER DO MURAL (AMPLIADO) */
 .container {
-    max-width: 1600px; /* Expandido para usar melhor monitores grandes */
+    max-width: 1600px; 
     margin: 0 auto;
     padding: 40px;
 }
 
-/* TOPO DO MURAL UNIFORME */
 .mural-header {
     display: flex;
     justify-content: space-between;
@@ -58,11 +55,10 @@ body {
 }
 
 .mural-header h2 {
-    font-size: 2.6rem; /* Título maior */
+    font-size: 2.6rem; 
     color: #1e3c72;
 }
 
-/* BARRA DE PESQUISA GRANDE */
 .search-container {
     margin-bottom: 40px;
     width: 100%;
@@ -71,7 +67,7 @@ body {
 .search-input {
     width: 100%;
     padding: 22px 30px;
-    font-size: 1.4rem; /* Texto de busca maior */
+    font-size: 1.4rem; 
     border: 3px solid #cbd5e1;
     border-radius: 40px;
     outline: none;
@@ -84,26 +80,24 @@ body {
     box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
 }
 
-/* FORMULÁRIOS EXPANDIDOS (LOGIN, CADASTRO E PUBLICAÇÃO UNIFORMES) */
 .form-container {
     background: var(--white);
     width: 100%;
-    max-width: 700px; /* Aumentado consideravelmente de tamanho */
+    max-width: 700px; 
     margin: 40px auto;
-    padding: 55px; /* Mais espaço interno para impor presença */
+    padding: 55px; 
     border-radius: 24px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.15);
     border-top: 8px solid var(--primary);
 }
 
-/* Área de publicar herda o tamanho máximo total do mural */
 #areaPublicar.form-container {
     max-width: 100%; 
     margin-bottom: 45px;
 }
 
 .form-container h2, .form-container h3 {
-    font-size: 2.3rem; /* Títulos dos formulários maiores */
+    font-size: 2.3rem; 
     margin-bottom: 35px;
     color: #1e3c72;
     text-align: center;
@@ -117,29 +111,40 @@ body {
     display: block;
     margin-bottom: 12px;
     font-weight: 700;
-    font-size: 1.4rem; /* Rótulos maiores */
+    font-size: 1.4rem; 
     color: #334155;
 }
 
+/* CAIXAS DE TEXTO CORRIGIDAS E TOTALMENTE BRANCAS */
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 18px; /* Caixas de texto bem mais altas */
-    border: 2.5px solid #e2e8f0;
+    padding: 18px; 
+    border: 2px solid #cbd5e1; 
     border-radius: 12px;
     font-size: 1.3rem;
     outline: none;
-    transition: border-color 0.2s;
+    background-color: var(--white) !important; 
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Remove a cor azul/cinza que o navegador coloca ao lembrar dados salvos */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover, 
+.form-group input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--white) inset !important;
+    -webkit-text-fill-color: var(--dark) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 .form-group input:focus, .form-group textarea:focus {
     border-color: #2a5298;
+    box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
 }
 
-/* BOTÕES ROBUSTOS E MAIORES */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
-    padding: 20px 45px; /* Botão imponente */
+    padding: 20px 45px; 
     border: none;
     border-radius: 14px;
     font-size: 1.4rem;
@@ -173,14 +178,12 @@ body {
     background-color: var(--danger-hover);
 }
 
-/* GRID DE AVISOS AMPLIADO */
 .grid-avisos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); /* Cartões maiores */
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); 
     gap: 35px;
 }
 
-/* CARTÕES DO MURAL */
 .card-aviso {
     background: var(--white);
     border-radius: 20px;
@@ -198,7 +201,7 @@ body {
 
 .card-aviso img {
     width: 100%;
-    max-height: 300px; /* Área da imagem maior */
+    max-height: 300px; 
     object-fit: cover;
 }
 
@@ -229,18 +232,17 @@ body {
     border-top: 1px solid #e2e8f0;
 }
 
-/* 🎯 SISTEMA DE NOTIFICAÇÃO TOTALMENTE CENTRALIZADO NO TOPO */
 #notification-container {
     position: fixed;
     top: 30px;
     left: 50%;
-    transform: translateX(-50%); /* Força o alinhamento exatamente no centro horizontal */
+    transform: translateX(-50%); 
     z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 550px; /* Largura perfeita para o alerta centralizado */
+    max-width: 550px; 
     pointer-events: none;
 }
 
@@ -250,7 +252,7 @@ body {
     color: white;
     padding: 20px 35px;
     border-radius: 14px;
-    font-size: 1.3rem; /* Letra do alerta bem maior */
+    font-size: 1.3rem; 
     font-weight: 700;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -268,7 +270,6 @@ body {
     color: #ffffff;
 }
 
-/* Animação suave descendo do topo ao centro */
 @keyframes slideDown {
     from { transform: translateY(-50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
