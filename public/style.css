@@ -20,38 +20,46 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    font-size: 1.15rem; /* Aumenta o texto base do site */
+    font-size: 1.2rem; /* Texto maior */
     line-height: 1.6;
 }
 
-/* Container principal maior */
+/* Fundo azul vivo forçado para telas completas */
+.hero-screen {
+    background: var(--bg-gradient) !important;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    color: var(--white) !important;
+}
+
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 30px;
 }
 
-/* Topo do Mural */
 .mural-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 35px;
-    padding: 20px;
+    padding: 25px;
     background: var(--white);
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .mural-header h2 {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
     color: #1e3c72;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-/* Área de Busca */
 .search-container {
     margin-bottom: 35px;
     width: 100%;
@@ -59,13 +67,13 @@ body {
 
 .search-input {
     width: 100%;
-    padding: 16px 24px;
-    font-size: 1.2rem;
+    padding: 18px 26px;
+    font-size: 1.25rem;
     border: 2px solid #cbd5e1;
     border-radius: 30px;
     outline: none;
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .search-input:focus {
@@ -73,21 +81,20 @@ body {
     box-shadow: 0 4px 15px rgba(255, 140, 0, 0.2);
 }
 
-/* Formulário de Publicação Expandido */
 .form-container {
     background: var(--white);
     width: 100%;
-    margin-bottom: 40px;
-    padding: 40px;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 45px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     border-top: 6px solid var(--primary);
 }
 
-.form-container h2, .form-container h3 {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
-    color: #1e3c72;
+#areaPublicar.form-container {
+    max-width: 100%;
+    margin-bottom: 40px;
 }
 
 .form-group {
@@ -98,70 +105,56 @@ body {
     display: block;
     margin-bottom: 10px;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: #475569;
 }
 
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 14px 18px;
+    padding: 16px;
     border: 2px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     outline: none;
-    transition: border-color 0.2s;
 }
 
-.form-group input:focus, .form-group textarea:focus {
-    border-color: #2a5298;
-}
-
-/* Botões Maiores e Vivos */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
-    padding: 16px 36px;
+    padding: 18px 40px;
     border: none;
     border-radius: 12px;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.2s;
     box-shadow: 0 6px 20px rgba(255, 140, 0, 0.3);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
 }
 
 .btn-delete {
     background-color: var(--danger);
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 1.05rem;
+    padding: 12px 24px;
+    font-size: 1.1rem;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
-.btn-delete:hover {
-    background-color: var(--danger-hover);
-}
-
-/* Grid de Avisos */
 .grid-avisos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 30px;
 }
 
-/* Cartões de Aviso */
 .card-aviso {
     background: var(--white);
     border-radius: 16px;
@@ -169,42 +162,35 @@ body {
     box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s;
     border: 1px solid #e2e8f0;
-}
-
-.card-aviso:hover {
-    transform: translateY(-4px);
 }
 
 .card-aviso img {
     width: 100%;
     max-height: 250px;
     object-fit: cover;
-    border-bottom: 1px solid #e2e8f0;
 }
 
 .card-body {
-    padding: 25px;
+    padding: 30px;
     flex-grow: 1;
 }
 
 .card-body h3 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-bottom: 12px;
     color: #1e3c72;
 }
 
 .card-body p {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     color: #334155;
-    white-space: pre-line;
 }
 
 .card-footer {
-    padding: 20px 25px;
+    padding: 20px 30px;
     background: #f8fafc;
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: #64748b;
     display: flex;
     justify-content: space-between;
@@ -212,7 +198,6 @@ body {
     border-top: 1px solid #e2e8f0;
 }
 
-/* Sistema de Notificação Customizado na Tela */
 #notification-container {
     position: fixed;
     top: 20px;
@@ -226,15 +211,13 @@ body {
 .toast {
     background: #333;
     color: white;
-    padding: 16px 28px;
+    padding: 18px 32px;
     border-radius: 10px;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 600;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     animation: slideIn 0.3s ease-out forwards;
-    min-width: 300px;
 }
-
 .toast.success { background-color: var(--success); color: #000; }
 .toast.error { background-color: var(--danger); }
 

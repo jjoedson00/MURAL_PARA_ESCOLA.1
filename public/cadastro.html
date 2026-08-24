@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center;">
     <div class="form-container">
         <h2>Criar Conta de Professor</h2>
         <form id="cadastroForm">
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" id="nome" required>
+                <input type="text" id="nome" required placeholder="Seu nome">
             </div>
             <div class="form-group">
                 <label>E-mail</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" required placeholder="seuemail@escola.com">
             </div>
             <div class="form-group">
                 <label>Senha</label>
-                <input type="password" id="senha" required>
+                <input type="password" id="senha" required placeholder="Crie uma senha">
             </div>
             <div class="form-group">
-                <label>Token de Autenticação da Coordenação</label>
-                <input type="password" id="token" placeholder="Código de segurança" required>
+                <label>Token de Autenticação</label>
+                <input type="password" id="token" placeholder="COORDENACAO2026" required>
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">Cadastrar</button>
+            <button type="submit" class="btn-primary" style="width: 100%;">Cadastrar e Entrar</button>
         </form>
-        <p style="margin-top: 15px; text-align: center;"><a href="login.html">Voltar para Login</a></p>
+        <p style="margin-top: 25px; text-align: center; font-size: 1.1rem;"><a href="login.html" style="color: #1e3c72; font-weight: bold;">Voltar para Login</a></p>
     </div>
 
     <script>
@@ -38,8 +38,7 @@
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const token = document.getElementById('token').value;
-    
-            // 1. Faz o cadastro
+
             const resCadastro = await fetch('/api/cadastro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -48,7 +47,7 @@
             const dadosCadastro = await resCadastro.json();
             
             if (dadosCadastro.sucesso) {
-                // 2. Faz o login automático logo em seguida
+                // Login Automático Imediato
                 const resLogin = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -66,6 +65,5 @@
             }
         });
     </script>
-    
 </body>
 </html>

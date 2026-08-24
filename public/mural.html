@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos Escolares</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <!-- Container para armazenar os avisos em balões flutuantes na tela -->
     <div id="notification-container"></div>
 
     <div class="container">
         <div class="mural-header">
             <h2>📢 Mural Digital Informativo</h2>
             <div id="authActions">
-                <a href="login.html" class="btn-primary" style="padding: 10px 24px; font-size: 1.05rem;">Área Restrita</a>
+                <a href="login.html" class="btn-primary" style="padding: 12px 28px; font-size: 1.1rem;">Área Restrita</a>
             </div>
         </div>
 
-        <!-- Seção de publicação (Visível para Professores Autenticados) -->
         <div id="areaPublicar" class="form-container" style="display: none;">
             <h3>Nova Publicação</h3>
             <form id="formAviso" enctype="multipart/form-data">
@@ -38,31 +36,24 @@
             </form>
         </div>
 
-        <!-- NOVO: Barra de Busca Prática -->
         <div class="search-container">
             <input type="text" id="barraBusca" class="search-input" placeholder="🔍 Digite aqui para pesquisar um aviso específico...">
         </div>
 
-        <!-- Exibição dos Avisos -->
         <div class="grid-avisos" id="muralGrid"></div>
     </div>
 
     <script>
         let usuarioLogado = false;
-        let todosAvisos = []; // Guarda a lista completa vinda do banco de dados
+        let todosAvisos = [];
 
-        // Função de Notificação Customizada na Tela (Substitui o alert tradicional)
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('notification-container');
             const toast = document.createElement('div');
             toast.className = `toast ${tipo}`;
-            toast.innerText = mensagem;
-            
+            toast.innerText = mensaje || mensagem;
             container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 4000);
+            setTimeout(() => { toast.remove(); }, 4000);
         }
 
         async function checarLogin() {
@@ -71,7 +62,7 @@
             if (dados.logado) {
                 usuarioLogado = true;
                 document.getElementById('authActions').innerHTML = `
-                    <span style="margin-right:20px; font-size: 1.2rem;">Olá, Professor(a) <b>${dados.nome}</b></span>
+                    <span style="margin-right:20px; font-size: 1.25rem;">Olá, Professor(a) <b>${dados.nome}</b></span>
                     <button onclick="logout()" class="btn-delete">Sair</button>
                 `;
                 document.getElementById('areaPublicar').style.display = 'block';
@@ -90,7 +81,6 @@
             renderizarAvisos(todosAvisos);
         }
 
-        // Desenha os avisos filtrados ou completos na tela
         function renderizarAvisos(listaDeAvisos) {
             const grid = document.getElementById('muralGrid');
             grid.innerHTML = '';
@@ -103,8 +93,6 @@
             listaDeAvisos.forEach(aviso => {
                 const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
                 const imgTag = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
-                
-                // Opção de apagar o aviso visível para qualquer professor logado
                 const btnDeletar = usuarioLogado ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : '';
 
                 grid.innerHTML += `
@@ -123,7 +111,6 @@
             });
         }
 
-        // Sistema do filtro da barra de pesquisa em tempo real
         document.getElementById('barraBusca').addEventListener('input', (e) => {
             const termoBusca = e.target.value.toLowerCase();
             const avisosFiltrados = todosAvisos.filter(aviso => {
@@ -152,13 +139,13 @@
         });
 
         async function deletarAviso(id) {
-            if (confirm('Deseja realmente excluir em definitivo este aviso do mural?')) {
+            if (confirm('Deseja realmente excluir este aviso?')) {
                 const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
                 if (res.ok) {
-                    mostrarNotificacao('O aviso selecionado foi removido!');
+                    mostrarNotificacao('O aviso foi removido!');
                     carregarAvisos();
                 } else {
-                    mostrarNotificacao('Falha ao tentar apagar o aviso.', 'error');
+                    mostrarNotificacao('Falha ao tentar apagar.', 'error');
                 }
             }
         }

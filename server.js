@@ -8,10 +8,10 @@ const bcrypt = require('bcryptjs');
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
-// Configuração do Multer para Upload de Imagens
+// Configuração correta de caminhos para upload
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/');
+        cb(null, path.join(__dirname, 'public', 'uploads'));
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -19,16 +19,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Middlewares
+// Middlewares - Ajustados com path.join para o Render encontrar o CSS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
     secret: 'chave-secreta-mural-2026',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Mudar para true se usar HTTPS no Render futuramente
+    cookie: { secure: false }
 }));
 
 // Criar Tabelas no Banco de Dados
@@ -53,7 +53,6 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
-// Cadastro de Professores
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
 
@@ -74,7 +73,6 @@ app.post('/api/cadastro', async (req, res) => {
     }
 });
 
-// Login
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
 
@@ -94,13 +92,11 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Logout
 app.get('/api/logout', (req, res) => {
     req.session.destroy();
     res.json({ sucesso: true });
 });
 
-// Verificar se usuário está logado
 app.get('/api/usuario', (req, res) => {
     if (req.session.usuarioId) {
         res.json({ logado: true, nome: req.session.usuarioNome });
@@ -109,9 +105,8 @@ app.get('/api/usuario', (req, res) => {
     }
 });
 
-// --- ROTAS DO MURAL DE AVISOS ---
+// --- ROTAS DO MURAL ---
 
-// Listar todos os avisos (Público)
 app.get('/api/avisos', (req, res) => {
     db.all(`SELECT avisos.*, usuarios.nome as autor FROM avisos 
             LEFT JOIN usuarios ON avisos.usuario_id = usuarios.id 
@@ -121,7 +116,6 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
-// Criar novo aviso (Apenas Logado)
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuarioId) {
         return res.status(401).json({ erro: 'Não autorizado.' });
@@ -137,7 +131,6 @@ app.post('/api/avisos', upload.single('imagem'), (req, res) => {
         });
 });
 
-// Deletar aviso (Apenas Logado)
 app.delete('/api/avisos/:id', (req, res) => {
     if (!req.session.usuarioId) {
         return res.status(401).json({ erro: 'Não autorizado.' });
@@ -150,6 +143,5 @@ app.delete('/api/avisos/:id', (req, res) => {
     });
 });
 
-// Inicialização do Servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
