@@ -17,7 +17,7 @@
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* 🎯 CORREÇÃO PRINCIPAL: Faz a fonte crescer dinamicamente baseada na largura da tela */
+/* Base fluida para monitores grandes */
 html {
     font-size: calc(14px + 0.4vw) !important;
 }
@@ -44,131 +44,135 @@ body {
 }
 
 .hero-screen span {
-    font-size: 6rem !important;
+    font-size: 8rem !important;
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    animation: pulse 2s infinite;
 }
 
 .hero-screen h1 {
-    font-size: 4rem !important; /* Título acompanha a tela */
+    font-size: 5rem !important;
     font-weight: 800;
     margin-bottom: 25px;
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .hero-screen p {
-    font-size: 1.6rem !important;
-    max-width: 60vw;
-    margin-bottom: 40px;
+    font-size: 2rem !important;
+    max-width: 80vw;
+    margin-bottom: 60px;
     opacity: 0.95;
 }
 
 .hero-screen .btn-primary {
-    font-size: 1.5rem !important;
-    padding: 25px 80px !important;
+    font-size: 1.8rem !important;
+    padding: 26px 75px !important;
     border-radius: 20px;
 }
 
-/* 🎯 CONTAINER DO MURAL TOTALMENTE ESTICADO EM PORCENTAGEM DE TELA */
+/* 🎯 CONTAINER DO MURAL TOTALMENTE EXPANDIDO EM MONITORES */
 .container {
-    width: 96vw !important; /* Ocupa 96% da largura total da tela do seu monitor */
-    max-width: 100vw !important;
+    width: 98% !important;
+    max-width: 100% !important;
     margin: 0 auto;
-    padding: 40px 10px;
+    padding: 40px 15px;
 }
 
-/* CABEÇALHO AMPLO */
+/* CABEÇALHO DO MURAL */
 .mural-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
-    padding: 30px 40px;
+    margin-bottom: 45px;
+    padding: 35px 50px;
     background: var(--white);
     border-radius: 24px;
     box-shadow: 0 6px 22px rgba(0,0,0,0.06);
 }
 
 .mural-header h2 {
-    font-size: 2.5rem; 
+    font-size: 3.2rem;
     color: #1e3c72;
     font-weight: 800;
 }
 
-/* BARRA DE PESQUISA GRANDE */
+/* BARRA DE PESQUISA */
 .search-container {
-    margin-bottom: 40px;
+    margin-bottom: 45px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 24px 35px;
-    font-size: 1.5rem; 
-    border: 3px solid #cbd5e1;
+    padding: 28px 40px;
+    font-size: 1.7rem;
+    border: 3.5px solid #cbd5e1;
     border-radius: 45px;
     outline: none;
     box-shadow: 0 6px 20px rgba(0,0,0,0.04);
 }
 
-/* PAINEL DE PUBLICAR / FORMULÁRIOS DA TELA */
+.search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 6px 25px rgba(255, 140, 0, 0.3);
+}
+
+/* PAINEL DE FORMULÁRIOS */
 .form-container {
-    background: var(--white) !important;
-    width: 50vw !important; /* Força a caixa branca a ocupar metade da largura total da tela */
-    min-width: 350px !important;
-    max-width: 90vw !important;
-    margin: 40px auto;
-    padding: 50px !important; 
+    background: var(--white);
+    width: 100%;
+    max-width: 1200px; /* Mantém a estrutura larga horizontal que deu certo */
+    margin: 45px auto;
+    padding: 65px; 
     border-radius: 24px;
     box-shadow: 0 15px 45px rgba(0,0,0,0.18);
     border-top: 10px solid var(--primary);
 }
 
 #areaPublicar.form-container {
-    width: 100% !important; /* Na tela do mural ela acompanha toda a largura */
-    max-width: 100% !important;
-    margin-bottom: 40px;
+    max-width: 100%;
+    margin-bottom: 45px;
 }
 
 .form-container h2, .form-container h3 {
-    font-size: 2.4rem; 
-    margin-bottom: 35px;
+    font-size: 2.8rem;
+    margin-bottom: 45px;
     color: #1e3c72;
     text-align: center;
     font-weight: 800;
 }
 
 .form-group {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     font-weight: 700;
-    font-size: 1.4rem; 
+    font-size: 1.6rem;
     color: #334155;
 }
 
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 20px; 
-    border: 3px solid #cbd5e1; 
+    padding: 24px;
+    border: 3px solid #cbd5e1;
     border-radius: 16px;
-    font-size: 1.3rem;
+    font-size: 1.45rem;
     outline: none;
     background-color: var(--white) !important;
 }
 
-/* BOTÕES GLOBAIS MAIORES */
+/* BOTÕES */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
-    padding: 20px 50px; 
+    padding: 22px 55px;
     border: none;
     border-radius: 16px;
-    font-size: 1.3rem;
+    font-size: 1.45rem;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
@@ -180,19 +184,18 @@ body {
     background-color: var(--danger);
     color: white;
     border: none;
-    padding: 16px 32px;
-    font-size: 1.2rem;
+    padding: 20px 40px;
+    font-size: 1.35rem;
     border-radius: 14px;
     font-weight: 600;
     cursor: pointer;
 }
 
-/* 🖼️ GRADE DE AVISOS FLUIDA */
+/* 🖼️ GRADE DE AVISOS PARA COMPUTADORES (GIGANTE) */
 .grid-avisos {
     display: grid;
-    /* Divide os cartões em colunas largas baseadas no tamanho do seu monitor */
-    grid-template-columns: repeat(auto-fill, minmax(30vw, 1fr)) !important; 
-    gap: 40px;
+    grid-template-columns: repeat(auto-fill, minmax(650px, 1fr)) !important;
+    gap: 45px;
     width: 100%;
 }
 
@@ -210,31 +213,31 @@ body {
 
 .card-aviso img {
     width: 100%;
-    max-height: 400px; 
+    max-height: 500px;
     object-fit: cover;
 }
 
 .card-body {
-    padding: 40px;
+    padding: 50px;
     flex-grow: 1;
 }
 
 .card-body h3 {
-    font-size: 2rem; 
-    margin-bottom: 18px;
+    font-size: 2.4rem;
+    margin-bottom: 22px;
     color: #1e3c72;
     font-weight: 700;
 }
 
 .card-body p {
-    font-size: 1.45rem; 
+    font-size: 1.65rem;
     color: #334155;
 }
 
 .card-footer {
-    padding: 30px 40px;
+    padding: 35px 50px;
     background: #f8fafc;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: #64748b;
     display: flex;
     justify-content: space-between;
@@ -247,13 +250,13 @@ body {
     position: fixed;
     top: 40px;
     left: 50%;
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
     z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 600px; 
+    max-width: 650px;
     pointer-events: none;
 }
 
@@ -263,7 +266,7 @@ body {
     color: white;
     padding: 24px 45px;
     border-radius: 18px;
-    font-size: 1.4rem; 
+    font-size: 1.5rem;
     font-weight: 700;
     text-align: center;
     box-shadow: 0 12px 35px rgba(0,0,0,0.35);
@@ -277,4 +280,92 @@ body {
 @keyframes slideDown {
     from { transform: translateY(-60px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+
+/* ==========================================================================
+   📱 ADAPTAÇÃO INTELIGENTE PARA CELULARES (MUDANÇA SEVERA AQUI)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Diminui a escala base apenas em telas pequenas para caber no visor */
+    html {
+        font-size: 12px !important;
+    }
+    
+    .container {
+        width: 100% !important;
+        padding: 15px 5px !important;
+    }
+
+    .mural-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px !important;
+        text-align: center;
+    }
+
+    .mural-header h2 {
+        font-size: 2.2rem !important;
+    }
+
+    /* 🎯 Força a grade de avisos a virar uma coluna de 100% sem esmagar nas laterais */
+    .grid-avisos {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Remove preenchimentos gigantes nos cartões para celular */
+    .card-body {
+        padding: 25px !important;
+    }
+
+    .card-body h3 {
+        font-size: 1.8rem !important;
+    }
+
+    .card-body p {
+        font-size: 1.3rem !important;
+    }
+
+    .card-footer {
+        padding: 20px !important;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    /* Ajusta o formulário do professor no celular */
+    .form-container {
+        padding: 30px 20px !important;
+        margin: 15px auto !important;
+        border-radius: 16px !important;
+    }
+
+    .form-container h2, .form-container h3 {
+        font-size: 2rem !important;
+        margin-bottom: 25px !important;
+    }
+
+    .form-group input, .form-group textarea {
+        padding: 16px !important;
+        font-size: 1.25rem !important;
+    }
+
+    /* Alinha os botões de ação verticalmente no celular se faltar espaço */
+    #areaPublicar form div[style*="display: flex"] {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    #areaPublicar form div[style*="display: flex"] button {
+        width: 100% !important;
+        padding: 16px !important;
+    }
 }
