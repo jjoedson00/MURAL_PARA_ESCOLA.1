@@ -20,10 +20,11 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    font-size: 1.3rem; 
+    font-size: 1.4rem; /* Texto base aumentado para preencher melhor a tela */
     line-height: 1.6;
 }
 
+/* 📢 TELA INICIAL HERO AMPLIADA E IMERSIVA */
 .hero-screen {
     background: var(--bg-gradient) !important;
     min-height: 100vh;
@@ -33,121 +34,153 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 30px;
+    padding: 40px;
     color: var(--white) !important;
 }
 
+/* Megafone Gigante */
+.hero-screen span {
+    font-size: 7.5rem !important; /* Aumentado consideravelmente de tamanho */
+    display: block;
+    margin-bottom: 25px;
+    animation: pulse 2s infinite;
+}
+
+/* Título Inicial de Grande Impacto */
+.hero-screen h1 {
+    font-size: 4.8rem !important; /* Letras gigantes para o título principal */
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Subtítulo Descritivo Amplo */
+.hero-screen p {
+    font-size: 1.8rem !important; /* Texto de apoio nítido à distância */
+    max-width: 850px; /* Distribui melhor as palavras na horizontal */
+    margin-bottom: 50px;
+    opacity: 0.95;
+    line-height: 1.6;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Botão de Entrada Robusto */
+.hero-screen .btn-primary {
+    font-size: 1.6rem !important;
+    padding: 24px 65px !important; /* Preenchimento generoso para não precisar de zoom */
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.5);
+}
+
+/* CONTAINER PRINCIPAL DO MURAL */
 .container {
-    max-width: 1600px; 
+    max-width: 1650px; 
     margin: 0 auto;
     padding: 40px;
 }
 
+/* CABEÇALHO DO MURAL UNIFORME */
 .mural-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
-    padding: 30px;
+    margin-bottom: 45px;
+    padding: 30px 40px;
     background: var(--white);
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
 .mural-header h2 {
-    font-size: 2.6rem; 
+    font-size: 2.8rem; 
     color: #1e3c72;
+    font-weight: 800;
 }
 
+/* BARRA DE PESQUISA GRANDE */
 .search-container {
-    margin-bottom: 40px;
+    margin-bottom: 45px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 22px 30px;
-    font-size: 1.4rem; 
+    padding: 24px 35px;
+    font-size: 1.5rem; 
     border: 3px solid #cbd5e1;
     border-radius: 40px;
     outline: none;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.04);
     transition: all 0.2s;
 }
 
 .search-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
+    box-shadow: 0 6px 25px rgba(255, 140, 0, 0.3);
 }
 
+/* FORMULÁRIOS AMPLIADOS */
 .form-container {
     background: var(--white);
     width: 100%;
-    max-width: 700px; 
-    margin: 40px auto;
-    padding: 55px; 
+    max-width: 800px; /* Alargado para impor presença na tela */
+    margin: 50px auto;
+    padding: 60px; 
     border-radius: 24px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    border-top: 8px solid var(--primary);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.18);
+    border-top: 10px solid var(--primary);
 }
 
 #areaPublicar.form-container {
     max-width: 100%; 
-    margin-bottom: 45px;
+    margin-bottom: 50px;
 }
 
 .form-container h2, .form-container h3 {
-    font-size: 2.3rem; 
-    margin-bottom: 35px;
+    font-size: 2.5rem; 
+    margin-bottom: 40px;
     color: #1e3c72;
     text-align: center;
+    font-weight: 800;
 }
 
 .form-group {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     font-weight: 700;
-    font-size: 1.4rem; 
+    font-size: 1.5rem; 
     color: #334155;
 }
 
-/* CAIXAS DE TEXTO CORRIGIDAS E TOTALMENTE BRANCAS */
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 18px; 
-    border: 2px solid #cbd5e1; 
-    border-radius: 12px;
-    font-size: 1.3rem;
+    padding: 20px; 
+    border: 2.5px solid #cbd5e1; 
+    border-radius: 14px;
+    font-size: 1.35rem;
     outline: none;
     background-color: var(--white) !important; 
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-/* Remove a cor azul/cinza que o navegador coloca ao lembrar dados salvos */
-.form-group input:-webkit-autofill,
-.form-group input:-webkit-autofill:hover, 
-.form-group input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px var(--white) inset !important;
-    -webkit-text-fill-color: var(--dark) !important;
-    transition: background-color 5000s ease-in-out 0s;
+    transition: all 0.2s;
 }
 
 .form-group input:focus, .form-group textarea:focus {
     border-color: #2a5298;
-    box-shadow: 0 0 0 4px rgba(42, 82, 152, 0.1);
+    box-shadow: 0 0 0 5px rgba(42, 82, 152, 0.15);
 }
 
+/* BOTÕES GLOBAIS ROBUSTOS */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
     padding: 20px 45px; 
     border: none;
     border-radius: 14px;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
@@ -159,36 +192,33 @@ body {
 .btn-primary:hover {
     background-color: var(--primary-hover);
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.45);
 }
 
 .btn-delete {
     background-color: var(--danger);
     color: white;
     border: none;
-    padding: 14px 28px;
-    font-size: 1.2rem;
-    border-radius: 10px;
+    padding: 16px 32px;
+    font-size: 1.25rem;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.btn-delete:hover {
-    background-color: var(--danger-hover);
-}
-
+/* GRID DE AVISOS AMPLIADO */
 .grid-avisos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); 
-    gap: 35px;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); 
+    gap: 40px;
 }
 
+/* CARTÕES DO MURAL */
 .card-aviso {
     background: var(--white);
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
     border: 1px solid #e2e8f0;
@@ -201,30 +231,31 @@ body {
 
 .card-aviso img {
     width: 100%;
-    max-height: 300px; 
+    max-height: 350px; 
     object-fit: cover;
 }
 
 .card-body {
-    padding: 35px;
+    padding: 40px;
     flex-grow: 1;
 }
 
 .card-body h3 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    font-size: 2rem;
+    margin-bottom: 18px;
     color: #1e3c72;
+    font-weight: 700;
 }
 
 .card-body p {
-    font-size: 1.35rem;
+    font-size: 1.45rem;
     color: #334155;
 }
 
 .card-footer {
-    padding: 25px 35px;
+    padding: 30px 40px;
     background: #f8fafc;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: #64748b;
     display: flex;
     justify-content: space-between;
@@ -232,9 +263,10 @@ body {
     border-top: 1px solid #e2e8f0;
 }
 
+/* SISTEMA DE NOTIFICAÇÃO CENTRALIZADO GIGANTE */
 #notification-container {
     position: fixed;
-    top: 30px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%); 
     z-index: 10000;
@@ -242,7 +274,7 @@ body {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 550px; 
+    max-width: 600px; 
     pointer-events: none;
 }
 
@@ -250,27 +282,26 @@ body {
     pointer-events: auto;
     background: #333;
     color: white;
-    padding: 20px 35px;
-    border-radius: 14px;
-    font-size: 1.3rem; 
+    padding: 22px 40px;
+    border-radius: 16px;
+    font-size: 1.4rem; 
     font-weight: 700;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
     animation: slideDown 0.3s ease-out forwards;
     width: 100%;
 }
 
-.toast.success { 
-    background-color: var(--success); 
-    color: #042409; 
-}
-
-.toast.error { 
-    background-color: var(--danger); 
-    color: #ffffff;
-}
+.toast.success { background-color: var(--success); color: #042409; }
+.toast.error { background-color: var(--danger); color: #ffffff; }
 
 @keyframes slideDown {
-    from { transform: translateY(-50px); opacity: 0; }
+    from { transform: translateY(-60px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
