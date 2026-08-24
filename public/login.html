@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Mural Escolar</title>
-    <link rel="stylesheet" href="./style.css">
+    <!-- 🎯 Adicionado ?v=2 para forçar o tamanho gigante e quebrar o cache -->
+    <link rel="stylesheet" href="./style.css?v=2">
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center;">
+<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
     
-    <!-- Caixa de mensagens nativa na tela -->
     <div id="notification-container"></div>
 
+    <!-- O CSS atualizado (.form-container) vai deixar esta caixa bem maior automaticamente -->
     <div class="form-container">
         <h2>Área do Professor</h2>
         <form id="loginForm">
@@ -22,9 +23,9 @@
                 <label>Senha</label>
                 <input type="password" id="senha" required placeholder="••••••••">
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Entrar</button>
         </form>
-        <p style="margin-top: 25px; text-align: center; font-size: 1.1rem;">Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold;">Cadastre-se</a></p>
+        <p style="margin-top: 30px; text-align: center; font-size: 1.2rem;">Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold;">Cadastre-se</a></p>
     </div>
 
     <script>

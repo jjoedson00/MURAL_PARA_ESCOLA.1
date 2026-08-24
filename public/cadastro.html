@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="./style.css">
+    <!-- 🎯 Adicionado ?v=2 para forçar o tamanho gigante e quebrar o cache -->
+    <link rel="stylesheet" href="./style.css?v=2">
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center;">
+<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
     
-    <!-- Caixa de mensagens nativa na tela -->
     <div id="notification-container"></div>
 
     <div class="form-container">
@@ -28,12 +28,11 @@
             </div>
             <div class="form-group">
                 <label>Token de Autenticação</label>
-                <!-- Alterado type para password para ocultar o token secreto -->
                 <input type="password" id="token" placeholder="Digite o código da coordenação" required>
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">Cadastrar e Entrar</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Cadastrar e Entrar</button>
         </form>
-        <p style="margin-top: 25px; text-align: center; font-size: 1.1rem;"><a href="login.html" style="color: #1e3c72; font-weight: bold;">Voltar para Login</a></p>
+        <p style="margin-top: 30px; text-align: center; font-size: 1.2rem;"><a href="login.html" style="color: #1e3c72; font-weight: bold;">Voltar para Login</a></p>
     </div>
 
     <script>
