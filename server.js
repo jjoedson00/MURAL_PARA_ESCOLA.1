@@ -1,22 +1,17 @@
 const express = require('express');
+const session = require('express-session');
 const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
-// Garante que a pasta de uploads exista
-const dir = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir, { recursive: true });
-}
-
+// Configuração do Multer para Upload de Imagens
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, dir);
+        cb(null, 'public/uploads/');
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -24,11 +19,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// Criar Tabelas
+app.use(session({
+    secret: 'chave-secreta-mural-2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Mudar para true se usar HTTPS no Render futuramente
+}));
+
+// Criar Tabelas no Banco de Dados
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,79 +45,111 @@ db.serialize(() => {
         titulo TEXT,
         conteudo TEXT,
         imagem TEXT,
-        data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+        data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+        usuario_id INTEGER,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
     )`);
 });
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
+// Cadastro de Professores
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
-    if (token !== 'coordenacao2026') {
-        return res.status(400).json({ erro: 'Token secreto inválido!' });
+
+    if (token !== 'COORDENACAO2026') {
+        return res.status(403).json({ erro: 'Token de coordenação inválido!' });
     }
+
     try {
-        db.get(`SELECT id FROM usuarios WHERE email = ?`, [email], async (err, row) => {
-            if (row) return res.status(400).json({ erro: 'Este e-mail já está cadastrado.' });
-            const hashedPassword = await bcrypt.hash(senha, 10);
-            const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
-            db.run(query, [nome, email, hashedPassword], function(err) {
-                if (err) return res.status(500).json({ erro: 'Erro ao salvar cadastro.' });
-                // Retorna os dados para o LocalStorage logar direto
-                res.json({ sucesso: true, usuario: { id: this.lastID, nome: nome } });
-            });
+        const hashSenha = await bcrypt.hash(senha, 10);
+        db.run(`INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`, [nome, email, hashSenha], function(err) {
+            if (err) {
+                return res.status(400).json({ erro: 'E-mail já cadastrado.' });
+            }
+            res.json({ sucesso: true });
         });
-    } catch {
-        res.status(500).json({ erro: 'Erro no servidor.' });
+    } catch (e) {
+        res.status(500).json({ erro: 'Erro interno no servidor.' });
     }
 });
 
+// Login
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
-    const query = `SELECT * FROM usuarios WHERE email = ?`;
-    db.get(query, [email], async (err, usuario) => {
-        if (err || !usuario) return res.status(400).json({ erro: 'Usuário não encontrado.' });
+
+    db.get(`SELECT * FROM usuarios WHERE email = ?`, [email], async (err, usuario) => {
+        if (err || !usuario) {
+            return res.status(400).json({ erro: 'Usuário não encontrado.' });
+        }
+
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
-        if (!senhaValida) return res.status(400).json({ erro: 'Senha incorreta.' });
-        // Retorna os dados do usuário para salvar no navegador
-        res.json({ sucesso: true, usuario: { id: usuario.id, nome: usuario.nome } });
+        if (!senhaValida) {
+            return res.status(400).json({ erro: 'Senha incorreta.' });
+        }
+
+        req.session.usuarioId = usuario.id;
+        req.session.usuarioNome = usuario.nome;
+        res.json({ sucesso: true });
     });
 });
 
-// --- ROTAS DOS AVISOS ---
+// Logout
+app.get('/api/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ sucesso: true });
+});
 
+// Verificar se usuário está logado
+app.get('/api/usuario', (req, res) => {
+    if (req.session.usuarioId) {
+        res.json({ logado: true, nome: req.session.usuarioNome });
+    } else {
+        res.json({ logado: false });
+    }
+});
+
+// --- ROTAS DO MURAL DE AVISOS ---
+
+// Listar todos os avisos (Público)
 app.get('/api/avisos', (req, res) => {
-    db.all(`SELECT * FROM avisos ORDER BY data_criacao DESC`, [], (err, rows) => {
-        if (err) return res.status(500).json([]);
-        res.json(rows || []);
+    db.all(`SELECT avisos.*, usuarios.nome as autor FROM avisos 
+            LEFT JOIN usuarios ON avisos.usuario_id = usuarios.id 
+            ORDER BY data_criacao DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ erro: err.message });
+        res.json(rows);
     });
 });
 
+// Criar novo aviso (Apenas Logado)
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
+    if (!req.session.usuarioId) {
+        return res.status(401).json({ erro: 'Não autorizado.' });
+    }
+
     const { titulo, conteudo } = req.body;
     const imagemPath = req.file ? `/uploads/${req.file.filename}` : null;
-    const query = `INSERT INTO avisos (titulo, conteudo, imagem) VALUES (?, ?, ?)`;
-    db.run(query, [titulo, conteudo, imagemPath], function(err) {
-        if (err) return res.status(500).json({ erro: err.message });
-        res.json({ sucesso: true, id: this.lastID });
-    });
-});
 
-app.delete('/api/avisos/:id', (req, res) => {
-    const id = req.params.id;
-    db.get(`SELECT imagem FROM avisos WHERE id = ?`, [id], (err, row) => {
-        if (row && row.imagem) {
-            const fullPath = path.join(__dirname, 'public', row.imagem);
-            if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-        }
-        db.run(`DELETE FROM avisos WHERE id = ?`, [id], function(err) {
+    db.run(`INSERT INTO avisos (titulo, conteudo, imagem, usuario_id) VALUES (?, ?, ?, ?)`,
+        [titulo, conteudo, imagemPath, req.session.usuarioId], function(err) {
             if (err) return res.status(500).json({ erro: err.message });
             res.json({ sucesso: true });
         });
+});
+
+// Deletar aviso (Apenas Logado)
+app.delete('/api/avisos/:id', (req, res) => {
+    if (!req.session.usuarioId) {
+        return res.status(401).json({ erro: 'Não autorizado.' });
+    }
+
+    const id = req.params.id;
+    db.run(`DELETE FROM avisos WHERE id = ?`, [id], function(err) {
+        if (err) return res.status(500).json({ erro: err.message });
+        res.json({ sucesso: true });
     });
 });
 
+// Inicialização do Servidor
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

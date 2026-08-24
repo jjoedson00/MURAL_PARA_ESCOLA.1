@@ -3,63 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Professor</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        .form-screen {
-            background: linear-gradient(135deg, #182848 0%, #2980b9 100%);
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px 4%;
-        }
-        .form-box-grande {
-            background: #ffffff;
-            padding: clamp(25px, 5vw, 50px);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 700px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-        .form-box-grande h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 30px; text-align: center; color: #1e3c72; font-weight: 700; }
-        .input-group-grande { margin-bottom: 25px; }
-        .input-group-grande label { display: block; margin-bottom: 10px; font-weight: 600; font-size: clamp(1.1rem, 1.4vw, 1.4rem); }
-        .input-group-grande input { width: 100%; padding: 18px; border: 2.5px solid #bbb; border-radius: 12px; font-size: clamp(1rem, 1.3vw, 1.3rem); }
-        .btn-grande { background-color: #ff8c00; color: white; padding: 20px; border: none; border-radius: 12px; font-size: clamp(1.2rem, 1.5vw, 1.5rem); font-weight: bold; cursor: pointer; width: 100%; }
-        .mensagem-alerta-tela { padding: 18px; border-radius: 12px; margin-bottom: 30px; font-size: 1.2rem; font-weight: 700; text-align: center; display: none; }
-        .alerta-erro-tela { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
-        .alerta-sucesso-tela { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
-    </style>
+    <title>Cadastro de Professor</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="form-screen">
-    <div class="form-box-grande">
-        <h2>Cadastro de Professor</h2>
-        <div id="mensagemFeedback" class="mensagem-alerta-tela"></div>
+<body>
+    <div class="form-container">
+        <h2>Criar Conta de Professor</h2>
         <form id="cadastroForm">
-            <div class="input-group-grande">
+            <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+                <input type="text" id="nome" required>
             </div>
-            <div class="input-group-grande">
-                <label>E-mail Institucional</label>
-                <input type="email" id="email" placeholder="exemplo@email.com" required>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="email" required>
             </div>
-            <div class="input-group-grande">
-                <label>Senha de Acesso</label>
-                <input type="password" id="senha" placeholder="Crie uma senha forte" required>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="senha" required>
             </div>
-            <div class="input-group-grande">
-                <label>Token Secreto da Coordenação</label>
-                <input type="password" id="token" placeholder="Insira o código secreto exigido" required>
+            <div class="form-group">
+                <label>Token de Autenticação da Coordenação</label>
+                <input type="password" id="token" placeholder="Código de segurança" required>
             </div>
-            <button type="submit" class="btn-grande">Cadastrar e Entrar</button>
+            <button type="submit" class="btn-primary" style="width: 100%;">Cadastrar</button>
         </form>
-        <p style="margin-top: 25px; text-align: center; font-size: 1.15rem;">
-            Já possui uma conta? <a href="login.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Faça Login</a>
-        </p>
+        <p style="margin-top: 15px; text-align: center;"><a href="login.html">Voltar para Login</a></p>
     </div>
+
     <script>
         document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -67,58 +38,20 @@
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const token = document.getElementById('token').value;
-            const caixaMensagem = document.getElementById('mensagemFeedback');
-            caixaMensagem.style.display = 'none';
 
-            // Verificação imediata do Token Secreto antes de enviar para o servidor
-            if (token !== 'coordenacao2026') {
-                caixaMensagem.textContent = '❌ Token secreto inválido! Verifique o código com a coordenação.';
-                caixaMensagem.className = 'mensagem-alerta-tela alerta-erro-tela';
-                caixaMensagem.style.display = 'block';
-                return;
-            }
-
-            try {
-                const res = await fetch('/api/cadastro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, senha, token })
-                });
-                const dados = await res.json();
-                
-                if (dados.sucesso && dados.usuario) {
-                    caixaMensagem.textContent = '🎉 Cadastro realizado! Entrando no painel de avisos...';
-                    caixaMensagem.className = 'mensagem-alerta-tela alerta-sucesso-tela';
-                    caixaMensagem.style.display = 'block';
-                    
-                    // CORREÇÃO AQUI: Salva os dados exatamente no mesmo formato exigido pelo mural.html
-                    localStorage.setItem('professor_conectado', JSON.stringify(dados.usuario));
-                    setTimeout(() => {
-                        window.location.replace('mural.html'); 
-                    }, 1500);
-                } else {
-                    // Se o banco do Render resetou, aplica o salvamento local para garantir a apresentação do TCC
-                    forçarLoginLocal(nome, caixaMensagem);
-                }
-            } catch {
-                // Se der erro de conexão com o Render, faz o login local de segurança na hora
-                forçarLoginLocal(nome, caixaMensagem);
+            const res = await fetch('/api/cadastro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, email, senha, token })
+            });
+            const dados = await res.json();
+            if (dados.sucesso) {
+                alert('Cadastro realizado com sucesso!');
+                window.location.href = 'login.html';
+            } else {
+                alert(dados.erro);
             }
         });
-
-        // Função de segurança para que o cadastro nunca falhe na apresentação
-        function forçarLoginLocal(nome, caixaMensagem) {
-            caixaMensagem.textContent = '🎉 Cadastro realizado com sucesso!';
-            caixaMensagem.className = 'mensagem-alerta-tela alerta-sucesso-tela';
-            caixaMensagem.style.display = 'block';
-
-            const usuarioMock = { id: Date.now(), nome: nome };
-            localStorage.setItem('professor_conectado', JSON.stringify(usuarioMock));
-            
-            setTimeout(() => {
-                window.location.replace('mural.html'); 
-            }, 1500);
-        }
     </script>
 </body>
 </html>
