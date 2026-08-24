@@ -38,20 +38,34 @@
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const token = document.getElementById('token').value;
-
-            const res = await fetch('/api/cadastro', {
+    
+            // 1. Faz o cadastro
+            const resCadastro = await fetch('/api/cadastro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nome, email, senha, token })
             });
-            const dados = await res.json();
-            if (dados.sucesso) {
-                alert('Cadastro realizado com sucesso!');
-                window.location.href = 'login.html';
+            const dadosCadastro = await resCadastro.json();
+            
+            if (dadosCadastro.sucesso) {
+                // 2. Faz o login automático logo em seguida
+                const resLogin = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+                const dadosLogin = await resLogin.json();
+                
+                if (dadosLogin.sucesso) {
+                    window.location.href = 'mural.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
             } else {
-                alert(dados.erro);
+                alert(dadosCadastro.erro);
             }
         });
     </script>
+    
 </body>
 </html>
