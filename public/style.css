@@ -20,11 +20,11 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    font-size: 1.2rem; /* Texto maior */
+    font-size: 1.3rem; /* Aumentado o texto geral para excelente leitura */
     line-height: 1.6;
 }
 
-/* Fundo azul vivo forçado para telas completas */
+/* Telas com fundo azul completo (Inicial, Login, Cadastro) */
 .hero-screen {
     background: var(--bg-gradient) !important;
     min-height: 100vh;
@@ -38,159 +38,190 @@ body {
     color: var(--white) !important;
 }
 
+/* CONTAINER DO MURAL (AMPLIADO) */
 .container {
-    max-width: 1400px;
+    max-width: 1600px; /* Expandido para usar melhor monitores grandes */
     margin: 0 auto;
-    padding: 30px;
+    padding: 40px;
 }
 
+/* TOPO DO MURAL UNIFORME */
 .mural-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 35px;
-    padding: 25px;
+    margin-bottom: 40px;
+    padding: 30px;
     background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .mural-header h2 {
-    font-size: 2.3rem;
+    font-size: 2.6rem; /* Título maior */
     color: #1e3c72;
 }
 
+/* BARRA DE PESQUISA GRANDE */
 .search-container {
-    margin-bottom: 35px;
+    margin-bottom: 40px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 18px 26px;
-    font-size: 1.25rem;
-    border: 2px solid #cbd5e1;
-    border-radius: 30px;
+    padding: 22px 30px;
+    font-size: 1.4rem; /* Texto de busca maior */
+    border: 3px solid #cbd5e1;
+    border-radius: 40px;
     outline: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.04);
     transition: all 0.2s;
 }
 
 .search-input:focus {
     border-color: var(--primary);
-    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.2);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.25);
 }
 
+/* FORMULÁRIOS EXPANDIDOS (LOGIN, CADASTRO E PUBLICAÇÃO UNIFORMES) */
 .form-container {
     background: var(--white);
     width: 100%;
-    max-width: 600px;
+    max-width: 700px; /* Aumentado consideravelmente de tamanho */
     margin: 40px auto;
-    padding: 45px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    border-top: 6px solid var(--primary);
+    padding: 55px; /* Mais espaço interno para impor presença */
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    border-top: 8px solid var(--primary);
 }
 
+/* Área de publicar herda o tamanho máximo total do mural */
 #areaPublicar.form-container {
-    max-width: 100%;
-    margin-bottom: 40px;
+    max-width: 100%; 
+    margin-bottom: 45px;
+}
+
+.form-container h2, .form-container h3 {
+    font-size: 2.3rem; /* Títulos dos formulários maiores */
+    margin-bottom: 35px;
+    color: #1e3c72;
+    text-align: center;
 }
 
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 1.25rem;
-    color: #475569;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 1.4rem; /* Rótulos maiores */
+    color: #334155;
 }
 
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 1.2rem;
+    padding: 18px; /* Caixas de texto bem mais altas */
+    border: 2.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1.3rem;
     outline: none;
+    transition: border-color 0.2s;
 }
 
+.form-group input:focus, .form-group textarea:focus {
+    border-color: #2a5298;
+}
+
+/* BOTÕES ROBUSTOS E MAIORES */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
-    padding: 18px 40px;
+    padding: 20px 45px; /* Botão imponente */
     border: none;
-    border-radius: 12px;
-    font-size: 1.25rem;
+    border-radius: 14px;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
     transition: all 0.2s;
-    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.35);
 }
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.45);
 }
 
 .btn-delete {
     background-color: var(--danger);
     color: white;
     border: none;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    border-radius: 8px;
+    padding: 14px 28px;
+    font-size: 1.2rem;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
+.btn-delete:hover {
+    background-color: var(--danger-hover);
+}
+
+/* GRID DE AVISOS AMPLIADO */
 .grid-avisos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); /* Cartões maiores */
+    gap: 35px;
 }
 
+/* CARTÕES DO MURAL */
 .card-aviso {
     background: var(--white);
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
     display: flex;
     flex-direction: column;
     border: 1px solid #e2e8f0;
+    transition: transform 0.2s;
+}
+
+.card-aviso:hover {
+    transform: translateY(-5px);
 }
 
 .card-aviso img {
     width: 100%;
-    max-height: 250px;
+    max-height: 300px; /* Área da imagem maior */
     object-fit: cover;
 }
 
 .card-body {
-    padding: 30px;
+    padding: 35px;
     flex-grow: 1;
 }
 
 .card-body h3 {
-    font-size: 1.6rem;
-    margin-bottom: 12px;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
     color: #1e3c72;
 }
 
 .card-body p {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     color: #334155;
 }
 
 .card-footer {
-    padding: 20px 30px;
+    padding: 25px 35px;
     background: #f8fafc;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #64748b;
     display: flex;
     justify-content: space-between;
@@ -198,30 +229,47 @@ body {
     border-top: 1px solid #e2e8f0;
 }
 
+/* 🎯 SISTEMA DE NOTIFICAÇÃO TOTALMENTE CENTRALIZADO NO TOPO */
 #notification-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%); /* Força o alinhamento exatamente no centro horizontal */
+    z-index: 10000;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    width: 100%;
+    max-width: 550px; /* Largura perfeita para o alerta centralizado */
+    pointer-events: none;
 }
 
 .toast {
+    pointer-events: auto;
     background: #333;
     color: white;
-    padding: 18px 32px;
-    border-radius: 10px;
-    font-size: 1.15rem;
-    font-weight: 600;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    animation: slideIn 0.3s ease-out forwards;
+    padding: 20px 35px;
+    border-radius: 14px;
+    font-size: 1.3rem; /* Letra do alerta bem maior */
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s ease-out forwards;
+    width: 100%;
 }
-.toast.success { background-color: var(--success); color: #000; }
-.toast.error { background-color: var(--danger); }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+.toast.success { 
+    background-color: var(--success); 
+    color: #042409; 
+}
+
+.toast.error { 
+    background-color: var(--danger); 
+    color: #ffffff;
+}
+
+/* Animação suave descendo do topo ao centro */
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
