@@ -18,6 +18,7 @@
             </div>
         </div>
 
+        <!-- Seção de Publicação -->
         <div id="areaPublicar" class="form-container" style="display: none;">
             <h3>Nova Publicação</h3>
             <form id="formAviso" enctype="multipart/form-data">
@@ -33,11 +34,19 @@
                     <label>Imagem de Referência (Opcional)</label>
                     <input type="file" id="imagem" name="imagem" accept="image/*">
                 </div>
-                <button type="submit" class="btn-primary">Publicar no Mural</button>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                    <button type="submit" class="btn-primary">Publicar no Mural</button>
+                    
+                    <!-- NOVO: Botão para rolar a tela -->
+                    <button type="button" onclick="rolarParaMural()" class="btn-primary" style="background-color: #334155; box-shadow: 0 8px 25px rgba(51, 65, 85, 0.35);">Rolar para Avisos</button>
+                    
+                    <!-- NOVO: Botão para ocultar o painel e ver como aluno -->
+                    <button type="button" id="btnAlternarModo" onclick="alternarVisualizacao()" class="btn-primary" style="background-color: #475569; box-shadow: 0 8px 25px rgba(71, 85, 105, 0.35);">Ver como Aluno/Responsável</button>
+                </div>
             </form>
         </div>
 
-        <div class="search-container">
+        <div class="search-container" id="secaoMural">
             <input type="text" id="barraBusca" class="search-input" placeholder="🔍 Digite aqui para pesquisar um aviso específico...">
         </div>
 
@@ -47,6 +56,7 @@
     <script>
         let usuarioLogado = false;
         let todosAvisos = [];
+        let modoAlunoAtivo = false;
 
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('notification-container');
@@ -55,6 +65,29 @@
             toast.innerText = mensagem;
             container.appendChild(toast);
             setTimeout(() => { toast.remove(); }, 4000);
+        }
+
+        function rolarParaMural() {
+            document.getElementById('secaoMural').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Função que esconde/mostra a tela de publicação para simular o aluno
+        function alternarVisualizacao() {
+            const area = document.getElementById('areaPublicar');
+            const btn = document.getElementById('btnAlternarModo');
+            
+            if (!modoAlunoAtivo) {
+                area.style.display = 'none';
+                btn.innerText = 'Voltar para Modo Professor';
+                btn.style.backgroundColor = '#ff8c00';
+                modoAlunoAtivo = true;
+                rolarParaMural();
+            } else {
+                area.style.display = 'block';
+                btn.innerText = 'Ver como Aluno/Responsável';
+                btn.style.backgroundColor = '#475569';
+                modoAlunoAtivo = false;
+            }
         }
 
         async function checarLogin() {
@@ -67,13 +100,25 @@
                     <button onclick="logout()" class="btn-delete">Sair</button>
                 `;
                 document.getElementById('areaPublicar').style.display = 'block';
+            } else {
+                // Se NÃO estiver logado (Aluno/Responsável), limpa as ações de professor
+                usuarioLogado = false;
+                document.getElementById('areaPublicar').style.display = 'none';
+                document.getElementById('authActions').innerHTML = `
+                    <a href="login.html" class="btn-primary" style="padding: 12px 28px; font-size: 1.1rem;">Área Restrita</a>
+                `;
             }
             carregarAvisos();
         }
 
+        // Modificado para deslogar sem recarregar a tela inteira com o formulário aberto
         async function logout() {
-            await fetch('/api/logout');
-            window.location.reload();
+            const res = await fetch('/api/logout');
+            if (res.ok) {
+                mostrarNotificacao('Você saiu do sistema de publicação.', 'success');
+                // Re-executa o checador para atualizar o layout para o modo aluno de forma limpa
+                checarLogin(); 
+            }
         }
 
         async function carregarAvisos() {
@@ -94,7 +139,9 @@
             listaDeAvisos.forEach(aviso => {
                 const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
                 const imgTag = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
-                const btnDeletar = usuarioLogado ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : '';
+                
+                // Botão de deletar só aparece se o usuário estiver logado e NÃO estiver em modo de simulação de aluno
+                const btnDeletar = (usuarioLogado && !modoAlunoAtivo) ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : '';
 
                 grid.innerHTML += `
                     <div class="card-aviso">
@@ -121,7 +168,6 @@
             renderizarAvisos(avisosFiltrados);
         });
 
-        // Evento de envio corrigido para ler respostas JSON com tratamento rigoroso
         document.getElementById('formAviso').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -138,6 +184,7 @@
                     e.target.reset();
                     mostrarNotificacao('Aviso publicado com sucesso!', 'success');
                     carregarAvisos();
+                    setTimeout(rolarParaMural, 500);
                 } else {
                     mostrarNotificacao(dados.erro || 'Erro ao publicar o seu aviso.', 'error');
                 }
