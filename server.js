@@ -33,6 +33,9 @@ app.use(session({
 
 // Criar Tabelas no Banco de Dados
 db.serialize(() => {
+    // ⚠️ LINHA TEMPORÁRIA: Apaga a tabela antiga com erro para reconstruir do zero
+    db.run(`DROP TABLE IF EXISTS avisos`);
+
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
@@ -116,7 +119,6 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
-// Rota de publicação corrigida com tratamento estrito e resposta JSON explícita
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuarioId) {
         return res.status(401).json({ erro: 'Não autorizado. Por favor, faça login.' });
