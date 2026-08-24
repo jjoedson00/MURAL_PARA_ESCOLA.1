@@ -2,129 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <!-- 🎯 ADICIONADA CORREÇÃO VIEWPORT: Essencial para celulares lerem o tamanho real -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="./style.css?v=4">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        #notification-container {
-            position: fixed;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 650px;
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            background: #ff3b30;
-            color: #ffffff;
-            padding: 24px 45px;
-            border-radius: 18px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.35);
-        }
-
-        /* 🎯 CORREÇÃO PRINCIPAL: Caixa expandida na horizontal para ficar larga */
-        .form-container {
-            background: #ffffff !important;
-            width: 95% !important; /* Usa a largura quase cheia da tela */
-            max-width: 1200px !important; /* Alargado substancialmente de 850px para 1200px */
-            padding: 60px 80px !important; /* Mais espaçamento nas laterais internas */
-            border-radius: 32px !important;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35) !important;
-            border-top: 12px solid #ff8c00 !important;
-        }
-
-        .form-container h2 {
-            font-size: 3.4rem !important;
-            font-weight: 800 !important;
-            margin-bottom: 50px !important;
-            color: #1e3c72;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 35px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 16px;
-            font-weight: 700;
-            font-size: 1.7rem !important;
-            color: #334155;
-        }
-
-        .form-group input {
-            width: 100% !important;
-            padding: 24px !important;
-            border: 3.5px solid #cbd5e1 !important;
-            border-radius: 18px !important;
-            font-size: 1.6rem !important;
-            outline: none;
-            background-color: #ffffff !important;
-            color: #222222 !important;
-        }
-
-        .form-group input:focus {
-            border-color: #2a5298 !important;
-            box-shadow: 0 0 0 6px rgba(42, 82, 152, 0.15) !important;
-        }
-
-        .btn-primary {
-            width: 100% !important;
-            background-color: #ff8c00 !important;
-            color: #ffffff !important;
-            padding: 26px !important;
-            border: none;
-            border-radius: 18px !important;
-            font-size: 1.7rem !important;
-            font-weight: bold !important;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.4) !important;
-            text-align: center;
-        }
-
-        p.link-inferior {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 1.5rem !important;
-            color: #334155;
-        }
-
-        p.link-inferior a {
-            color: #1e3c72;
-            font-weight: bold;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css?v=8">
 </head>
-<body>
+<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
     
     <div id="notification-container"></div>
 
@@ -149,7 +32,9 @@
             </div>
             <button type="submit" class="btn-primary">Cadastrar e Entrar</button>
         </form>
-        <p class="link-inferior"><a href="login.html">Voltar para Login</a></p>
+        <p style="margin-top: 1.5rem; text-align: center; font-size: 1rem; color: #475569;">
+            <a href="login.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Voltar para Login</a>
+        </p>
     </div>
 
     <script>
@@ -182,7 +67,7 @@
                 }
             } else {
                 const container = document.getElementById('notification-container');
-                container.innerHTML = `<div class="toast">${dadosCadastro.erro}</div>`;
+                container.innerHTML = `<div class="toast error">${dadosCadastro.erro}</div>`;
                 setTimeout(() => { container.innerHTML = ''; }, 4000);
             }
         });

@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos Escolares</title>
-    <!-- Adicionado ?v=2 para aplicar o tamanho esticado de ponta a ponta -->
-    <link rel="stylesheet" href="./style.css?v=2">
+    <link rel="stylesheet" href="./style.css?v=8">
 </head>
 <body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
     
@@ -15,7 +14,7 @@
         <div class="mural-header">
             <h2>📢 Mural Digital Informativo</h2>
             <div id="authActions">
-                <a href="login.html" class="btn-primary" style="padding: 12px 28px; font-size: 1.1rem;">Área Restrita</a>
+                <a href="login.html" class="btn-primary" style="padding: 10px 20px; font-size: 1rem; width: auto;">Área Restrita</a>
             </div>
         </div>
 
@@ -34,10 +33,10 @@
                     <label>Imagem de Referência (Opcional)</label>
                     <input type="file" id="imagem" name="imagem" accept="image/*">
                 </div>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                <div class="publicar-actions">
                     <button type="submit" class="btn-primary">Publicar no Mural</button>
-                    <button type="button" onclick="rolarParaMural()" class="btn-primary" style="background-color: #334155; box-shadow: 0 8px 25px rgba(51, 65, 85, 0.35);">Rolar para Avisos</button>
-                    <button type="button" id="btnAlternarModo" onclick="alternarVisualizacao()" class="btn-primary" style="background-color: #475569; box-shadow: 0 8px 25px rgba(71, 85, 105, 0.35);">Ver como Aluno/Responsável</button>
+                    <button type="button" onclick="rolarParaMural()" class="btn-primary" style="background-color: #334155; box-shadow: 0 4px 12px rgba(51, 65, 85, 0.2);">Rolar para Avisos</button>
+                    <button type="button" id="btnAlternarModo" onclick="alternarVisualizacao()" class="btn-primary" style="background-color: #475569; box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);">Ver como Aluno/Responsável</button>
                 </div>
             </form>
         </div>
@@ -67,7 +66,7 @@
             document.getElementById('secaoMural').scrollIntoView({ behavior: 'smooth' });
         }
 
-            function alternarVisualizacao() {
+        function alternarVisualizacao() {
             const area = document.getElementById('areaPublicar');
             const btn = document.getElementById('btnAlternarModo');
             
@@ -83,6 +82,7 @@
                 btn.style.backgroundColor = '#475569';
                 modoAlunoAtivo = false;
             }
+            renderizarAvisos(todosAvisos);
         }
 
         async function checarLogin() {
@@ -91,15 +91,15 @@
             if (dados.logado) {
                 usuarioLogado = true;
                 document.getElementById('authActions').innerHTML = `
-                    <span style="margin-right:20px; font-size: 1.25rem; color: #1e3c72;">Olá, Professor(a) <b>${dados.nome}</b></span>
-                    <button onclick="logout()" class="btn-delete">Sair</button>
+                    <span style="margin-right:15px; font-size: 1.1rem; color: #1e3c72;">Olá, Professor(a) <b>${dados.nome}</b></span>
+                    <button onclick="logout()" class="btn-delete" style="width:auto; padding: 8px 16px;">Sair</button>
                 `;
                 document.getElementById('areaPublicar').style.display = 'block';
             } else {
                 usuarioLogado = false;
                 document.getElementById('areaPublicar').style.display = 'none';
                 document.getElementById('authActions').innerHTML = `
-                    <a href="login.html" class="btn-primary" style="padding: 12px 28px; font-size: 1.1rem;">Área Restrita</a>
+                    <a href="login.html" class="btn-primary" style="padding: 10px 20px; font-size: 1rem; width: auto;">Área Restrita</a>
                 `;
             }
             carregarAvisos();
@@ -124,7 +124,7 @@
             grid.innerHTML = '';
 
             if (listaDeAvisos.length === 0) {
-                grid.innerHTML = `<p style="font-size: 1.4rem; color: #ffffff; grid-column: 1/-1; text-align: center; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">Nenhum aviso encontrado no sistema.</p>`;
+                grid.innerHTML = `<p style="font-size: 1.2rem; color: #ffffff; grid-column: 1/-1; text-align: center; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">Nenhum aviso encontrado no sistema.</p>`;
                 return;
             }
 
@@ -142,7 +142,7 @@
                         </div>
                         <div class="card-footer">
                             <span>Por: ${aviso.autor || 'Coordenação'} em ${dataFormatada}</span>
-                            ${btnDeletar}
+                            <div style="width: ${usuarioLogado && !modoAlunoAtivo ? 'auto' : '0px'}">${btnDeletar}</div>
                         </div>
                     </div>
                 `;
