@@ -4,14 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Mural Escolar</title>
-    <!-- 🎯 Adicionado ?v=2 para forçar o tamanho gigante e quebrar o cache -->
-    <link rel="stylesheet" href="./style.css?v=2">
+    <link rel="stylesheet" href="./style.css?v=3">
+    
+    <!-- 🎯 ESTILO INJETADO DIRETAMENTE PARA FORÇAR O TAMANHO GIGANTE -->
+    <style>
+        body {
+            font-size: 1.6rem !important;
+        }
+        /* Força a caixa branca a ficar bem maior e robusta na tela */
+        .form-container {
+            width: 90% !important;
+            max-width: 850px !important; 
+            padding: 65px !important;
+            border-radius: 28px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+            background: #ffffff !important;
+        }
+        .form-container h2 {
+            font-size: 3rem !important;
+            font-weight: 800 !important;
+            margin-bottom: 45px !important;
+        }
+        .form-group label {
+            font-size: 1.6rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 15px !important;
+        }
+        /* Deixa os campos de digitação altos e fáceis de ler */
+        .form-group input {
+            padding: 24px !important;
+            font-size: 1.5rem !important;
+            border: 3px solid #cbd5e1 !important;
+            border-radius: 16px !important;
+            height: auto !important;
+        }
+        /* Botão entrar gigante */
+        .btn-primary {
+            padding: 24px !important;
+            font-size: 1.6rem !important;
+            border-radius: 16px !important;
+            font-weight: bold !important;
+        }
+    </style>
 </head>
 <body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
     
     <div id="notification-container"></div>
 
-    <!-- O CSS atualizado (.form-container) vai deixar esta caixa bem maior automaticamente -->
     <div class="form-container">
         <h2>Área do Professor</h2>
         <form id="loginForm">
@@ -23,9 +62,9 @@
                 <label>Senha</label>
                 <input type="password" id="senha" required placeholder="••••••••">
             </div>
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Entrar</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;">Entrar</button>
         </form>
-        <p style="margin-top: 30px; text-align: center; font-size: 1.2rem;">Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold;">Cadastre-se</a></p>
+        <p style="margin-top: 35px; text-align: center; font-size: 1.3rem;">Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold;">Cadastre-se</a></p>
     </div>
 
     <script>
