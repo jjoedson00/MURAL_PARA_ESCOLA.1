@@ -48,7 +48,6 @@
         let usuarioLogado = false;
         let todosAvisos = [];
 
-        // Alertas estilizados direto na tela do mural
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('notification-container');
             const toast = document.createElement('div');
@@ -122,21 +121,29 @@
             renderizarAvisos(avisosFiltrados);
         });
 
+        // Evento de envio corrigido para ler respostas JSON com tratamento rigoroso
         document.getElementById('formAviso').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
 
-            const res = await fetch('/api/avisos', {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (res.ok) {
-                e.target.reset();
-                mostrarNotificacao('Aviso publicado com sucesso!', 'success');
-                carregarAvisos();
-            } else {
-                mostrarNotificacao('Erro ao publicar o seu aviso.', 'error');
+            try {
+                const res = await fetch('/api/avisos', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const dados = await res.json();
+                
+                if (res.ok && dados.sucesso) {
+                    e.target.reset();
+                    mostrarNotificacao('Aviso publicado com sucesso!', 'success');
+                    carregarAvisos();
+                } else {
+                    mostrarNotificacao(dados.erro || 'Erro ao publicar o seu aviso.', 'error');
+                }
+            } catch (erro) {
+                console.error("Erro na requisição:", erro);
+                mostrarNotificacao('Não foi possível conectar ao servidor.', 'error');
             }
         });
 

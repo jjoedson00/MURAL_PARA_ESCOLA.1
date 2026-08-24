@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const app = express();
 const db = new sqlite3.Database('./database.db');
 
-// Configuração correta de caminhos para upload
+// Configuração do Multer com caminho absoluto robusto
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, 'public', 'uploads'));
@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Middlewares - Ajustados com path.join para o Render encontrar o CSS
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,7 +33,6 @@ app.use(session({
 
 // Criar Tabelas no Banco de Dados
 db.serialize(() => {
-    // O campo 'email' possui a regra UNIQUE para evitar duplicados
     db.run(`CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
@@ -54,7 +53,6 @@ db.serialize(() => {
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 
-// Cadastro de Usuários (Professores) com validação de e-mail duplicado
 app.post('/api/cadastro', async (req, res) => {
     const { nome, email, senha, token } = req.body;
 
@@ -66,7 +64,6 @@ app.post('/api/cadastro', async (req, res) => {
         const hashSenha = await bcrypt.hash(senha, 10);
         db.run(`INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`, [nome, email, hashSenha], function(err) {
             if (err) {
-                // Se o SQLite retornar erro de restrição UNIQUE do e-mail, responde com a mensagem limpa
                 return res.status(400).json({ erro: 'Este endereço de e-mail já está cadastrado no sistema!' });
             }
             res.json({ sucesso: true });
@@ -76,7 +73,6 @@ app.post('/api/cadastro', async (req, res) => {
     }
 });
 
-// Rota de Login modificada para responder com JSON em vez de travar o navegador
 app.post('/api/login', (req, res) => {
     const { email, senha } = req.body;
 
@@ -120,19 +116,28 @@ app.get('/api/avisos', (req, res) => {
     });
 });
 
+// Rota de publicação corrigida com tratamento estrito e resposta JSON explícita
 app.post('/api/avisos', upload.single('imagem'), (req, res) => {
     if (!req.session.usuarioId) {
-        return res.status(401).json({ erro: 'Não autorizado.' });
+        return res.status(401).json({ erro: 'Não autorizado. Por favor, faça login.' });
     }
 
     const { titulo, conteudo } = req.body;
     const imagemPath = req.file ? `/uploads/${req.file.filename}` : null;
 
-    db.run(`INSERT INTO avisos (titulo, conteudo, imagem, usuario_id) VALUES (?, ?, ?, ?)`,
-        [titulo, conteudo, imagemPath, req.session.usuarioId], function(err) {
-            if (err) return res.status(500).json({ erro: err.message });
-            res.json({ sucesso: true });
-        });
+    if (!titulo || !conteudo) {
+        return res.status(400).json({ erro: 'Título e conteúdo são obrigatórios.' });
+    }
+
+    const query = `INSERT INTO avisos (titulo, conteudo, imagem, usuario_id) VALUES (?, ?, ?, ?)`;
+    
+    db.run(query, [titulo, conteudo, imagemPath, req.session.usuarioId], function(err) {
+        if (err) {
+            console.error("Erro ao inserir no banco:", err.message);
+            return res.status(500).json({ erro: 'Erro interno ao salvar no banco de dados.' });
+        }
+        return res.status(200).json({ sucesso: true });
+    });
 });
 
 app.delete('/api/avisos/:id', (req, res) => {
