@@ -20,11 +20,11 @@
 body {
     background-color: var(--light);
     color: var(--dark);
-    font-size: 1.4rem; /* Texto base aumentado para preencher melhor a tela */
+    font-size: 1.4rem; 
     line-height: 1.6;
 }
 
-/* 📢 TELA INICIAL HERO AMPLIADA E IMERSIVA */
+/* 📢 TELA INICIAL HERO */
 .hero-screen {
     background: var(--bg-gradient) !important;
     min-height: 100vh;
@@ -38,81 +38,74 @@ body {
     color: var(--white) !important;
 }
 
-/* Megafone Gigante */
 .hero-screen span {
-    font-size: 7.5rem !important; /* Aumentado consideravelmente de tamanho */
+    font-size: 7.5rem !important;
     display: block;
     margin-bottom: 25px;
     animation: pulse 2s infinite;
 }
 
-/* Título Inicial de Grande Impacto */
 .hero-screen h1 {
-    font-size: 4.8rem !important; /* Letras gigantes para o título principal */
+    font-size: 4.8rem !important;
     font-weight: 800;
-    letter-spacing: -1px;
     margin-bottom: 20px;
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Subtítulo Descritivo Amplo */
 .hero-screen p {
-    font-size: 1.8rem !important; /* Texto de apoio nítido à distância */
-    max-width: 850px; /* Distribui melhor as palavras na horizontal */
+    font-size: 1.8rem !important;
+    max-width: 850px;
     margin-bottom: 50px;
     opacity: 0.95;
-    line-height: 1.6;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Botão de Entrada Robusto */
 .hero-screen .btn-primary {
     font-size: 1.6rem !important;
-    padding: 24px 65px !important; /* Preenchimento generoso para não precisar de zoom */
+    padding: 24px 65px !important;
     border-radius: 18px;
-    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.5);
 }
 
-/* CONTAINER PRINCIPAL DO MURAL */
+/* 🎯 CONTAINER DO MURAL EXPANDIDO DE PONTA A PONTA (CORREÇÃO PRINCIPAL) */
 .container {
-    max-width: 1650px; 
+    width: 95%; /* Ocupa quase a largura total da tela, eliminando as bordas azuis gigantes */
+    max-width: 1920px; /* Limite máximo estendido para super telas */
     margin: 0 auto;
-    padding: 40px;
+    padding: 40px 20px;
 }
 
-/* CABEÇALHO DO MURAL UNIFORME */
+/* CABEÇALHO TOTALMENTE ALINHADO E EXPANDIDO */
 .mural-header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 45px;
-    padding: 30px 40px;
+    margin-bottom: 40px;
+    padding: 30px 45px;
     background: var(--white);
     border-radius: 20px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
 .mural-header h2 {
-    font-size: 2.8rem; 
+    font-size: 3rem; /* Título maior e imponente */
     color: #1e3c72;
     font-weight: 800;
 }
 
-/* BARRA DE PESQUISA GRANDE */
+/* BARRA DE PESQUISA QUE ACOMPANHA A LARGURA DA TELA */
 .search-container {
-    margin-bottom: 45px;
+    margin-bottom: 40px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 24px 35px;
-    font-size: 1.5rem; 
+    padding: 26px 35px;
+    font-size: 1.6rem; /* Fonte maior para digitação clara */
     border: 3px solid #cbd5e1;
     border-radius: 40px;
     outline: none;
     box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-    transition: all 0.2s;
 }
 
 .search-input:focus {
@@ -120,12 +113,12 @@ body {
     box-shadow: 0 6px 25px rgba(255, 140, 0, 0.3);
 }
 
-/* FORMULÁRIOS AMPLIADOS */
+/* FORMULÁRIOS ROBUSTOS */
 .form-container {
     background: var(--white);
     width: 100%;
-    max-width: 800px; /* Alargado para impor presença na tela */
-    margin: 50px auto;
+    max-width: 900px; /* Aumentado para equilibrar visualmente */
+    margin: 40px auto;
     padding: 60px; 
     border-radius: 24px;
     box-shadow: 0 15px 45px rgba(0,0,0,0.18);
@@ -133,12 +126,12 @@ body {
 }
 
 #areaPublicar.form-container {
-    max-width: 100%; 
-    margin-bottom: 50px;
+    max-width: 100%; /* O painel de publicar acompanha toda a largura do cabeçalho */
+    margin-bottom: 45px;
 }
 
 .form-container h2, .form-container h3 {
-    font-size: 2.5rem; 
+    font-size: 2.6rem; 
     margin-bottom: 40px;
     color: #1e3c72;
     text-align: center;
@@ -159,13 +152,12 @@ body {
 
 .form-group input, .form-group textarea {
     width: 100%;
-    padding: 20px; 
+    padding: 22px; 
     border: 2.5px solid #cbd5e1; 
     border-radius: 14px;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     outline: none;
-    background-color: var(--white) !important; 
-    transition: all 0.2s;
+    background-color: var(--white) !important;
 }
 
 .form-group input:focus, .form-group textarea:focus {
@@ -173,47 +165,42 @@ body {
     box-shadow: 0 0 0 5px rgba(42, 82, 152, 0.15);
 }
 
-/* BOTÕES GLOBAIS ROBUSTOS */
+/* BOTÕES GLOBAIS MAIORES */
 .btn-primary {
     background-color: var(--primary);
     color: var(--white);
-    padding: 20px 45px; 
+    padding: 22px 50px; 
     border: none;
     border-radius: 14px;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
-    transition: all 0.2s;
     box-shadow: 0 8px 25px rgba(255, 140, 0, 0.35);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-3px);
 }
 
 .btn-delete {
     background-color: var(--danger);
     color: white;
     border: none;
-    padding: 16px 32px;
-    font-size: 1.25rem;
+    padding: 18px 36px;
+    font-size: 1.3rem;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
-/* GRID DE AVISOS AMPLIADO */
+/* 🖼️ GRADE DE AVISOS REDIMENSIONADA (CORREÇÃO DE TAMANHO DOS CARTÕES) */
 .grid-avisos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); 
+    /* Altera o tamanho mínimo de cada cartão de aviso para preencher telas largas sem encolher */
+    grid-template-columns: repeat(auto-fill, minmax(550px, 1fr)); 
     gap: 40px;
+    width: 100%;
 }
 
-/* CARTÕES DO MURAL */
+/* CARTÕES DO MURAL ROBUSTOS */
 .card-aviso {
     background: var(--white);
     border-radius: 24px;
@@ -222,40 +209,36 @@ body {
     display: flex;
     flex-direction: column;
     border: 1px solid #e2e8f0;
-    transition: transform 0.2s;
-}
-
-.card-aviso:hover {
-    transform: translateY(-5px);
+    width: 100%;
 }
 
 .card-aviso img {
     width: 100%;
-    max-height: 350px; 
+    max-height: 450px; /* Área de imagem muito maior e visível */
     object-fit: cover;
 }
 
 .card-body {
-    padding: 40px;
+    padding: 45px; /* Mais preenchimento interno para destacar o texto */
     flex-grow: 1;
 }
 
 .card-body h3 {
-    font-size: 2rem;
-    margin-bottom: 18px;
+    font-size: 2.2rem; /* Título do aviso maior */
+    margin-bottom: 20px;
     color: #1e3c72;
     font-weight: 700;
 }
 
 .card-body p {
-    font-size: 1.45rem;
+    font-size: 1.55rem; /* Texto do comunicado visível de longe */
     color: #334155;
 }
 
 .card-footer {
-    padding: 30px 40px;
+    padding: 30px 45px;
     background: #f8fafc;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     color: #64748b;
     display: flex;
     justify-content: space-between;
@@ -263,7 +246,7 @@ body {
     border-top: 1px solid #e2e8f0;
 }
 
-/* SISTEMA DE NOTIFICAÇÃO CENTRALIZADO GIGANTE */
+/* SISTEMA DE NOTIFICAÇÃO CENTRALIZADO */
 #notification-container {
     position: fixed;
     top: 40px;
