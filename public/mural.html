@@ -4,9 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos Escolares</title>
-    <link rel="stylesheet" href="./style.css?v=8">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            min-height: 100vh;
+            color: #222222;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 10px;
+        }
+
+        .mural-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            padding: 25px 35px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+
+        .mural-header h2 {
+            font-size: 2rem;
+            color: #1e3c72;
+            font-weight: 800;
+        }
+
+        .search-container {
+            margin-bottom: 35px;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 1.2rem;
+            border: 2.5px solid #cbd5e1;
+            border-radius: 40px;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+
+        .form-container {
+            background: #ffffff;
+            width: 100%;
+            margin-bottom: 35px;
+            padding: 45px; 
+            border-radius: 24px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+            border-top: 10px solid #ff8c00;
+        }
+
+        .form-container h3 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #1e3c72;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #334155;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            outline: none;
+            background-color: #ffffff !important;
+        }
+
+        .btn-primary {
+            background-color: #ff8c00 !important;
+            color: #ffffff !important;
+            padding: 16px 36px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 6px 18px rgba(255, 140, 0, 0.25);
+            text-align: center;
+        }
+
+        .btn-delete {
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.05rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .publicar-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* 🖼️ GRADE INTELIGENTE QUE SE AJUSTA EM QUALQUER MONITOR OU CELULAR */
+        .grid-avisos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .card-aviso {
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-aviso img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .card-body p {
+            font-size: 1.15rem;
+            color: #334155;
+        }
+
+        .card-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            font-size: 0.95rem;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        #notification-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 90%;
+            max-width: 500px;
+            pointer-events: none;
+        }
+
+        .toast {
+            pointer-events: auto;
+            background: #333;
+            color: white;
+            padding: 16px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+
+        .toast.success { background-color: #4cd964; color: #042409; }
+        .toast.error { background-color: #ff3b30; color: #ffffff; }
+
+        /* Adaptações automáticas para Celulares */
+        @media (max-width: 768px) {
+            .mural-header { flex-direction: column; text-align: center; gap: 15px; }
+            .grid-avisos { grid-template-columns: 1fr; gap: 20px; }
+            .publicar-actions { flex-direction: column; width: 100%; }
+            .publicar-actions button { width: 100%; }
+        }
+    </style>
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh;">
+<body>
     
     <div id="notification-container"></div>
 
@@ -14,7 +230,7 @@
         <div class="mural-header">
             <h2>📢 Mural Digital Informativo</h2>
             <div id="authActions">
-                <a href="login.html" class="btn-primary" style="padding: 10px 20px; font-size: 1rem; width: auto;">Área Restrita</a>
+                <a href="login.html" class="btn-primary" style="padding: 10px 20px; font-size: 1rem;">Área Restrita</a>
             </div>
         </div>
 
@@ -55,11 +271,8 @@
 
         function mostrarNotificacao(mensagem, tipo = 'success') {
             const container = document.getElementById('notification-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            toast.innerText = mensagem;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 4000);
+            container.innerHTML = `<div class="toast ${tipo}">${mensagem}</div>`;
+            setTimeout(() => { container.innerHTML = ''; }, 4000);
         }
 
         function rolarParaMural() {
@@ -91,112 +304,6 @@
             if (dados.logado) {
                 usuarioLogado = true;
                 document.getElementById('authActions').innerHTML = `
-                    <span style="margin-right:15px; font-size: 1.1rem; color: #1e3c72;">Olá, Professor(a) <b>${dados.nome}</b></span>
-                    <button onclick="logout()" class="btn-delete" style="width:auto; padding: 8px 16px;">Sair</button>
+                    <span style="margin-right:15px; font-size: 1.1rem; color: #1e3c72;">Olá, <b>${dados.nome}</b></span>
+                    <button onclick="logout()" class="btn-delete" style="padding: 8px 16px;">Sair</button>
                 `;
-                document.getElementById('areaPublicar').style.display = 'block';
-            } else {
-                usuarioLogado = false;
-                document.getElementById('areaPublicar').style.display = 'none';
-                document.getElementById('authActions').innerHTML = `
-                    <a href="login.html" class="btn-primary" style="padding: 10px 20px; font-size: 1rem; width: auto;">Área Restrita</a>
-                `;
-            }
-            carregarAvisos();
-        }
-
-        async function logout() {
-            const res = await fetch('/api/logout');
-            if (res.ok) {
-                mostrarNotificacao('Você saiu do sistema de publicação.', 'success');
-                checarLogin(); 
-            }
-        }
-
-        async function carregarAvisos() {
-            const res = await fetch('/api/avisos');
-            todosAvisos = await res.json();
-            renderizarAvisos(todosAvisos);
-        }
-
-        function renderizarAvisos(listaDeAvisos) {
-            const grid = document.getElementById('muralGrid');
-            grid.innerHTML = '';
-
-            if (listaDeAvisos.length === 0) {
-                grid.innerHTML = `<p style="font-size: 1.2rem; color: #ffffff; grid-column: 1/-1; text-align: center; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">Nenhum aviso encontrado no sistema.</p>`;
-                return;
-            }
-
-            listaDeAvisos.forEach(aviso => {
-                const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR');
-                const imgTag = aviso.imagem ? `<img src="${aviso.imagem}" alt="Referência">` : '';
-                const btnDeletar = (usuarioLogado && !modoAlunoAtivo) ? `<button class="btn-delete" onclick="deletarAviso(${aviso.id})">Apagar</button>` : '';
-
-                grid.innerHTML += `
-                    <div class="card-aviso">
-                        ${imgTag}
-                        <div class="card-body">
-                            <h3>${aviso.titulo}</h3>
-                            <p>${aviso.conteudo}</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>Por: ${aviso.autor || 'Coordenação'} em ${dataFormatada}</span>
-                            <div style="width: ${usuarioLogado && !modoAlunoAtivo ? 'auto' : '0px'}">${btnDeletar}</div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        document.getElementById('barraBusca').addEventListener('input', (e) => {
-            const termoBusca = e.target.value.toLowerCase();
-            const avisosFiltrados = todosAvisos.filter(aviso => {
-                return aviso.titulo.toLowerCase().includes(termoBusca) || 
-                       aviso.conteudo.toLowerCase().includes(termoBusca);
-            });
-            renderizarAvisos(avisosFiltrados);
-        });
-
-        document.getElementById('formAviso').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-
-            try {
-                const res = await fetch('/api/avisos', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const dados = await res.json();
-                
-                if (res.ok && dados.sucesso) {
-                    e.target.reset();
-                    mostrarNotificacao('Aviso publicado com sucesso!', 'success');
-                    carregarAvisos();
-                    setTimeout(rolarParaMural, 500);
-                } else {
-                    mostrarNotificacao(dados.erro || 'Erro ao publicar o seu aviso.', 'error');
-                }
-            } catch (erro) {
-                console.error("Erro na requisição:", erro);
-                mostrarNotificacao('Não foi possível conectar ao servidor.', 'error');
-            }
-        });
-
-        async function deletarAviso(id) {
-            if (confirm('Deseja realmente excluir este aviso?')) {
-                const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    mostrarNotificacao('O aviso foi removido!', 'success');
-                    carregarAvisos();
-                } else {
-                    mostrarNotificacao('Falha ao tentar apagar.', 'error');
-                }
-            }
-        }
-
-        checarLogin();
-    </script>
-</body>
-</html>

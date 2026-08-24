@@ -4,13 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural de Avisos</title>
-    <!-- Adicionado ?v=2 para quebrar o cache do navegador e forçar o tamanho gigante -->
-    <link rel="stylesheet" href="./style.css?v=2">
+    
+    <!-- Estilo embutido direto no HTML para garantir o carregamento do tamanho perfeito -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #ffffff !important;
+        }
+
+        /* 📢 Elementos com tamanhos proporcionais automáticos */
+        .megafone {
+            font-size: calc(4rem + 2vw) !important; /* Cresce junto com o monitor */
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: calc(2rem + 1.5vw) !important;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: calc(1rem + 0.3vw) !important;
+            max-width: 700px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background-color: #ff8c00 !important;
+            color: #ffffff !important;
+            padding: 18px 50px !important;
+            border: none;
+            border-radius: 14px !important;
+            font-size: calc(1rem + 0.2vw) !important;
+            font-weight: bold !important;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4) !important;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background-color: #e07b00 !important;
+        }
+    </style>
 </head>
-<body class="hero-screen">
-    <span style="font-size: 8rem;">📢</span>
-    <h1 style="font-size: 5rem; margin: 25px 0; font-weight: 800;">Mural de Avisos</h1>
-    <p style="font-size: 2rem; margin-bottom: 60px; max-width: 950px; opacity: 0.95;">Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-    <a href="mural.html" class="btn-primary" style="font-size: 1.8rem; padding: 26px 75px; border-radius: 20px;">Acessar Mural</a>
+<body>
+    <div class="megafone">📢</div>
+    <h1>Mural de Avisos</h1>
+    <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes de forma simples e rápida.</p>
+    <a href="mural.html" class="btn-primary">Acessar Mural</a>
 </body>
 </html>
