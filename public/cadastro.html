@@ -14,8 +14,8 @@
             <h3>Cadastro de Professor</h3>
             <form id="form-cadastro">
                 <input type="text" id="cad-nome" placeholder="Nome Completo" required>
-                <!-- O input de e-mail avisa o formato esperado -->
-                <input type="email" id="cad-email" placeholder="E-mail Institucional (@escola.com)" required>
+                <!-- 🌟 ALTERADO: Agora exibe apenas "E-mail Institucional" conforme solicitado -->
+                <input type="email" id="cad-email" placeholder="E-mail Institucional" required>
                 <input type="password" id="cad-senha" placeholder="Senha de Acesso" required>
                 <input type="password" id="cad-token" placeholder="Token de Segurança da Coordenação" required>
                 <button type="submit" class="btn-success-block">Criar Conta</button>
@@ -32,13 +32,12 @@
             const senha = document.getElementById("cad-senha").value;
             const token = document.getElementById("cad-token").value;
 
-            // 🔒 CONFIGURAÇÃO DO SEU DOMÍNIO INSTITUCIONAL
-            // Mude '@escola.com' para o sufixo de e-mail oficial da sua escola!
+            // CONFIGURAÇÃO DO SEU DOMÍNIO INSTITUCIONAL
             const dominioObrigatorio = '@escola.com'; 
 
             if (!email.toLowerCase().endsWith(dominioObrigatorio)) {
                 alert(`Erro: Você precisa usar um e-mail institucional válido terminando em ${dominioObrigatorio}`);
-                return; // Bloqueia o envio do formulário imediatamente
+                return;
             }
 
             const res = await fetch('/api/cadastro', {
