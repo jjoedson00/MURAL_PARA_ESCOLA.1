@@ -1,343 +1,297 @@
 :root {
-    --primary: #ff8c00;
-    --primary-hover: #e07b00;
-    --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-    --dark: #222222;
-    --light: #f0f4f8;
-    --white: #ffffff;
-    --danger: #ff3b30;
-    --danger-hover: #d32f2f;
-    --success: #4cd964;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
+/* Reset Geral Avançado */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* Base de tamanho fixa para evitar crescimento infinito */
-html {
-    font-size: 16px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 body {
-    background-color: var(--light);
-    color: var(--dark);
-    font-size: 1rem;
-    line-height: 1.5;
-    overflow-x: hidden;
-}
-
-/* 📢 TELA INICIAL HERO */
-.hero-screen {
-    background: var(--bg-gradient) !important;
+    background-color: var(--background);
+    color: var(--text);
     min-height: 100vh;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem 1.5rem;
-    color: var(--white) !important;
+    overflow-x: hidden; /* Impede barra de rolagem horizontal indesejada */
 }
 
-.hero-screen span {
-    font-size: 4rem !important;
-    display: block;
-    margin-bottom: 1rem;
-}
-
-.hero-screen h1 {
-    font-size: 2.5rem !important;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.hero-screen p {
-    font-size: 1.15rem !important;
-    max-width: 600px;
-    margin-bottom: 2.5rem;
-    opacity: 0.95;
-}
-
-/* 🎯 CONTAINER DO MURAL TOTALMENTE RESPONSIVO */
-.container {
-    width: 100%;
-    max-width: 1200px; /* Impede que o site vire uma faixa gigante em telas ultra-largas */
-    margin: 0 auto;
-    padding: 1.5rem 1rem;
-}
-
-/* CABEÇALHO DO MURAL */
-.mural-header {
-    width: 100%;
+/* Topo do site flexível */
+header {
+    background: var(--surface);
+    padding: 1rem 5%;
     display: flex;
-    flex-direction: column; /* Padrão mobile: um embaixo do outro */
-    gap: 1rem;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap; /* Permite quebrar linha em celulares muito pequenos */
+    gap: 1rem;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-area h1 {
+    font-size: clamp(1.2rem, 2vw, 2rem); /* Tamanho de fonte fluido */
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+#auth-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Área de conteúdo principal responsiva */
+main {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
     padding: 1.5rem;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex-grow: 1;
 }
 
-.mural-header h2 {
-    font-size: 1.8rem;
-    color: #1e3c72;
-    font-weight: 800;
-}
-
-/* BARRA DE PESQUISA */
-.search-container {
-    margin-bottom: 2rem;
+/* Painel do Administrador */
+.card-admin {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     width: 100%;
 }
 
-.search-input {
-    width: 100%;
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-    border: 2px solid #cbd5e1;
-    border-radius: 30px;
-    outline: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-    transition: border-color 0.2s;
-}
-
-.search-input:focus {
-    border-color: var(--primary);
-}
-
-/* CAIXA DE FORMULÁRIOS EQUILIBRADA (LOGIN / CADASTRO) */
-.form-container {
-    background: var(--white);
-    width: 100%;
-    max-width: 480px; /* Tamanho elegante para telas de computadores */
-    margin: 2rem auto;
-    padding: 2.5rem 1.5rem; 
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border-top: 8px solid var(--primary);
-}
-
-/* Área de publicar assume a largura interna total do mural */
-#areaPublicar.form-container {
-    max-width: 100% !important;
-    margin-bottom: 2rem;
-    margin-top: 0;
-    padding: 2.5rem;
-}
-
-.form-container h2, .form-container h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1.8rem;
-    color: #1e3c72;
-    text-align: center;
-    font-weight: 800;
+#form-aviso {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .form-group {
-    margin-bottom: 1.25rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-    font-size: 1rem;
-    color: #334155;
-}
-
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 0.85rem;
-    border: 2px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    background-color: var(--white) !important;
-    color: var(--dark) !important;
-}
-
-.form-group input:focus, .form-group textarea:focus {
-    border-color: #2a5298;
-}
-
-/* BOTÕES AJUSTÁVEIS */
-.btn-primary {
-    background-color: var(--primary);
-    color: var(--white);
-    padding: 0.9rem 2rem;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.05rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.2);
-    text-align: center;
-    width: 100%; /* Ocupa tudo no mobile */
-}
-
-.btn-delete {
-    background-color: var(--danger);
-    color: white;
-    border: none;
-    padding: 0.7rem 1.5rem;
-    font-size: 0.95rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-}
-
-/* Container de botões da área de publicar */
-.publicar-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
+    gap: 0.5rem;
 }
 
-/* 🖼️ GRADE DE AVISOS DINÂMICA E MUTÁVEL */
+input, textarea {
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%; /* Garante que os campos não passem da caixas */
+    max-width: 100%;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    background: #e2e8f0;
+    cursor: pointer;
+    border-radius: 6px;
+    text-align: center;
+    transition: 0.2s;
+    font-weight: 500;
+}
+
+.custom-file-upload:hover { background: #cbd5e1; }
+
+#file-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    word-break: break-all; /* Evita que nomes de arquivos longos quebrem a tela */
+}
+
+/* Botões adaptáveis */
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    font-size: 1rem;
+}
+button:active { transform: scale(0.98); }
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+
+/* Cabeçalho do Mural Público */
+.mural-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+}
+
+#live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--success);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--success);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+}
+
+/* Grid de Avisos Ultra-Responsiva */
 .grid-avisos {
     display: grid;
-    grid-template-columns: 1fr; /* 1 Coluna padrão para celulares */
+    /* auto-fit calcula automaticamente quantas colunas cabem na tela sem estourar */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 1.5rem;
     width: 100%;
 }
 
-/* CARTÕES DO MURAL */
+/* Card Individual de Aviso */
 .card-aviso {
-    background: var(--white);
-    border-radius: 16px;
+    background: var(--surface);
+    border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
-    border: 1px solid #e2e8f0;
+    border-top: 5px solid var(--primary);
     width: 100%;
 }
 
-.card-aviso img {
+.aviso-img {
     width: 100%;
-    max-height: 220px;
-    object-fit: cover;
+    height: 220px;
+    object-fit: cover; /* Recorta a imagem proporcionalmente sem distorcer */
 }
 
-.card-body {
+.aviso-body {
     padding: 1.5rem;
-    flex-grow: 1;
-}
-
-.card-body h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.6rem;
-    color: #1e3c72;
-    font-weight: 700;
-}
-
-.card-body p {
-    font-size: 1rem;
-    color: #334155;
-}
-
-.card-footer {
-    padding: 1.2rem 1.5rem;
-    background: #f8fafc;
-    font-size: 0.85rem;
-    color: #64748b;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    align-items: center;
-    border-top: 1px solid #e2e8f0;
-    text-align: center;
+    flex-grow: 1;
 }
 
-/* NOTIFICAÇÕES (TOASTS) NA TELA */
-#notification-container {
+.aviso-body h3 {
+    font-size: 1.3rem;
+    word-break: break-word; /* Evita que títulos longos quebrem o layout */
+}
+
+.aviso-body p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text);
+    word-break: break-word; /* Quebra textos longos sem espaços automaticamente */
+    white-space: pre-wrap; /* Preserva quebras de linha manuais do professor */
+}
+
+.aviso-footer {
+    padding: 1rem 1.5rem;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* Se faltar espaço para o botão de apagar, ele vai para baixo */
+}
+
+.aviso-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Estrutura de Modais */
+.modal {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10000;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: white; 
+    padding: 2rem; 
+    border-radius: var(--radius);
+    width: 100%; 
+    max-width: 420px; 
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.modal-content form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 90%;
-    max-width: 400px;
-    pointer-events: none;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
-.toast {
-    pointer-events: auto;
-    background: #333;
-    color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 700;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    animation: slideDown 0.3s ease-out forwards;
-    width: 100%;
+.close-modal { 
+    position: absolute; 
+    top: 1rem; 
+    right: 1rem; 
+    font-size: 1.75rem; 
+    cursor: pointer; 
+    color: var(--text-muted);
 }
 
-.toast.success { background-color: var(--success); color: #042409; }
-.toast.error { background-color: var(--danger); color: #ffffff; }
+.hidden { display: none !important; }
+.switch-form { margin-top: 1rem; font-size: 0.9rem; text-align: center; }
+.loading { text-align: center; grid-column: 1 / -1; color: var(--text-muted); font-size: 1.1rem; padding: 2rem 0; }
 
-@keyframes slideDown {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
+@keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
 
-/* ==========================================================================
-   🖥️ MUDANÇAS E COMPORTAMENTOS PARA COMPUTADORES, NOTEBOOKS E TELAS GRANDES
-   ========================================================================== */
-@media (min-width: 769px) {
-    .hero-screen h1 { font-size: 3.5rem !important; }
-    .hero-screen span { font-size: 5rem !important; }
-    
-    .mural-header {
-        flex-direction: row; /* Alinha em linha horizontal */
-        justify-content: space-between;
-        padding: 1.5rem 2.5rem;
-        text-align: left;
-    }
-    
-    .form-container {
-        padding: 3rem; /* Mais espaço interno no PC */
-    }
-
-    .btn-primary {
-        width: auto; /* Botão assume o tamanho do seu texto no PC */
-    }
-
-    .btn-delete {
-        width: auto;
-    }
-
-    .publicar-actions {
-        flex-direction: row; /* Botões de ação lado a lado no PC */
-    }
-
-    /* 🎯 Distribui em 2 ou 3 colunas perfeitamente alinhadas de acordo com o monitor */
+/* REGRAS ESPECÍFICAS PARA TELAS GRANDES (TVs e Monitores de Portaria/Pátio) */
+@media (min-width: 1600px) {
+    main { max-width: 95%; }
     .grid-avisos {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)) !important;
+        /* Permite cards ligeiramente maiores para melhor leitura à distância */
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
         gap: 2rem;
     }
+    .aviso-body h3 { font-size: 1.6rem; }
+    .aviso-body p { font-size: 1.2rem; }
+}
 
-    .card-footer {
-        flex-direction: row; /* Alinhamento horizontal do rodapé dos cards */
-        justify-content: space-between;
-        text-align: left;
-    }
+/* REGRAS ESPECÍFICAS PARA CELULARES */
+@media (max-width: 480px) {
+    header { padding: 1rem; justify-content: center; text-align: center; }
+    main { padding: 1rem; }
+    .aviso-img { height: 160px; } /* Imagem menor para economizar tela no celular */
+    .mural-header { flex-direction: column; align-items: flex-start; }
 }
