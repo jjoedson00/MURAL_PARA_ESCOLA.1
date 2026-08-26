@@ -14,7 +14,6 @@
             <h3>Cadastro de Professor</h3>
             <form id="form-cadastro">
                 <input type="text" id="cad-nome" placeholder="Nome Completo" required>
-                <!-- 🌟 ALTERADO: Agora exibe apenas "E-mail Institucional" conforme solicitado -->
                 <input type="email" id="cad-email" placeholder="E-mail Institucional" required>
                 <input type="password" id="cad-senha" placeholder="Senha de Acesso" required>
                 <input type="password" id="cad-token" placeholder="Token de Segurança da Coordenação" required>
@@ -32,9 +31,8 @@
             const senha = document.getElementById("cad-senha").value;
             const token = document.getElementById("cad-token").value;
 
-            // CONFIGURAÇÃO DO SEU DOMÍNIO INSTITUCIONAL
+            // Validação de Domínio Institucional
             const dominioObrigatorio = '@escola.com'; 
-
             if (!email.toLowerCase().endsWith(dominioObrigatorio)) {
                 alert(`Erro: Você precisa usar um e-mail institucional válido terminando em ${dominioObrigatorio}`);
                 return;
@@ -48,8 +46,17 @@
             const data = await res.json();
 
             if(data.sucesso) {
-                alert("Cadastro realizado com sucesso! Faça seu login.");
-                window.location.href = "login.html";
+                alert("Cadastro realizado com sucesso! Entrando no painel...");
+                
+                // 🚀 LOGIN AUTOMÁTICO: Faz uma requisição silenciosa de login logo após cadastrar
+                await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                // Redireciona o professor direto para a página privada do mural
+                window.location.href = "mural.html";
             } else {
                 alert(data.erro || "Erro ao realizar cadastro.");
             }

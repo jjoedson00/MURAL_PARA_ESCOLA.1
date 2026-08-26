@@ -21,7 +21,7 @@
 
     <!-- Conteúdo Principal -->
     <main>
-        <!-- Painel de Publicação (Visível apenas após login) -->
+        <!-- Painel de Publicação Privado -->
         <section id="painel-admin" class="hidden">
             <div class="card-admin">
                 <h2>Nova Publicação</h2>
@@ -46,7 +46,7 @@
             </div>
         </section>
 
-        <!-- 🔍 BARRA DE PESQUISA PARA PAIS E ALUNOS -->
+        <!-- Barra de Pesquisa para Pais e Alunos -->
         <section class="search-section">
             <div class="search-container">
                 <span class="search-icon">🔍</span>
@@ -61,16 +61,15 @@
                 <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
             </div>
             
-            <!-- Container totalmente limpo de posts falsos -->
             <div id="container-avisos" class="grid-avisos">
                 <p class="loading">Carregando avisos...</p>
             </div>
         </section>
     </main>
 
-    <!-- Lógica de Funcionamento integrada diretamente na página -->
     <script>
         let listaDeAvisos = [];
+        let professorLogado = false; // Monitora se o professor está autenticado
 
         document.addEventListener("DOMContentLoaded", () => {
             verificarLogin();
@@ -123,8 +122,11 @@
                 const painelAdmin = document.getElementById("painel-admin");
 
                 if (data.logado) {
+                    professorLogado = true;
                     if (painelAdmin) painelAdmin.classList.remove("hidden");
                     authControls.innerHTML = `<span>Olá, <strong>${data.nome}</strong></span> <button onclick="fazerLogout()" class="btn-danger" style="margin-left:10px; padding: 0.5rem 1rem; font-size: 0.9rem;">Sair</button>`;
+                } else {
+                    professorLogado = false;
                 }
             } catch (e) { console.log("Aguardando conexão com o servidor..."); }
         }
@@ -164,7 +166,8 @@
                     </div>
                     <div class="aviso-footer">
                         <span class="aviso-meta">Por: ${aviso.autor || 'Coordenação'} <br> 🕒 ${dataFormatada}</span>
-                        ${document.getElementById("painel-admin").classList.contains("hidden") ? '' : `<button onclick="deletarAviso(${aviso.id})" class="btn-danger" style="padding:0.4rem 0.8rem; font-size:0.85rem;">Apagar</button>`}
+                        <!-- 🗑️ BOTÃO EXCLUSIVO: Aparece individualmente em cada card apenas para professores logados -->
+                        ${professorLogado ? `<button onclick="deletarAviso(${aviso.id})" class="btn-danger" style="padding:0.4rem 0.8rem; font-size:0.85rem;">Apagar</button>` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -172,10 +175,14 @@
         }
 
         async function deletarAviso(id) {
-            if(confirm("Deseja apagar este aviso?")) {
+            if(confirm("Tem certeza que deseja apagar este aviso específico definitivamente?")) {
                 const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
                 const data = await res.json();
-                if(data.sucesso) carregarAvisos();
+                if(data.sucesso) {
+                    carregarAvisos(); // Recarrega a lista sem sumir com os outros
+                } else {
+                    alert("Erro ao deletar o aviso.");
+                }
             }
         }
 
