@@ -3,106 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural Digital Escolar</title>
+    <title>Mural de Avisos - Inicial</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- 🌟 TELA INICIAL (LANDING PAGE QUE HAVIA SUMIDO) -->
-    <section id="tela-boas-vindas" class="welcome-screen">
+    <!-- TELA INICIAL IDENTICA À IMAGEM -->
+    <section class="welcome-screen">
         <div class="welcome-content">
-            <span class="welcome-icon">📢</span>
+            <!-- Container do Megafone Rosa -->
+            <div class="welcome-icon-container">
+                <span class="welcome-icon">📢</span>
+            </div>
             <h1>Mural de Avisos</h1>
             <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-            <button onclick="entrarNoMural()" class="btn-welcome">Acessar Mural</button>
+            <!-- Link direto para a página do mural -->
+            <a href="mural.html" class="btn-welcome">Acessar Mural</a>
         </div>
     </section>
 
-    <!-- 🌐 CONTEÚDO DO MURAL (FICA OCULTO ATÉ CLICAR NO BOTÃO) -->
-    <div id="conteudo-sistema" class="hidden">
-        <!-- Topo do Sistema -->
-        <header>
-            <div class="logo-area">
-                <span class="icon">📢</span>
-                <h1>Mural Digital</h1>
-            </div>
-            <div id="auth-controls">
-                <!-- Gerenciado dinamicamente via JS -->
-                <button onclick="mostrarModal('login')" class="btn-primary">Acesso Professor</button>
-            </div>
-        </header>
-
-        <!-- Conteúdo Principal -->
-        <main>
-            <!-- Área Administrativa (Fica oculta por padrão) -->
-            <section id="painel-admin" class="hidden">
-                <div class="card-admin">
-                    <h2>Nova Publicação</h2>
-                    <form id="form-aviso" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="titulo">Título do Aviso</label>
-                            <input type="text" id="titulo" name="titulo" required placeholder="Ex: Reunião de Pais">
-                        </div>
-                        <div class="form-group">
-                            <label for="conteudo">Conteúdo / Descrição</label>
-                            <textarea id="conteudo" name="conteudo" rows="3" required placeholder="Digite os detalhes do comunicado..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="imagem" class="custom-file-upload">
-                                📷 Adicionar Imagem de Referência
-                            </label>
-                            <input type="file" id="imagem" name="imagem" accept="image/*">
-                            <span id="file-name">Nenhum arquivo selecionado</span>
-                        </div>
-                        <button type="submit" class="btn-success">Publicar no Mural</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Visualização do Mural Público -->
-            <section id="mural-publico">
-                <div class="mural-header">
-                    <h2>Avisos Recentes</h2>
-                    <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
-                </div>
-                <div id="container-avisos" class="grid-avisos">
-                    <p class="loading">Carregando avisos...</p>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Modais (Login e Cadastro) -->
-    <div id="modal-auth" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal" onclick="fecharModal()">&times;</span>
-            
-            <!-- Aba de Login -->
-            <div id="box-login">
-                <h3>Login do Educador</h3>
-                <form id="form-login">
-                    <input type="email" id="login-email" placeholder="E-mail institucional" required>
-                    <input type="password" id="login-senha" placeholder="Sua senha" required>
-                    <button type="submit" class="btn-primary">Entrar</button>
-                </form>
-                <p class="switch-form">Não tem conta? <a href="#" onclick="alternarAbas('cadastro')">Cadastre-se aqui</a></p>
-            </div>
-
-            <!-- Aba de Cadastro -->
-            <div id="box-cadastro" class="hidden">
-                <h3>Cadastro de Professor</h3>
-                <form id="form-cadastro">
-                    <input type="text" id="cad-nome" placeholder="Nome Completo" required>
-                    <input type="email" id="cad-email" placeholder="E-mail" required>
-                    <input type="password" id="cad-senha" placeholder="Senha de Acesso" required>
-                    <input type="password" id="cad-token" placeholder="Token de Segurança (COORDENACAO2026)" required>
-                    <button type="submit" class="btn-success">Criar Conta</button>
-                </form>
-                <p class="switch-form">Já tem conta? <a href="#" onclick="alternarAbas('login')">Fazer Login</a></p>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>

@@ -2,53 +2,24 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <!-- 🎯 ADICIONADA CORREÇÃO VIEWPORT: Essencial para celulares lerem o tamanho real -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mural Escolar</title>
-    <link rel="stylesheet" href="./style.css?v=8">
+    <title>Login - Educador</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
-    
-    <div id="notification-container"></div>
+<body class="page-auth-bg">
 
-    <div class="form-container">
-        <h2>Área do Professor</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="email" required placeholder="seuemail@escola.com">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="senha" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn-primary">Entrar</button>
-        </form>
-        <p style="margin-top: 1.5rem; text-align: center; font-size: 1rem; color: #475569;">
-            Não tem conta? <a href="cadastro.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Cadastre-se</a>
-        </p>
+    <div class="modal-static">
+        <div class="modal-content-fixed">
+            <a href="mural.html" class="close-auth">&times;</a>
+            <h3>Login do Educador</h3>
+            <form id="form-login">
+                <input type="email" id="login-email" placeholder="E-mail institucional" required>
+                <input type="password" id="login-senha" placeholder="Sua senha" required>
+                <button type="submit" class="btn-primary-block">Entrar</button>
+            </form>
+            <p class="switch-form">Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+        </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, senha })
-            });
-            const dados = await res.json();
-            if (dados.sucesso) {
-                window.location.href = 'mural.html';
-            } else {
-                const container = document.getElementById('notification-container');
-                container.innerHTML = `<div class="toast error">${dados.erro}</div>`;
-                setTimeout(() => { container.innerHTML = ''; }, 4000);
-            }
-        });
-    </script>
 </body>
 </html>

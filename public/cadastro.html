@@ -2,75 +2,26 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <!-- 🎯 ADICIONADA CORREÇÃO VIEWPORT: Essencial para celulares lerem o tamanho real -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="./style.css?v=8">
+    <title>Cadastro - Professor</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
-    
-    <div id="notification-container"></div>
+<body class="page-auth-bg">
 
-    <div class="form-container">
-        <h2>Criar Conta de Professor</h2>
-        <form id="cadastroForm" autocomplete="off">
-            <div class="form-group">
-                <label>Nome Completo</label>
-                <input type="text" id="nome" required placeholder="Seu nome">
-            </div>
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="email" required placeholder="seuemail@escola.com">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="senha" required placeholder="Crie uma senha">
-            </div>
-            <div class="form-group">
-                <label>Token de Autenticação</label>
-                <input type="password" id="token" placeholder="Digite o código da coordenação" required>
-            </div>
-            <button type="submit" class="btn-primary">Cadastrar e Entrar</button>
-        </form>
-        <p style="margin-top: 1.5rem; text-align: center; font-size: 1rem; color: #475569;">
-            <a href="login.html" style="color: #1e3c72; font-weight: bold; text-decoration: none;">Voltar para Login</a>
-        </p>
+    <div class="modal-static">
+        <div class="modal-content-fixed">
+            <a href="mural.html" class="close-auth">&times;</a>
+            <h3>Cadastro de Professor</h3>
+            <form id="form-cadastro">
+                <input type="text" id="cad-nome" placeholder="Nome Completo" required>
+                <input type="email" id="cad-email" placeholder="E-mail" required>
+                <input type="password" id="cad-senha" placeholder="Senha de Acesso" required>
+                <input type="password" id="cad-token" placeholder="Token de Segurança (COORDENACAO2026)" required>
+                <button type="submit" class="btn-success-block">Criar Conta</button>
+            </form>
+            <p class="switch-form">Já tem conta? <a href="login.html">Fazer Login</a></p>
+        </div>
     </div>
 
-    <script>
-        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const token = document.getElementById('token').value;
-
-            const resCadastro = await fetch('/api/cadastro', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, email, senha, token })
-            });
-            const dadosCadastro = await resCadastro.json();
-            
-            if (dadosCadastro.sucesso) {
-                const resLogin = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha })
-                });
-                const dadosLogin = await resLogin.json();
-                
-                if (dadosLogin.sucesso) {
-                    window.location.href = 'mural.html';
-                } else {
-                    window.location.href = 'login.html';
-                }
-            } else {
-                const container = document.getElementById('notification-container');
-                container.innerHTML = `<div class="toast error">${dadosCadastro.erro}</div>`;
-                setTimeout(() => { container.innerHTML = ''; }, 4000);
-            }
-        });
-    </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   VARIÁVEIS DE DESIGN (CORES E PADRÕES)
+   VARIÁVEIS DE DESIGN E CORES
    ========================================================================== */
    :root {
     --primary: #4f46e5;
@@ -11,12 +11,9 @@
     --text: #1e293b;
     --text-muted: #64748b;
     --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* ==========================================================================
-   RESET GERAL E ESTRUTURA BASE
-   ========================================================================== */
 * {
     box-sizing: border-box !important;
     margin: 0;
@@ -34,70 +31,71 @@ body {
 }
 
 /* ==========================================================================
-   🌟 TELA DE BOAS-VINDAS (LANDING PAGE)
+   🌟 TELA DE BOAS-VINDAS (INDEX) - IDENTICA À SUA IMAGEM
    ========================================================================== */
 .welcome-screen {
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle, #2563eb 0%, #1d4ed8 100%);
+    background: radial-gradient(circle at center, #234cb3 0%, #162f7a 100%) !important;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding: 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 5000;
 }
 
 .welcome-content {
-    max-width: 700px;
+    max-width: 750px;
     color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1.2rem;
 }
 
-.welcome-icon {
-    font-size: 4rem;
-    animation: pulse 2s infinite;
+.welcome-icon-container {
+    background: linear-gradient(135deg, #ff527b 0%, #e61f50 100%);
+    width: 90px;
+    height: 90px;
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(230, 31, 80, 0.4);
+    margin-bottom: 0.5rem;
 }
+
+.welcome-icon { font-size: 3.2rem; }
 
 .welcome-content h1 {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    font-weight: 700;
 }
 
 .welcome-content p {
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
-    opacity: 0.9;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    opacity: 0.85;
     line-height: 1.6;
+    max-width: 600px;
 }
 
 .btn-welcome {
-    background-color: #ff9100;
-    color: white;
-    padding: 1rem 2.5rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    margin-top: 1rem;
+    display: inline-block;
+    background-color: #ff9100 !important;
+    color: white !important;
+    padding: 1.1rem 3.5rem !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    border-radius: 50px !important;
+    text-decoration: none !important;
+    box-shadow: 0 8px 20px rgba(255, 145, 0, 0.3) !important;
+    transition: transform 0.2s, background-color 0.2s !important;
+    margin-top: 1.5rem;
 }
-
-.btn-welcome:hover {
-    background-color: #e68200;
-    transform: translateY(-2px);
-}
+.btn-welcome:hover { background-color: #e68200 !important; transform: translateY(-2px); }
 
 /* ==========================================================================
-   TOPO DO SITE DO MURAL (HEADER)
+   INTERFACES DO MURAL
    ========================================================================== */
 header {
     background: var(--surface);
@@ -107,288 +105,94 @@ header {
     align-items: center;
     border-bottom: 1px solid #e2e8f0;
     box-shadow: var(--shadow);
-    flex-wrap: wrap;
-    gap: 1rem;
 }
+.logo-area { display: flex; align-items: center; gap: 0.5rem; }
+.logo-area h1 { font-size: 1.5rem; color: #234cb3; }
 
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.logo-area h1 {
-    font-size: clamp(1.2rem, 2vw, 2rem);
-    color: var(--primary);
-    white-space: nowrap;
-}
-
-#auth-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-/* ==========================================================================
-   CONTEÚDO PRINCIPAL (MAIN)
-   ========================================================================== */
 main {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    flex-grow: 1;
-}
-
-/* ==========================================================================
-   PAINEL DE PUBLICAÇÃO DO PROFESSOR (ADMIN)
-   ========================================================================== */
-.card-admin {
-    background: var(--surface);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    width: 100%;
-}
-
-#form-aviso {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-input, textarea {
-    padding: 0.75rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 1rem;
-    width: 100%;
-    max-width: 100%;
-}
-
-input[type="file"] {
-    display: none;
-}
-
-.custom-file-upload {
-    display: inline-block;
-    padding: 0.75rem 1rem;
-    background: #e2e8f0;
-    cursor: pointer;
-    border-radius: 6px;
-    text-align: center;
-    transition: 0.2s;
-    font-weight: 500;
-}
-.custom-file-upload:hover { background: #cbd5e1; }
-
-#file-name {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    word-break: break-all;
-}
-
-/* ==========================================================================
-   BOTÕES GERAIS
-   ========================================================================== */
-button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    font-size: 1rem;
-}
-button:active { transform: scale(0.98); }
-
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); }
-.btn-success { background: var(--success); color: white; }
-.btn-danger { background: var(--danger); color: white; }
-
-/* ==========================================================================
-   GRID DO MURAL DE AVISOS PÚBLICOS
-   ========================================================================== */
-.mural-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    gap: 1rem;
-}
-
-#live-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--success);
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.dot {
-    width: 10px;
-    height: 10px;
-    background-color: var(--success);
-    border-radius: 50%;
-    animation: blink 1.5s infinite;
+    width: 100%; max-width: 1600px;
+    margin: 0 auto; padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 2rem; flex-grow: 1;
 }
 
 .grid-avisos {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-    gap: 1.5rem;
-    width: 100%;
+    gap: 1.5rem; width: 100%;
 }
 
-/* ==========================================================================
-   CARDS DE AVISO INDIVIDUAIS
-   ========================================================================== */
 .card-aviso {
     background: var(--surface);
     border-radius: var(--radius);
-    overflow: hidden;
     box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    border-top: 5px solid var(--primary);
-    width: 100%;
+    display: flex; flex-direction: column;
+    border-top: 5px solid #234cb3;
 }
+.aviso-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.aviso-footer { padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; }
+.aviso-meta { font-size: 0.85rem; color: var(--text-muted); }
 
-.aviso-img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
+/* Links estilizados como botões */
+.btn-primary, .btn-success {
+    text-decoration: none; padding: 0.7rem 1.5rem;
+    border-radius: 6px; font-weight: 600; font-size: 0.95rem; display: inline-block;
 }
-
-.aviso-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    flex-grow: 1;
-}
-
-.aviso-body h3 {
-    font-size: 1.3rem;
-    word-break: break-word;
-}
-
-.aviso-body p {
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--text);
-    word-break: break-word;
-    white-space: pre-wrap;
-}
-
-.aviso-footer {
-    padding: 1rem 1.5rem;
-    background: #f8fafc;
-    border-top: 1px solid #f1f5f9;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.aviso-meta {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-}
+.btn-primary { background: #234cb3; color: white; }
+.btn-success { background: var(--success); color: white; }
 
 /* ==========================================================================
-   FORÇAMENTO DO MODAL DE LOGIN (RESOLVE A CAIXA TRANSPARENTE E PEQUENA)
+   ESTRUTURA DAS TELAS DE LOGIN E CADASTRO (FIXO CONTRA TRANSPARÊNCIA)
    ========================================================================== */
-.modal {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
+.page-auth-bg {
     background: radial-gradient(circle, #1e293b 0%, #0f172a 100%) !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    z-index: 9999 !important;
-    padding: 1.5rem !important;
+    display: flex !important; justify-content: center !important; align-items: center !important;
 }
 
-.modal-content {
-    background-color: #ffffff !important; /* Força cor de fundo sólida branca */
-    background: #ffffff !important; 
+.modal-static {
+    width: 100vw; display: flex; justify-content: center; align-items: center; padding: 1.5rem;
+}
+
+.modal-content-fixed {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
     padding: 2.5rem 2rem !important;
     border-radius: 12px !important;
-    width: 100% !important;
-    max-width: 450px !important; /* Tamanho confortável para computadores/TVs */
-    min-width: 310px !important; /* Impede que fique espremido em telas pequenas */
+    width: 100% !important; max-width: 440px !important;
     position: relative !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
     border-top: 5px solid #4f46e5 !important;
-    display: block !important;
 }
 
-.modal-content h3 {
-    font-size: 1.6rem !important;
-    color: #1e293b !important;
-    margin-bottom: 1.5rem !important;
-    text-align: center !important;
-    font-weight: 700 !important;
-    display: block !important;
+.modal-content-fixed h3 {
+    text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; color: var(--text);
 }
 
-.modal-content form {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1.2rem !important;
+.modal-content-fixed form { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.modal-content-fixed input {
+    width: 100%; padding: 0.8rem 1rem; font-size: 1rem;
+    border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc;
 }
 
-.modal-content input {
-    width: 100% !important;
-    padding: 0.85rem 1rem !important;
-    font-size: 1.05rem !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 8px !important;
-    background-color: #f8fafc !important;
-    color: #1e293b !important;
+.btn-primary-block, .btn-success-block {
+    width: 100%; padding: 0.85rem; border-radius: 8px; border: none;
+    font-weight: 600; font-size: 1.05rem; color: white; cursor: pointer;
 }
+.btn-primary-block { background: #4f46e5; }
+.btn-success-block { background: var(--success); }
 
-.modal-content button {
-    width: 100% !important;
-    padding: 0.85rem !important;
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
-    margin-top: 0.5rem !important;
+.close-auth {
+    position: absolute; top: 1rem; right: 1rem;
+    font-size: 1.8rem; text-decoration: none; color: var(--text-muted);
 }
+.close-auth:hover { color: var(--danger); }
 
-.close-modal {
-    position: absolute !important;
-    top: 1rem !important;
-    right: 1rem !important;
-    font-size: 1.75rem !important;
-    cursor: pointer !important;
-    color: var(--text-muted) !important;
-}
+.switch-form { text-align: center; margin-top: 1.2rem; font-size: 0.9rem; }
+.switch-form a { color: #4f46e5; font-weight: bold; text-decoration: none; }
 
-/* ==========================================================================
-   CONFIGURAÇÕES EXTRA E ANIMAÇÕES
-   ========================================================================== */
 .hidden { display: none !important; }
-.switch-form { margin-top: 1rem !important; font-size: 0.9rem !important; text-align: center !important; color: #64748b !important;}
-.switch-form a { color: #4f46e5 !important; font-weight: bold; text-decoration: none; }
-.loading { text-align: center; grid-column: 1 / -1; color: var(--text-muted); font-size: 1.1rem; padding: 2rem 0; }
+.mural-header { display: flex; justify-content: space-between; align-items: center; }
+#live-indicator { color: var(--success); font-weight: bold; font-size: 0.9rem; }
+.dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
 
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
