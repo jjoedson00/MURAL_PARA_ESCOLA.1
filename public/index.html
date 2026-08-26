@@ -3,76 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural de Avisos</title>
-    
-    <!-- Estilo embutido direto no HTML para garantir o carregamento do tamanho perfeito -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            color: #ffffff !important;
-        }
-
-        /* 📢 Elementos com tamanhos proporcionais automáticos */
-        .megafone {
-            font-size: calc(4rem + 2vw) !important; /* Cresce junto com o monitor */
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: calc(2rem + 1.5vw) !important;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        p {
-            font-size: calc(1rem + 0.3vw) !important;
-            max-width: 700px;
-            margin-bottom: 40px;
-            opacity: 0.95;
-            line-height: 1.6;
-        }
-
-        .btn-primary {
-            background-color: #ff8c00 !important;
-            color: #ffffff !important;
-            padding: 18px 50px !important;
-            border: none;
-            border-radius: 14px !important;
-            font-size: calc(1rem + 0.2vw) !important;
-            font-weight: bold !important;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4) !important;
-            transition: transform 0.2s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            background-color: #e07b00 !important;
-        }
-    </style>
+    <title>Mural Digital Escolar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="megafone">📢</div>
-    <h1>Mural de Avisos</h1>
-    <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes de forma simples e rápida.</p>
-    <a href="mural.html" class="btn-primary">Acessar Mural</a>
+
+    <!-- Topo do Sistema -->
+    <header>
+        <div class="logo-area">
+            <span class="icon">📢</span>
+            <h1>Mural Digital</h1>
+        </div>
+        <div id="auth-controls">
+            <!-- Gerenciado dinamicamente via JS -->
+            <button onclick="mostrarModal('login')" class="btn-primary">Acesso Professor</button>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main>
+        <!-- Área Administrativa (Fica oculta por padrão) -->
+        <section id="painel-admin" class="hidden">
+            <div class="card-admin">
+                <h2>Nova Publicação</h2>
+                <form id="form-aviso" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="titulo">Título do Aviso</label>
+                        <input type="text" id="titulo" name="titulo" required placeholder="Ex: Reunião de Pais">
+                    </div>
+                    <div class="form-group">
+                        <label for="conteudo">Conteúdo / Descrição</label>
+                        <textarea id="conteudo" name="conteudo" rows="3" required placeholder="Digite os detalhes do comunicado..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagem" class="custom-file-upload">
+                            📷 Adicionar Imagem de Referência
+                        </label>
+                        <input type="file" id="imagem" name="imagem" accept="image/*">
+                        <span id="file-name">Nenhum arquivo selecionado</span>
+                    </div>
+                    <button type="submit" class="btn-success">Publicar no Mural</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Visualização do Mural Público -->
+        <section id="mural-publico">
+            <div class="mural-header">
+                <h2>Avisos Recentes</h2>
+                <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
+            </div>
+            <div id="container-avisos" class="grid-avisos">
+                <!-- Carregado via JS -->
+                <p class="loading">Carregando avisos...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modais (Login e Cadastro) - ESTRUTURA REVISADA -->
+    <div id="modal-auth" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            
+            <!-- Aba de Login -->
+            <div id="box-login">
+                <h3>Login do Educador</h3>
+                <form id="form-login">
+                    <input type="email" id="login-email" placeholder="E-mail institucional" required>
+                    <input type="password" id="login-senha" placeholder="Sua senha" required>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                </form>
+                <p class="switch-form">Não tem conta? <a href="#" onclick="alternarAbas('cadastro')">Cadastre-se aqui</a></p>
+            </div>
+
+            <!-- Aba de Cadastro -->
+            <div id="box-cadastro" class="hidden">
+                <h3>Cadastro de Professor</h3>
+                <form id="form-cadastro">
+                    <input type="text" id="cad-nome" placeholder="Nome Completo" required>
+                    <input type="email" id="cad-email" placeholder="E-mail" required>
+                    <input type="password" id="cad-senha" placeholder="Senha de Acesso" required>
+                    <input type="password" id="cad-token" placeholder="Token de Segurança (COORDENACAO2026)" required>
+                    <button type="submit" class="btn-success">Criar Conta</button>
+                </form>
+                <p class="switch-form">Já tem conta? <a href="#" onclick="alternarAbas('login')">Fazer Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
