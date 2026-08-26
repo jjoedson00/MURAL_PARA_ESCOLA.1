@@ -1,66 +1,143 @@
-:root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
+/* ==========================================================================
+   VARIÁVEIS DE DESIGN (PALETA REVISADA E SUAVE)
+   ========================================================================== */
+   :root {
+    --primary: #475569; /* Azul acinzentado suave */
+    --primary-hover: #334155;
     --success: #16a34a;
     --danger: #dc2626;
-    --background: #f8fafc;
+    --background: #f1f5f9; /* Fundo claro fosco */
     --surface: #ffffff;
     --text: #1e293b;
     --text-muted: #64748b;
     --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
 }
 
 * {
     box-sizing: border-box !important;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 body {
-    background-color: var(--background); color: var(--text);
-    min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+    background-color: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
 }
 
-/* 🌟 TELA DE BOAS-VINDAS IDENTICA À SUA IMAGEM */
+/* ==========================================================================
+   🌟 TELA DE BOAS-VINDAS COM PALETA SUAVE (CONFORTO VISUAL)
+   ========================================================================== */
 .welcome-screen {
-    width: 100vw; height: 100vh;
-    background: radial-gradient(circle at center, #234cb3 0%, #162f7a 100%) !important;
-    display: flex; justify-content: center; align-items: center; text-align: center; padding: 2rem;
+    width: 100vw;
+    height: 100vh;
+    /* Azul fosco profundo em degradê suave que reduz o brilho e cansaço visual */
+    background: radial-gradient(circle at center, #2e446e 0%, #1a263f 100%) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
 }
-.welcome-content {
-    max-width: 750px; color: #ffffff; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
-}
-.welcome-icon-container {
-    background: linear-gradient(135deg, #ff527b 0%, #e61f50 100%);
-    width: 90px; height: 90px; border-radius: 24px;
-    display: flex; justify-content: center; align-items: center;
-    box-shadow: 0 10px 25px rgba(230, 31, 80, 0.4); margin-bottom: 0.5rem;
-}
-.welcome-icon { font-size: 3.2rem; }
-.welcome-content h1 { font-size: clamp(2.8rem, 6vw, 4.2rem); font-weight: 700; }
-.welcome-content p { font-size: clamp(1.1rem, 2vw, 1.35rem); opacity: 0.85; line-height: 1.6; max-width: 600px; }
-.btn-welcome {
-    display: inline-block; background-color: #ff9100 !important; color: white !important;
-    padding: 1.1rem 3.5rem !important; font-size: 1.25rem !important; font-weight: 600 !important;
-    border-radius: 50px !important; text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(255, 145, 0, 0.3) !important; transition: transform 0.2s, background-color 0.2s !important; margin-top: 1.5rem;
-}
-.btn-welcome:hover { background-color: #e68200 !important; transform: translateY(-2px); }
 
-/* INTERFACES DO MURAL */
+.welcome-content {
+    max-width: 750px;
+    color: #f8fafc; /* Branco gelo suave para os textos */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+/* Base do megafone com tons integrados e menos saturados */
+.welcome-icon-container {
+    background: linear-gradient(135deg, #e06c88 0%, #c43b5c 100%);
+    width: 90px;
+    height: 90px;
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.2);
+    margin-bottom: 0.5rem;
+}
+
+.welcome-icon {
+    font-size: 3.2rem;
+}
+
+.welcome-content h1 {
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    font-weight: 700;
+    color: #ffffff !important;
+    letter-spacing: -0.5px;
+}
+
+.welcome-content p {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: #cbd5e1; /* Cinza claro que traz um descanso para a leitura */
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+/* Botão Laranja Âmbar Suave */
+.btn-welcome {
+    display: inline-block;
+    background-color: #f59e0b !important; /* Laranja fosco equilibrado */
+    color: white !important;
+    padding: 1.1rem 3.5rem !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    border-radius: 50px !important;
+    text-decoration: none !important;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15) !important;
+    transition: transform 0.2s, background-color 0.2s !important;
+    margin-top: 1.5rem;
+}
+
+.btn-welcome:hover {
+    background-color: #d97706 !important;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   INTERFACES INTERNAS DO MURAL
+   ========================================================================== */
 header {
-    background: var(--surface); padding: 1rem 5%;
-    display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; box-shadow: var(--shadow);
+    background: var(--surface);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: var(--shadow);
 }
 .logo-area { display: flex; align-items: center; gap: 0.5rem; }
-.logo-area h1 { font-size: 1.5rem; color: #234cb3; }
+.logo-area h1 { font-size: 1.5rem; color: #2e446e; font-weight: 700; }
 
 main {
-    width: 100%; max-width: 1600px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; flex-grow: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex-grow: 1;
 }
 
-.card-admin { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1rem;}
+.card-admin {
+    background: var(--surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+}
 .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
 input, textarea { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; width: 100%; }
 input[type="file"] { display: none; }
@@ -69,24 +146,24 @@ input[type="file"] { display: none; }
 /* 🔍 BARRA DE PESQUISA */
 .search-section { width: 100%; }
 .search-container { display: flex; align-items: center; background: var(--surface); border: 1px solid #cbd5e1; border-radius: 50px; padding: 0.2rem 1.2rem; box-shadow: var(--shadow); }
-.search-container:focus-within { border-color: #234cb3; box-shadow: 0 0 0 4px rgba(35, 76, 179, 0.15); }
+.search-container:focus-within { border-color: #2e446e; box-shadow: 0 0 0 4px rgba(46, 68, 110, 0.1); }
 .search-icon { font-size: 1.2rem; color: var(--text-muted); margin-right: 0.8rem; }
 #busca-aviso { border: none !important; background: transparent !important; padding: 0.8rem 0 !important; font-size: 1.05rem; outline: none !important; }
 
-/* CARDS E GRID */
+/* CARDS E GRID DO MURAL */
 .grid-avisos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; width: 100%; }
-.card-aviso { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; border-top: 5px solid #234cb3; overflow: hidden; }
+.card-aviso { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; border-top: 5px solid #2e446e; overflow: hidden; }
 .aviso-img { width: 100%; height: 220px; object-fit: cover; }
 .aviso-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .aviso-footer { padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
 .aviso-meta { font-size: 0.85rem; color: var(--text-muted); }
 
 .btn-primary, .btn-success, .btn-danger { text-decoration: none; padding: 0.7rem 1.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; display: inline-block; border: none; cursor: pointer; }
-.btn-primary { background: #234cb3; color: white; }
+.btn-primary { background: #2e446e; color: white; }
 .btn-success { background: var(--success); color: white; }
 .btn-danger { background: var(--danger); color: white; }
 
-/* AUTH CONFIGS */
+/* ESTRUTURA AUTENTICAÇÃO PÁGINAS PRIVADAS */
 .page-auth-bg { background: radial-gradient(circle, #1e293b 0%, #0f172a 100%) !important; display: flex !important; justify-content: center !important; align-items: center !important; }
 .modal-static { width: 100vw; display: flex; justify-content: center; align-items: center; padding: 1.5rem; }
 .modal-content-fixed { background: #ffffff !important; padding: 2.5rem 2rem !important; border-radius: 12px !important; width: 100% !important; max-width: 440px !important; position: relative !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important; border-top: 5px solid #4f46e5 !important; }
