@@ -21,5 +21,25 @@
         </div>
     </div>
 
+    <script>
+        document.getElementById("form-login").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const senha = document.getElementById("login-senha").value;
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
+            const data = await res.json();
+
+            if(data.sucesso) {
+                window.location.href = "mural.html";
+            } else {
+                alert(data.erro || "Usuário ou senha incorretos.");
+            }
+        });
+    </script>
 </body>
 </html>

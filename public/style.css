@@ -1,7 +1,4 @@
-/* ==========================================================================
-   VARIÁVEIS DE DESIGN E CORES
-   ========================================================================== */
-   :root {
+:root {
     --primary: #4f46e5;
     --primary-hover: #4338ca;
     --success: #16a34a;
@@ -16,183 +13,95 @@
 
 * {
     box-sizing: border-box !important;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 body {
-    background-color: var(--background);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
+    background-color: var(--background); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
 }
 
-/* ==========================================================================
-   🌟 TELA DE BOAS-VINDAS (INDEX) - IDENTICA À SUA IMAGEM
-   ========================================================================== */
+/* 🌟 TELA DE BOAS-VINDAS IDENTICA À SUA IMAGEM */
 .welcome-screen {
-    width: 100vw;
-    height: 100vh;
+    width: 100vw; height: 100vh;
     background: radial-gradient(circle at center, #234cb3 0%, #162f7a 100%) !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
+    display: flex; justify-content: center; align-items: center; text-align: center; padding: 2rem;
 }
-
 .welcome-content {
-    max-width: 750px;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.2rem;
+    max-width: 750px; color: #ffffff; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
 }
-
 .welcome-icon-container {
     background: linear-gradient(135deg, #ff527b 0%, #e61f50 100%);
-    width: 90px;
-    height: 90px;
-    border-radius: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 10px 25px rgba(230, 31, 80, 0.4);
-    margin-bottom: 0.5rem;
+    width: 90px; height: 90px; border-radius: 24px;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 10px 25px rgba(230, 31, 80, 0.4); margin-bottom: 0.5rem;
 }
-
 .welcome-icon { font-size: 3.2rem; }
-
-.welcome-content h1 {
-    font-size: clamp(2.8rem, 6vw, 4.2rem);
-    font-weight: 700;
-}
-
-.welcome-content p {
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
-    opacity: 0.85;
-    line-height: 1.6;
-    max-width: 600px;
-}
-
+.welcome-content h1 { font-size: clamp(2.8rem, 6vw, 4.2rem); font-weight: 700; }
+.welcome-content p { font-size: clamp(1.1rem, 2vw, 1.35rem); opacity: 0.85; line-height: 1.6; max-width: 600px; }
 .btn-welcome {
-    display: inline-block;
-    background-color: #ff9100 !important;
-    color: white !important;
-    padding: 1.1rem 3.5rem !important;
-    font-size: 1.25rem !important;
-    font-weight: 600 !important;
-    border-radius: 50px !important;
-    text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(255, 145, 0, 0.3) !important;
-    transition: transform 0.2s, background-color 0.2s !important;
-    margin-top: 1.5rem;
+    display: inline-block; background-color: #ff9100 !important; color: white !important;
+    padding: 1.1rem 3.5rem !important; font-size: 1.25rem !important; font-weight: 600 !important;
+    border-radius: 50px !important; text-decoration: none !important;
+    box-shadow: 0 8px 20px rgba(255, 145, 0, 0.3) !important; transition: transform 0.2s, background-color 0.2s !important; margin-top: 1.5rem;
 }
 .btn-welcome:hover { background-color: #e68200 !important; transform: translateY(-2px); }
 
-/* ==========================================================================
-   INTERFACES DO MURAL
-   ========================================================================== */
+/* INTERFACES DO MURAL */
 header {
-    background: var(--surface);
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e2e8f0;
-    box-shadow: var(--shadow);
+    background: var(--surface); padding: 1rem 5%;
+    display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; box-shadow: var(--shadow);
 }
 .logo-area { display: flex; align-items: center; gap: 0.5rem; }
 .logo-area h1 { font-size: 1.5rem; color: #234cb3; }
 
 main {
-    width: 100%; max-width: 1600px;
-    margin: 0 auto; padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 2rem; flex-grow: 1;
+    width: 100%; max-width: 1600px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; flex-grow: 1;
 }
 
-.grid-avisos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-    gap: 1.5rem; width: 100%;
-}
+.card-admin { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 1rem;}
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+input, textarea { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; width: 100%; }
+input[type="file"] { display: none; }
+.custom-file-upload { display: inline-block; padding: 0.75rem 1rem; background: #e2e8f0; cursor: pointer; border-radius: 6px; font-weight: 500; text-align: center; }
 
-.card-aviso {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    display: flex; flex-direction: column;
-    border-top: 5px solid #234cb3;
-}
+/* 🔍 BARRA DE PESQUISA */
+.search-section { width: 100%; }
+.search-container { display: flex; align-items: center; background: var(--surface); border: 1px solid #cbd5e1; border-radius: 50px; padding: 0.2rem 1.2rem; box-shadow: var(--shadow); }
+.search-container:focus-within { border-color: #234cb3; box-shadow: 0 0 0 4px rgba(35, 76, 179, 0.15); }
+.search-icon { font-size: 1.2rem; color: var(--text-muted); margin-right: 0.8rem; }
+#busca-aviso { border: none !important; background: transparent !important; padding: 0.8rem 0 !important; font-size: 1.05rem; outline: none !important; }
+
+/* CARDS E GRID */
+.grid-avisos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; width: 100%; }
+.card-aviso { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; border-top: 5px solid #234cb3; overflow: hidden; }
+.aviso-img { width: 100%; height: 220px; object-fit: cover; }
 .aviso-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.aviso-footer { padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; }
+.aviso-footer { padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
 .aviso-meta { font-size: 0.85rem; color: var(--text-muted); }
 
-/* Links estilizados como botões */
-.btn-primary, .btn-success {
-    text-decoration: none; padding: 0.7rem 1.5rem;
-    border-radius: 6px; font-weight: 600; font-size: 0.95rem; display: inline-block;
-}
+.btn-primary, .btn-success, .btn-danger { text-decoration: none; padding: 0.7rem 1.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; display: inline-block; border: none; cursor: pointer; }
 .btn-primary { background: #234cb3; color: white; }
 .btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
 
-/* ==========================================================================
-   ESTRUTURA DAS TELAS DE LOGIN E CADASTRO (FIXO CONTRA TRANSPARÊNCIA)
-   ========================================================================== */
-.page-auth-bg {
-    background: radial-gradient(circle, #1e293b 0%, #0f172a 100%) !important;
-    display: flex !important; justify-content: center !important; align-items: center !important;
-}
-
-.modal-static {
-    width: 100vw; display: flex; justify-content: center; align-items: center; padding: 1.5rem;
-}
-
-.modal-content-fixed {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    padding: 2.5rem 2rem !important;
-    border-radius: 12px !important;
-    width: 100% !important; max-width: 440px !important;
-    position: relative !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-    border-top: 5px solid #4f46e5 !important;
-}
-
-.modal-content-fixed h3 {
-    text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; color: var(--text);
-}
-
+/* AUTH CONFIGS */
+.page-auth-bg { background: radial-gradient(circle, #1e293b 0%, #0f172a 100%) !important; display: flex !important; justify-content: center !important; align-items: center !important; }
+.modal-static { width: 100vw; display: flex; justify-content: center; align-items: center; padding: 1.5rem; }
+.modal-content-fixed { background: #ffffff !important; padding: 2.5rem 2rem !important; border-radius: 12px !important; width: 100% !important; max-width: 440px !important; position: relative !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important; border-top: 5px solid #4f46e5 !important; }
+.modal-content-fixed h3 { text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; }
 .modal-content-fixed form { display: flex; flex-direction: column; gap: 1.2rem; }
-
-.modal-content-fixed input {
-    width: 100%; padding: 0.8rem 1rem; font-size: 1rem;
-    border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc;
-}
-
-.btn-primary-block, .btn-success-block {
-    width: 100%; padding: 0.85rem; border-radius: 8px; border: none;
-    font-weight: 600; font-size: 1.05rem; color: white; cursor: pointer;
-}
+.btn-primary-block, .btn-success-block { width: 100%; padding: 0.85rem; border-radius: 8px; border: none; font-weight: 600; font-size: 1.05rem; color: white; cursor: pointer; }
 .btn-primary-block { background: #4f46e5; }
 .btn-success-block { background: var(--success); }
-
-.close-auth {
-    position: absolute; top: 1rem; right: 1rem;
-    font-size: 1.8rem; text-decoration: none; color: var(--text-muted);
-}
-.close-auth:hover { color: var(--danger); }
-
+.close-auth { position: absolute; top: 1rem; right: 1rem; font-size: 1.8rem; text-decoration: none; color: var(--text-muted); }
 .switch-form { text-align: center; margin-top: 1.2rem; font-size: 0.9rem; }
 .switch-form a { color: #4f46e5; font-weight: bold; text-decoration: none; }
 
 .hidden { display: none !important; }
-.mural-header { display: flex; justify-content: space-between; align-items: center; }
+.mural-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 #live-indicator { color: var(--success); font-weight: bold; font-size: 0.9rem; }
 .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
-
+.loading { text-align: center; color: var(--text-muted); padding: 2rem 0; grid-column: 1/-1; }
 @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }

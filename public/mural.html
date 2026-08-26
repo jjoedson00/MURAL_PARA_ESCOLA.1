@@ -21,7 +21,7 @@
 
     <!-- Conteúdo Principal -->
     <main>
-        <!-- Painel de Publicação (Fica invisível até o professor logar) -->
+        <!-- Painel de Publicação (Visível apenas após login) -->
         <section id="painel-admin" class="hidden">
             <div class="card-admin">
                 <h2>Nova Publicação</h2>
@@ -46,26 +46,143 @@
             </div>
         </section>
 
+        <!-- 🔍 BARRA DE PESQUISA PARA PAIS E ALUNOS -->
+        <section class="search-section">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="busca-aviso" placeholder="Pesquisar avisos por título ou conteúdo...">
+            </div>
+        </section>
+
         <!-- Visualização Pública dos Cards -->
         <section id="mural-publico">
             <div class="mural-header">
                 <h2>Avisos Recentes</h2>
                 <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
             </div>
+            
+            <!-- Container totalmente limpo de posts falsos -->
             <div id="container-avisos" class="grid-avisos">
-                <!-- Cards simulados para teste visual (já responsivos) -->
-                <div class="card-aviso">
-                    <div class="aviso-body">
-                        <h3>Volta às Aulas 2026</h3>
-                        <p>Sejam bem-vindos ao novo ano letivo! As aulas começam oficialmente nesta segunda-feira para todos os turnos.</p>
-                    </div>
-                    <div class="aviso-footer">
-                        <span class="aviso-meta">Por: Coordenação <br> 🕒 26/08/2026</span>
-                    </div>
-                </div>
+                <p class="loading">Carregando avisos...</p>
             </div>
         </section>
     </main>
 
+    <!-- Lógica de Funcionamento integrada diretamente na página -->
+    <script>
+        let listaDeAvisos = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            verificarLogin();
+            carregarAvisos();
+            setInterval(carregarAvisos, 30000);
+
+            // Filtro da barra de busca
+            const campoBusca = document.getElementById("busca-aviso");
+            if (campoBusca) {
+                campoBusca.addEventListener("input", (e) => {
+                    const termo = e.target.value.toLowerCase();
+                    const filtrados = listaDeAvisos.filter(aviso => 
+                        aviso.titulo.toLowerCase().includes(termo) || 
+                        aviso.conteudo.toLowerCase().includes(termo)
+                    );
+                    renderizarAvisos(filtrados);
+                });
+            }
+
+            // Controle do formulário de avisos
+            const formAviso = document.getElementById("form-aviso");
+            if (formAviso) {
+                formAviso.addEventListener("submit", async function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const res = await fetch('/api/avisos', { method: 'POST', body: formData });
+                    const data = await res.json();
+
+                    if(data.sucesso) {
+                        this.reset();
+                        document.getElementById("file-name").innerText = "Nenhum arquivo selecionado";
+                        carregarAvisos();
+                    } else {
+                        alert(data.erro || "Erro ao publicar");
+                    }
+                });
+
+                document.getElementById("imagem").addEventListener("change", (e) => {
+                    const name = e.target.files.length > 0 ? e.target.files.name : "Nenhum arquivo selecionado";
+                    document.getElementById("file-name").innerText = name;
+                });
+            }
+        });
+
+        async function verificarLogin() {
+            try {
+                const res = await fetch('/api/usuario');
+                const data = await res.json();
+                const authControls = document.getElementById("auth-controls");
+                const painelAdmin = document.getElementById("painel-admin");
+
+                if (data.logado) {
+                    if (painelAdmin) painelAdmin.classList.remove("hidden");
+                    authControls.innerHTML = `<span>Olá, <strong>${data.nome}</strong></span> <button onclick="fazerLogout()" class="btn-danger" style="margin-left:10px; padding: 0.5rem 1rem; font-size: 0.9rem;">Sair</button>`;
+                }
+            } catch (e) { console.log("Aguardando conexão com o servidor..."); }
+        }
+
+        async function carregarAvisos() {
+            try {
+                const res = await fetch('/api/avisos');
+                listaDeAvisos = await res.json();
+                renderizarAvisos(listaDeAvisos);
+            } catch (err) {
+                renderizarAvisos([]);
+            }
+        }
+
+        function renderizarAvisos(avisos) {
+            const container = document.getElementById("container-avisos");
+            if (!container) return;
+            container.innerHTML = "";
+
+            if (avisos.length === 0) {
+                container.innerHTML = "<p class='loading'>Nenhum comunicado ativo no momento.</p>";
+                return;
+            }
+
+            avisos.forEach(aviso => {
+                const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'
+                });
+
+                const card = document.createElement("div");
+                card.className = "card-aviso";
+                card.innerHTML = `
+                    ${aviso.imagem ? `<img src="${aviso.imagem}" class="aviso-img" alt="Foto de Referência">` : ''}
+                    <div class="aviso-body">
+                        <h3>${aviso.titulo}</h3>
+                        <p>${aviso.conteudo}</p>
+                    </div>
+                    <div class="aviso-footer">
+                        <span class="aviso-meta">Por: ${aviso.autor || 'Coordenação'} <br> 🕒 ${dataFormatada}</span>
+                        ${document.getElementById("painel-admin").classList.contains("hidden") ? '' : `<button onclick="deletarAviso(${aviso.id})" class="btn-danger" style="padding:0.4rem 0.8rem; font-size:0.85rem;">Apagar</button>`}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function deletarAviso(id) {
+            if(confirm("Deseja apagar este aviso?")) {
+                const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if(data.sucesso) carregarAvisos();
+            }
+        }
+
+        async function fazerLogout() {
+            await fetch('/api/logout');
+            window.location.reload();
+        }
+    </script>
 </body>
 </html>
