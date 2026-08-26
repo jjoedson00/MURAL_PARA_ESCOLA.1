@@ -34,7 +34,70 @@ body {
 }
 
 /* ==========================================================================
-   TOPO DO SITE (HEADER)
+   🌟 TELA DE BOAS-VINDAS (LANDING PAGE)
+   ========================================================================== */
+.welcome-screen {
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle, #2563eb 0%, #1d4ed8 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5000;
+}
+
+.welcome-content {
+    max-width: 700px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.welcome-icon {
+    font-size: 4rem;
+    animation: pulse 2s infinite;
+}
+
+.welcome-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.welcome-content p {
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.btn-welcome {
+    background-color: #ff9100;
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 50px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-welcome:hover {
+    background-color: #e68200;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   TOPO DO SITE DO MURAL (HEADER)
    ========================================================================== */
 header {
     background: var(--surface);
@@ -321,30 +384,11 @@ button:active { transform: scale(0.98); }
     color: var(--text-muted) !important;
 }
 
+/* ==========================================================================
+   CONFIGURAÇÕES EXTRA E ANIMAÇÕES
+   ========================================================================== */
 .hidden { display: none !important; }
 .switch-form { margin-top: 1rem !important; font-size: 0.9rem !important; text-align: center !important; color: #64748b !important;}
 .switch-form a { color: #4f46e5 !important; font-weight: bold; text-decoration: none; }
 .loading { text-align: center; grid-column: 1 / -1; color: var(--text-muted); font-size: 1.1rem; padding: 2rem 0; }
 
-@keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
-
-/* ==========================================================================
-   REGRAS DE RESPONSIVIDADE ADICIONAIS
-   ========================================================================== */
-@media (min-width: 1600px) {
-    main { max-width: 95%; }
-    .grid-avisos {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
-        gap: 2rem;
-    }
-    .aviso-body h3 { font-size: 1.6rem; }
-    .aviso-body p { font-size: 1.2rem; }
-}
-
-@media (max-width: 480px) {
-    header { padding: 1rem; justify-content: center; text-align: center; }
-    main { padding: 1rem; }
-    .aviso-img { height: 160px; }
-    .mural-header { flex-direction: column; align-items: flex-start; }
-    .modal-content { padding: 1.5rem !important; }
-}

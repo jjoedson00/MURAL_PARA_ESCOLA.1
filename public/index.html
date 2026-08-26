@@ -8,60 +8,72 @@
 </head>
 <body>
 
-    <!-- Topo do Sistema -->
-    <header>
-        <div class="logo-area">
-            <span class="icon">📢</span>
-            <h1>Mural Digital</h1>
+    <!-- 🌟 TELA INICIAL (LANDING PAGE QUE HAVIA SUMIDO) -->
+    <section id="tela-boas-vindas" class="welcome-screen">
+        <div class="welcome-content">
+            <span class="welcome-icon">📢</span>
+            <h1>Mural de Avisos</h1>
+            <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
+            <button onclick="entrarNoMural()" class="btn-welcome">Acessar Mural</button>
         </div>
-        <div id="auth-controls">
-            <!-- Gerenciado dinamicamente via JS -->
-            <button onclick="mostrarModal('login')" class="btn-primary">Acesso Professor</button>
-        </div>
-    </header>
+    </section>
 
-    <!-- Conteúdo Principal -->
-    <main>
-        <!-- Área Administrativa (Fica oculta por padrão) -->
-        <section id="painel-admin" class="hidden">
-            <div class="card-admin">
-                <h2>Nova Publicação</h2>
-                <form id="form-aviso" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="titulo">Título do Aviso</label>
-                        <input type="text" id="titulo" name="titulo" required placeholder="Ex: Reunião de Pais">
-                    </div>
-                    <div class="form-group">
-                        <label for="conteudo">Conteúdo / Descrição</label>
-                        <textarea id="conteudo" name="conteudo" rows="3" required placeholder="Digite os detalhes do comunicado..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="imagem" class="custom-file-upload">
-                            📷 Adicionar Imagem de Referência
-                        </label>
-                        <input type="file" id="imagem" name="imagem" accept="image/*">
-                        <span id="file-name">Nenhum arquivo selecionado</span>
-                    </div>
-                    <button type="submit" class="btn-success">Publicar no Mural</button>
-                </form>
+    <!-- 🌐 CONTEÚDO DO MURAL (FICA OCULTO ATÉ CLICAR NO BOTÃO) -->
+    <div id="conteudo-sistema" class="hidden">
+        <!-- Topo do Sistema -->
+        <header>
+            <div class="logo-area">
+                <span class="icon">📢</span>
+                <h1>Mural Digital</h1>
             </div>
-        </section>
+            <div id="auth-controls">
+                <!-- Gerenciado dinamicamente via JS -->
+                <button onclick="mostrarModal('login')" class="btn-primary">Acesso Professor</button>
+            </div>
+        </header>
 
-        <!-- Visualização do Mural Público -->
-        <section id="mural-publico">
-            <div class="mural-header">
-                <h2>Avisos Recentes</h2>
-                <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
-            </div>
-            <div id="container-avisos" class="grid-avisos">
-                <!-- Carregado via JS -->
-                <p class="loading">Carregando avisos...</p>
-            </div>
-        </section>
-    </main>
+        <!-- Conteúdo Principal -->
+        <main>
+            <!-- Área Administrativa (Fica oculta por padrão) -->
+            <section id="painel-admin" class="hidden">
+                <div class="card-admin">
+                    <h2>Nova Publicação</h2>
+                    <form id="form-aviso" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="titulo">Título do Aviso</label>
+                            <input type="text" id="titulo" name="titulo" required placeholder="Ex: Reunião de Pais">
+                        </div>
+                        <div class="form-group">
+                            <label for="conteudo">Conteúdo / Descrição</label>
+                            <textarea id="conteudo" name="conteudo" rows="3" required placeholder="Digite os detalhes do comunicado..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="imagem" class="custom-file-upload">
+                                📷 Adicionar Imagem de Referência
+                            </label>
+                            <input type="file" id="imagem" name="imagem" accept="image/*">
+                            <span id="file-name">Nenhum arquivo selecionado</span>
+                        </div>
+                        <button type="submit" class="btn-success">Publicar no Mural</button>
+                    </form>
+                </div>
+            </section>
 
-    <!-- Modais (Login e Cadastro) - ESTRUTURA REVISADA -->
-    <div id="modal-auth" class="modal">
+            <!-- Visualização do Mural Público -->
+            <section id="mural-publico">
+                <div class="mural-header">
+                    <h2>Avisos Recentes</h2>
+                    <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
+                </div>
+                <div id="container-avisos" class="grid-avisos">
+                    <p class="loading">Carregando avisos...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modais (Login e Cadastro) -->
+    <div id="modal-auth" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal" onclick="fecharModal()">&times;</span>
             
