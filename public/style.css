@@ -31,13 +31,13 @@ body {
 }
 
 /* ==========================================================================
-   🌟 TELA DE BOAS-VINDAS COM PALETA SUAVE (CONFORTO VISUAL)
+   🌟 TELA DE BOAS-VINDAS COM PALETA SUAVE (ATUALIZADA PARA AZUL CLARO)
    ========================================================================== */
 .welcome-screen {
     width: 100vw;
     height: 100vh;
-    /* Azul fosco profundo em degradê suave que reduz o brilho e cansaço visual */
-    background: radial-gradient(circle at center, #2e446e 0%, #1a263f 100%) !important;
+    /* Degradê azul claro fosco, suave e moderno */
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,14 +47,14 @@ body {
 
 .welcome-content {
     max-width: 750px;
-    color: #f8fafc; /* Branco gelo suave para os textos */
+    color: var(--text); /* Texto principal escuro para contraste ideal */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.2rem;
 }
 
-/* Base do megafone com tons integrados e menos saturados */
+/* Base do megafone adaptada para contrastar com o novo fundo */
 .welcome-icon-container {
     background: linear-gradient(135deg, #e06c88 0%, #c43b5c 100%);
     width: 90px;
@@ -63,7 +63,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.2);
+    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.15);
     margin-bottom: 0.5rem;
 }
 
@@ -74,13 +74,13 @@ body {
 .welcome-content h1 {
     font-size: clamp(2.8rem, 6vw, 4.2rem);
     font-weight: 700;
-    color: #ffffff !important;
+    color: var(--text) !important; /* Título principal em azul ardósia escuro */
     letter-spacing: -0.5px;
 }
 
 .welcome-content p {
     font-size: clamp(1.1rem, 2vw, 1.35rem);
-    color: #cbd5e1; /* Cinza claro que traz um descanso para a leitura */
+    color: var(--text-muted); /* Cinza azulado para leitura harmônica no fundo claro */
     line-height: 1.6;
     max-width: 600px;
 }
@@ -95,7 +95,7 @@ body {
     font-weight: 600 !important;
     border-radius: 50px !important;
     text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15) !important;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2) !important;
     transition: transform 0.2s, background-color 0.2s !important;
     margin-top: 1.5rem;
 }
