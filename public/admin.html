@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: sans-serif; background-color: #f8fafc; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 650px; width: 100%; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: bold; margin-bottom: 10px; color: #1e293b; font-size: 15px; }
+        input[type="text"], textarea, select { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        textarea { height: 120px; resize: none; }
+        .btn-green { width: 100%; background: #10b981; color: white; padding: 16px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-green:hover { background: #059669; }
+        .link-voltar { display: block; text-align: center; margin-top: 20px; color: #64748b; text-decoration: none; font-size: 14px; }
+        .link-voltar:hover { text-decoration: underline; }
+        .gestao-container { max-width: 650px; width: 100%; margin-top: 30px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card-gestao { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
+        .btn-apagar { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-apagar:hover { background: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: #0284c7; text-align: center; margin-bottom: 30px; font-size: 22px;">📢 Nova Publicação (Painel do Professor)</h2>
+        
+        <form id="form-aviso">
+            <div class="form-group">
+                <label>Título do Aviso</label>
+                <input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
+            </div>
+
+            <div class="form-group">
+                <label>Conteúdo / Descrição</label>
+                <textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
+            </div>
+
+            <!-- NOVO CAMPO: Quem está assinando a publicação -->
+            <div class="form-group">
+                <label>✍️ Assinatura do Comunicado</label>
+                <select id="autor-aviso">
+                    <option value="Professor(a)">Professor(a)</option>
+                    <option value="Coordenação Pedagógica">Coordenação Pedagógica</option>
+                    <option value="Direção Escolar">Direção Escolar</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Importância / Cor da Etiqueta</label>
+                <select id="prioridade-aviso">
+                    <option value="Normal">⚪ Aviso Normal (Fundo Branco)</option>
+                    <option value="Importante">🟡 Aviso Importante (Etiqueta Amarela)</option>
+                    <option value="Urgente">🔴 Aviso Urgente (Etiqueta Vermelha)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                <label style="display: block !important;">📸 Adicionar Imagem (Opcional)</label>
+                <input type="file" id="imagem-aviso" accept="image/*" style="display: block !important; width: 100% !important; padding: 10px !important; border: 1px solid #cbd5e1 !important; background: white !important;">
+            </div>
+
+            <button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
+            <a href="mural.html" class="link-voltar">Voltar para o Mural</a>
+        </form>
+    </div>
+
+    <div class="gestao-container">
+        <h3 style="color: #1e293b; margin-bottom: 15px; font-size: 18px;">🛠️ Gerenciar Avisos Ativos</h3>
+        <div id="lista-gerenciamento-avisos"></div>
+    </div>
+
+    <script>
+        document.getElementById('form-aviso').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const titulo = document.getElementById('titulo-aviso').value;
+            const conteudo = document.getElementById('conteudo-aviso').value;
+            const prioridade = document.getElementById('prioridade-aviso').value;
+            const autor = document.getElementById('autor-aviso').value;
+            const imagemInput = document.getElementById('imagem-aviso');
+
+            const formData = new FormData();
+            formData.append('titulo', titulo);
+            formData.append('conteudo', conteudo);
+            formData.append('prioridade', prioridade);
+            formData.append('autor', autor);
+            
+            if (imagemInput && imagemInput.files && imagemInput.files.length > 0) {
+                formData.append('imagem', imagemInput.files[0]);
+            }
+
+            try {
+                const resposta = await fetch('/api/avisos', { method: 'POST', body: formData });
+                if (resposta.ok) {
+                    alert('Aviso publicado com sucesso!');
+                    document.getElementById('form-aviso').reset(); 
+                    carregarAvisosGestao(); 
+                } else {
+                    alert('Erro ao publicar o aviso.');
+                }
+            } catch (erro) {
+                console.error(erro);
+            }
+        });
+
+        async function carregarAvisosGestao() {
+            try {
+                const resposta = await fetch('/api/avisos');
+                const avisos = await resposta.json();
+                const container = document.getElementById("lista-gerenciamento-avisos");
+                container.innerHTML = "";
+
+                if (!avisos || avisos.length === 0) {
+                    container.innerHTML = "<p style='color: #64748b; font-size: 14px;'>Nenhum aviso ativo.</p>";
+                    return;
+                }
+
+                avisos.forEach(aviso => {
+                    const card = document.createElement("div");
+                    card.className = "card-gestao";
+                    card.innerHTML = `
+                        <div>
+                            <strong style="color: #1e293b; display: block;">${aviso.titulo}</strong>
+                            <span style="font-size: 12px; color: #64748b;">Por: ${aviso.autor}</span>
+                        </div>
+                        <button class="btn-apagar" onclick="apagarAviso(${aviso.id})">Apagar</button>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (erro) {
+                console.error(erro);
+            }
+        }
+
+        async function apagarAviso(id) {
+            if (!confirm("Tem certeza que deseja apagar permanentemente?")) return;
+            try {
+                const resposta = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
+                if (resposta.ok) { carregarAvisosGestao(); }
+            } catch (erro) { console.error(erro); }
+        }
+
+        document.addEventListener("DOMContentLoaded", carregarAvisosGestao);
+    </script>
+</body>
+</html>

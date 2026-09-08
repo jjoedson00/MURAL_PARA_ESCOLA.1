@@ -3,142 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural Digital Escolar</title>
+    <title>Mural Digital</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        #container-avisos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+            padding-top: 20px;
+        }
+
+        .aviso-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+        .aviso-card:hover { transform: translateY(-2px); }
+
+        /* AJUSTE DA IMAGEM: Aumentada de 180px para 320px para melhor destaque no mural */
+        .aviso-imagem-container {
+            width: 100%;
+            height: 320px; 
+            overflow: hidden;
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .aviso-imagem-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .aviso-conteudo-box {
+            padding: 22px;
+            flex-grow: 1;
+            color: white;
+        }
+
+        .aviso-card.normal-bg .aviso-conteudo-box { color: #1e293b; }
+
+        .aviso-titulo { font-size: 20px; font-weight: bold; margin: 0 0 12px 0; text-transform: capitalize; }
+        .aviso-texto { font-size: 15px; margin: 0; opacity: 0.95; line-height: 1.5; }
+
+        .aviso-footer {
+            background-color: #f8fafc;
+            padding: 14px 22px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .aviso-autor-tag { font-weight: 600; color: #334155; background: #e2e8f0; padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+    </style>
 </head>
 <body>
 
-    <!-- Topo do Sistema -->
-    <header>
-        <div class="logo-area">
-            <span class="icon">📢</span>
-            <h1>Mural Digital</h1>
-        </div>
-        <div id="auth-controls">
-            <a href="login.html" class="btn-primary">Acesso Professor</a>
-        </div>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+        <h2>📌 Mural Digital</h2>
+        <a href="/login.html" style="text-decoration: none;">
+            <button style="background: #1e293b; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Acesso Professor</button>
+        </a>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main>
-        <!-- Painel de Publicação Privado -->
-        <section id="painel-admin" class="hidden">
-            <div class="card-admin">
-                <h2>Nova Publicação</h2>
-                <form id="form-aviso" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="titulo">Título do Aviso</label>
-                        <input type="text" id="titulo" name="titulo" required placeholder="Ex: Reunião de Pais">
-                    </div>
-                    <div class="form-group">
-                        <label for="conteudo">Conteúdo / Descrição</label>
-                        <textarea id="conteudo" name="conteudo" rows="3" required placeholder="Digite os detalhes do comunicado..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="imagem" class="custom-file-upload">
-                            📷 Adicionar Imagem de Referência
-                        </label>
-                        <input type="file" id="imagem" name="imagem" accept="image/*">
-                        <span id="file-name">Nenhum arquivo selecionado</span>
-                    </div>
-                    <button type="submit" class="btn-success">Publicar no Mural</button>
-                </form>
-            </div>
-        </section>
+    <main style="padding: 20px;">
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="input-pesquisa" placeholder="🔍 Pesquisar avisos por título ou conteúdo..." style="width: 100%; padding: 15px; border-radius: 30px; border: 1px solid #e2e8f0;">
+        </div>
 
-        <!-- Barra de Pesquisa para Pais e Alunos -->
-        <section class="search-section">
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="busca-aviso" placeholder="Pesquisar avisos por título ou conteúdo...">
-            </div>
-        </section>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <h3>Avisos Recentes</h3>
+            <span style="color: #10b981;">● Atualização Automática</span>
+        </div>
 
-        <!-- Visualização Pública dos Cards -->
-        <section id="mural-publico">
-            <div class="mural-header">
-                <h2>Avisos Recentes</h2>
-                <div id="live-indicator"><span class="dot"></span> Atualização Automática</div>
-            </div>
-            
-            <div id="container-avisos" class="grid-avisos">
-                <p class="loading">Carregando avisos...</p>
-            </div>
-        </section>
+        <div id="container-avisos"></div>
     </main>
 
     <script>
-        let listaDeAvisos = [];
-        let professorLogado = false; // Monitora se o professor está autenticado
-
-        document.addEventListener("DOMContentLoaded", () => {
-            verificarLogin();
-            carregarAvisos();
-            setInterval(carregarAvisos, 30000);
-
-            // Filtro da barra de busca
-            const campoBusca = document.getElementById("busca-aviso");
-            if (campoBusca) {
-                campoBusca.addEventListener("input", (e) => {
-                    const termo = e.target.value.toLowerCase();
-                    const filtrados = listaDeAvisos.filter(aviso => 
-                        aviso.titulo.toLowerCase().includes(termo) || 
-                        aviso.conteudo.toLowerCase().includes(termo)
-                    );
-                    renderizarAvisos(filtrados);
-                });
-            }
-
-            // Controle do formulário de avisos
-            const formAviso = document.getElementById("form-aviso");
-            if (formAviso) {
-                formAviso.addEventListener("submit", async function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    const res = await fetch('/api/avisos', { method: 'POST', body: formData });
-                    const data = await res.json();
-
-                    if(data.sucesso) {
-                        this.reset();
-                        document.getElementById("file-name").innerText = "Nenhum arquivo selecionado";
-                        carregarAvisos();
-                    } else {
-                        alert(data.erro || "Erro ao publicar");
-                    }
-                });
-
-                document.getElementById("imagem").addEventListener("change", (e) => {
-                    const name = e.target.files.length > 0 ? e.target.files.name : "Nenhum arquivo selecionado";
-                    document.getElementById("file-name").innerText = name;
-                });
-            }
-        });
-
-        async function verificarLogin() {
-            try {
-                const res = await fetch('/api/usuario');
-                const data = await res.json();
-                const authControls = document.getElementById("auth-controls");
-                const painelAdmin = document.getElementById("painel-admin");
-
-                if (data.logado) {
-                    professorLogado = true;
-                    if (painelAdmin) painelAdmin.classList.remove("hidden");
-                    authControls.innerHTML = `<span>Olá, <strong>${data.nome}</strong></span> <button onclick="fazerLogout()" class="btn-danger" style="margin-left:10px; padding: 0.5rem 1rem; font-size: 0.9rem;">Sair</button>`;
-                } else {
-                    professorLogado = false;
-                }
-            } catch (e) { console.log("Aguardando conexão com o servidor..."); }
-        }
-
         async function carregarAvisos() {
             try {
-                const res = await fetch('/api/avisos');
-                listaDeAvisos = await res.json();
-                renderizarAvisos(listaDeAvisos);
-            } catch (err) {
-                renderizarAvisos([]);
-            }
+                const resposta = await fetch('/api/avisos'); 
+                if (!resposta.ok) throw new Error('Erro ao buscar dados');
+                const avisos = await resposta.json();
+                renderizarAvisos(avisos);
+            } catch (erro) { console.error("Erro de conexão:", erro); }
         }
 
         function renderizarAvisos(avisos) {
@@ -146,50 +101,57 @@
             if (!container) return;
             container.innerHTML = "";
 
-            if (avisos.length === 0) {
-                container.innerHTML = "<p class='loading'>Nenhum comunicado ativo no momento.</p>";
+            if (!avisos || avisos.length === 0) {
+                container.innerHTML = "<p style='text-align: center; color: #64748b; margin-top: 20px;'>Nenhum comunicado ativo no momento.</p>";
                 return;
             }
 
             avisos.forEach(aviso => {
-                const dataFormatada = new Date(aviso.data_criacao).toLocaleDateString('pt-BR', {
-                    day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'
-                });
+                const dataBanco = aviso.data_criacao || aviso.data;
+                const dataFormatada = dataBanco 
+                    ? new Date(dataBanco).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                    : new Date().toLocaleDateString('pt-BR');
+
+                let corFundo = '#ffffff'; 
+                let classeTexto = 'normal-bg';
+
+                if (aviso.prioridade === 'Importante') { corFundo = '#eab308'; classeTexto = ''; }
+                else if (aviso.prioridade === 'Urgente') { corFundo = '#ef4444'; classeTexto = ''; }
 
                 const card = document.createElement("div");
-                card.className = "card-aviso";
+                card.className = `aviso-card ${classeTexto}`;
+                
+                const imagemHtml = aviso.imagem 
+                    ? `<div class="aviso-imagem-container"><img src="/uploads/${aviso.imagem}" alt="Imagem do aviso"></div>` 
+                    : '';
+
                 card.innerHTML = `
-                    ${aviso.imagem ? `<img src="${aviso.imagem}" class="aviso-img" alt="Foto de Referência">` : ''}
-                    <div class="aviso-body">
-                        <h3>${aviso.titulo}</h3>
-                        <p>${aviso.conteudo}</p>
+                    ${imagemHtml}
+                    <div class="aviso-conteudo-box" style="background-color: ${corFundo};">
+                        <h3 class="aviso-titulo">${aviso.titulo}</h3>
+                        <p class="aviso-texto">${aviso.conteudo}</p>
                     </div>
                     <div class="aviso-footer">
-                        <span class="aviso-meta">Por: ${aviso.autor || 'Coordenação'} <br> 🕒 ${dataFormatada}</span>
-                        <!-- 🗑️ BOTÃO EXCLUSIVO: Aparece individualmente em cada card apenas para professores logados -->
-                        ${professorLogado ? `<button onclick="deletarAviso(${aviso.id})" class="btn-danger" style="padding:0.4rem 0.8rem; font-size:0.85rem;">Apagar</button>` : ''}
+                        <span>🕒 ${dataFormatada}</span>
+                        <!-- EXIBIÇÃO DA ASSINATURA DINÂMICA -->
+                        <span class="aviso-autor-tag">✍️ ${aviso.autor}</span>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        async function deletarAviso(id) {
-            if(confirm("Tem certeza que deseja apagar este aviso específico definitivamente?")) {
-                const res = await fetch(`/api/avisos/${id}`, { method: 'DELETE' });
-                const data = await res.json();
-                if(data.sucesso) {
-                    carregarAvisos(); // Recarrega a lista sem sumir com os outros
-                } else {
-                    alert("Erro ao deletar o aviso.");
-                }
-            }
-        }
+        document.getElementById('input-pesquisa').addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.aviso-card');
+            cards.forEach(card => {
+                const titulo = card.querySelector('.aviso-titulo').textContent.toLowerCase();
+                const texto = card.querySelector('.aviso-texto').textContent.toLowerCase();
+                card.style.display = (titulo.includes(termo) || texto.includes(termo)) ? 'flex' : 'none';
+            });
+        });
 
-        async function fazerLogout() {
-            await fetch('/api/logout');
-            window.location.reload();
-        }
+        document.addEventListener("DOMContentLoaded", carregarAvisos);
     </script>
 </body>
 </html>

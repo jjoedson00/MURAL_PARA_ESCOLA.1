@@ -31,13 +31,13 @@ body {
 }
 
 /* ==========================================================================
-   🌟 TELA DE BOAS-VINDAS COM PALETA SUAVE (ATUALIZADA PARA AZUL CLARO)
+   🌟 TELA DE BOAS-VINDAS (AZUL MARINHO CLARO + VERMELHO)
    ========================================================================== */
 .welcome-screen {
     width: 100vw;
     height: 100vh;
-    /* Degradê azul claro fosco, suave e moderno */
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+    /* Degradê azul-marinho claro e suave (tons médios acinzentados) */
+    background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,14 +47,14 @@ body {
 
 .welcome-content {
     max-width: 750px;
-    color: var(--text); /* Texto principal escuro para contraste ideal */
+    color: #f8fafc; /* Branco gelo para os textos contrastarem perfeitamente */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.2rem;
 }
 
-/* Base do megafone adaptada para contrastar com o novo fundo */
+/* Base do megafone com tons quentes integrados */
 .welcome-icon-container {
     background: linear-gradient(135deg, #e06c88 0%, #c43b5c 100%);
     width: 90px;
@@ -63,7 +63,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.15);
+    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.2);
     margin-bottom: 0.5rem;
 }
 
@@ -74,34 +74,34 @@ body {
 .welcome-content h1 {
     font-size: clamp(2.8rem, 6vw, 4.2rem);
     font-weight: 700;
-    color: var(--text) !important; /* Título principal em azul ardósia escuro */
+    color: #ffffff !important; /* Título em branco brilhante */
     letter-spacing: -0.5px;
 }
 
 .welcome-content p {
     font-size: clamp(1.1rem, 2vw, 1.35rem);
-    color: var(--text-muted); /* Cinza azulado para leitura harmônica no fundo claro */
+    color: #cbd5e1; /* Cinza claro para leitura confortável */
     line-height: 1.6;
     max-width: 600px;
 }
 
-/* Botão Laranja Âmbar Suave */
+/* Botão Vermelho Vivo e Destacado */
 .btn-welcome {
     display: inline-block;
-    background-color: #f59e0b !important; /* Laranja fosco equilibrado */
+    background-color: #dc2626 !important; /* Vermelho vivo */
     color: white !important;
     padding: 1.1rem 3.5rem !important;
     font-size: 1.25rem !important;
     font-weight: 600 !important;
     border-radius: 50px !important;
     text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2) !important;
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3) !important; /* Sombra vermelha sutil */
     transition: transform 0.2s, background-color 0.2s !important;
     margin-top: 1.5rem;
 }
 
 .btn-welcome:hover {
-    background-color: #d97706 !important;
+    background-color: #b91c1c !important; /* Tom de vermelho ligeiramente mais escuro no hover */
     transform: translateY(-2px);
 }
 

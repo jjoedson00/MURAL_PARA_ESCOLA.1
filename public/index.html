@@ -1,26 +1,419 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural de Avisos - Inicial</title>
-    <link rel="stylesheet" href="style.css">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mural de Avisos</title>
+
+    <style>
+
+        /* =====================================================
+           CONFIGURAÇÕES GERAIS
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           TELA INICIAL
+        ===================================================== */
+
+        .welcome-screen {
+
+            width: 100%;
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dff3ff 0%,
+                    #c8eafa 45%,
+                    #b7e2f8 100%
+                );
+
+            padding: 40px 20px;
+        }
+
+
+        /* =====================================================
+           CONTEÚDO CENTRAL
+        ===================================================== */
+
+        .welcome-content {
+
+            width: 100%;
+            max-width: 1000px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           ÍCONE
+        ===================================================== */
+
+        .welcome-icon-container {
+
+            width: 128px;
+            height: 128px;
+
+            margin-bottom: 55px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .welcome-icon {
+
+            width: 128px;
+            height: 128px;
+
+            border-radius: 32px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #df6281,
+                    #c72f60
+                );
+
+            box-shadow:
+                0 18px 35px
+                rgba(177, 46, 91, 0.25);
+        }
+
+
+        .megaphone {
+
+            font-size: 58px;
+
+            display: block;
+        }
+
+
+        /* =====================================================
+           TÍTULO
+        ===================================================== */
+
+        .welcome-content h1 {
+
+            color: #17243a;
+
+            font-size: clamp(
+                48px,
+                6vw,
+                86px
+            );
+
+            font-weight: 700;
+
+            line-height: 1.1;
+
+            letter-spacing: -2px;
+
+            margin-bottom: 32px;
+        }
+
+
+        /* =====================================================
+           TEXTO
+        ===================================================== */
+
+        .welcome-content p {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            color: #637892;
+
+            font-size: clamp(
+                20px,
+                2.2vw,
+                30px
+            );
+
+            font-weight: 400;
+
+            line-height: 1.6;
+
+            margin-bottom: 64px;
+        }
+
+
+        /* =====================================================
+           BOTÃO
+        ===================================================== */
+
+        .btn-welcome {
+
+            width: 340px;
+
+            min-height: 88px;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            background: #5420a0;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            border-radius: 50px;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 16px 30px
+                rgba(74, 31, 145, 0.30);
+
+            transition:
+                background-color 0.25s ease,
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .btn-welcome:hover {
+
+            background: #43177f;
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 22px 35px
+                rgba(74, 31, 145, 0.40);
+        }
+
+
+        .btn-welcome:active {
+
+            transform: translateY(0);
+
+            box-shadow:
+                0 10px 20px
+                rgba(74, 31, 145, 0.25);
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .welcome-screen {
+
+                padding:
+                    30px
+                    20px;
+            }
+
+
+            .welcome-icon-container {
+
+                width: 90px;
+                height: 90px;
+
+                margin-bottom: 35px;
+            }
+
+
+            .welcome-icon {
+
+                width: 90px;
+                height: 90px;
+
+                border-radius: 23px;
+            }
+
+
+            .megaphone {
+
+                font-size: 42px;
+            }
+
+
+            .welcome-content h1 {
+
+                font-size: 42px;
+
+                letter-spacing: -1px;
+
+                margin-bottom: 20px;
+            }
+
+
+            .welcome-content p {
+
+                font-size: 18px;
+
+                line-height: 1.55;
+
+                margin-bottom: 42px;
+            }
+
+
+            .btn-welcome {
+
+                width: 100%;
+
+                max-width: 320px;
+
+                min-height: 64px;
+
+                font-size: 21px;
+            }
+
+        }
+
+
+        /* =====================================================
+           CELULARES PEQUENOS
+        ===================================================== */
+
+        @media (max-width: 380px) {
+
+            .welcome-content h1 {
+
+                font-size: 35px;
+            }
+
+
+            .welcome-content p {
+
+                font-size: 17px;
+            }
+
+
+            .welcome-icon-container,
+            .welcome-icon {
+
+                width: 80px;
+                height: 80px;
+            }
+
+
+            .megaphone {
+
+                font-size: 37px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
 
-    <!-- TELA INICIAL IDENTICA À IMAGEM -->
+
+    <!-- =====================================================
+         TELA INICIAL
+    ===================================================== -->
+
     <section class="welcome-screen">
+
+
         <div class="welcome-content">
-            <!-- Container do Megafone Rosa -->
+
+
+            <!-- ÍCONE DO MURAL -->
+
             <div class="welcome-icon-container">
-                <span class="welcome-icon">📢</span>
+
+                <div class="welcome-icon">
+
+                    <span class="megaphone">
+                        📢
+                    </span>
+
+                </div>
+
             </div>
-            <h1>Mural de Avisos</h1>
-            <p>Acompanhe em tempo real todas as atualizações, eventos e comunicados importantes.</p>
-            <!-- Link direto para a página do mural -->
-            <a href="mural.html" class="btn-welcome">Acessar Mural</a>
+
+
+            <!-- TÍTULO -->
+
+            <h1>
+                Mural de Avisos
+            </h1>
+
+
+            <!-- DESCRIÇÃO -->
+
+            <p>
+                Acompanhe em tempo real todas as atualizações,
+                eventos e comunicados importantes.
+            </p>
+
+
+            <!-- BOTÃO -->
+
+            <a
+                href="mural.html"
+                class="btn-welcome"
+            >
+                Acessar Mural
+            </a>
+
+
         </div>
+
+
     </section>
 
+
 </body>
+
 </html>
