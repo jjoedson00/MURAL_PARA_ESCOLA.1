@@ -1,155 +1,74 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mural de Avisos - Login</title>
+    <title>Login do Professor</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0f172a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            cursor: pointer;
-            color: #94a3b8;
-            font-weight: bold;
-            text-decoration: none;
-        }
-        h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 25px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        
-        /* 🔴 ESTILO DA CAIXINHA DE ERRO QUE VAI APARECER NA TELA */
-        .msg-erro-tela {
-            background-color: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fca5a5;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-            display: none; /* Começa escondida */
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background-color: #4f46e5;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-submit:hover {
-            background-color: #4338ca;
-        }
-        .footer-text {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-            color: #64748b;
-        }
-        .footer-text a {
-            color: #4338ca;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
 </head>
-<body>
-
+<body class="pagina-login">
     <div class="login-container">
-        <a href="/index.html" class="close-btn">✕</a>
-        <h2>Login do Educador</h2>
-        
-        <!-- 🔴 ELEMENTO NOVO: Caixinha onde o erro vai aparecer impresso na tela -->
-        <div id="erroMsg" class="msg-erro-tela"></div>
-
-        <form id="formLogin">
+        <a href="/index.html" class="fechar-login">✕</a>
+        <h2>👨‍🏫 Acesso do Professor</h2>
+        <form id="form-login">
             <div class="form-group">
-                <input type="email" id="email" required placeholder="E-mail">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
             </div>
-            
             <div class="form-group">
-                <input type="password" id="senha" required placeholder="Digite sua senha">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
             </div>
-            
+            <div id="mensagem-erro"></div>
             <button type="submit" class="btn-submit">Entrar</button>
         </form>
-        
-        <p class="footer-text">Não tem conta? <a href="/cadastro.html">Cadastre-se aqui</a></p>
+        <p class="login-cadastro">
+            Ainda não possui uma conta?
+            <a href="/cadastro.html">Cadastre-se</a>
+        </p>
     </div>
-
     <script>
-        document.getElementById('formLogin').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const erroCaixa = document.getElementById('erroMsg');
+        const formulario = document.getElementById('form-login');
+        const mensagemErro = document.getElementById('mensagem-erro');
 
-            // Limpa e esconde qualquer erro antigo antes de tentar logar
-            erroCaixa.style.display = 'none';
-            erroCaixa.innerText = '';
+        formulario.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            mensagemErro.style.display = 'none';
+            mensagemErro.textContent = '';
+
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
 
             try {
                 const resposta = await fetch('/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha })
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        senha
+                    })
                 });
 
                 const dados = await resposta.json();
 
-                if (dados.sucesso) {
-                    // 🌟 DIRECIONA O PROFESSOR DIRETO PARA A TELA DE POSTAR AVISOS SE RETORNAR SUCESSO
-                    window.location.href = '/admin.html'; 
-                } else {
-                    // 🔴 SE DER ERRO: Mostra o texto ("Usuário não encontrado" ou "Senha incorreta") direto na caixinha da tela
-                    erroCaixa.innerText = dados.erro;
-                    erroCaixa.style.display = 'block';
+                if (!resposta.ok) {
+                    mensagemErro.textContent = dados.erro || 'E-mail ou senha incorretos.';
+                    mensagemErro.style.display = 'block';
+                    return;
                 }
-            } catch (error) {
-                erroCaixa.innerText = 'Erro ao se comunicar com o servidor.';
-                erroCaixa.style.display = 'block';
+
+                window.location.href = '/admin.html';
+            } catch (erro) {
+                console.error(erro);
+                mensagemErro.textContent = 'Não foi possível conectar ao servidor.';
+                mensagemErro.style.display = 'block';
             }
         });
     </script>
 </body>
 </html>
+```

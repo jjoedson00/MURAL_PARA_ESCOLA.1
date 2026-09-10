@@ -4,83 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Professor</title>
-    <style>
-        body { font-family: sans-serif; background-color: #0f172a; padding: 40px 20px; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box-cadastro { max-width: 450px; width: 100%; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); box-sizing: border-box; }
-        h2 { text-align: center; color: #1e293b; margin-bottom: 30px; font-size: 24px; }
-        .form-group { margin-bottom: 20px; }
-        input { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: white; }
-        input::placeholder { color: #94a3b8; }
-        .btn-submit { width: 100%; background: #15803d; color: white; padding: 16px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        .btn-submit:hover { background: #166534; }
-        .link-login { display: block; text-align: center; margin-top: 20px; color: #1e40af; text-decoration: none; font-size: 14px; }
-        .link-login:hover { text-decoration: underline; }
-        .erro-mensagem { color: #ef4444; background: #fee2e2; border: 1px solid #fca5a5; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; text-align: center; display: none; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<body class="pagina-cadastro">
 
     <div class="box-cadastro">
-        <h2>Cadastro de Professor</h2>
-        
-        <!-- Caixa de erro visível na página -->
-        <div id="erro-box" class="erro-mensagem"></div>
+
+        <h2>👨‍🏫 Cadastro de Professor</h2>
 
         <form id="form-cadastro">
+
             <div class="form-group">
-                <input type="text" id="nome-cadastro" placeholder="Nome Completo" required>
-            </div>
-            
-            <div class="form-group">
-                <input type="email" id="email-cadastro" placeholder="professor_teste@gmail.com" required>
-            </div>
-            
-            <!-- CORREÇÃO: type="password" para esconder os caracteres com pontinhos -->
-            <div class="form-group">
-                <input type="password" id="senha-cadastro" placeholder="Digite sua senha" required>
+                <label for="nome">
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    placeholder="Digite seu nome completo"
+                    required
+                >
             </div>
 
             <div class="form-group">
-                <input type="text" id="token-cadastro" placeholder="Token da Coordenação" required>
+                <label for="email">
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Digite seu e-mail"
+                    required
+                >
             </div>
 
-            <button type="submit" class="btn-submit">Criar Conta</button>
-            <a href="/login.html" class="link-login">Já tem conta? <strong>Fazer Login</strong></a>
+            <div class="form-group">
+                <label for="senha">
+                    Senha
+                </label>
+
+                <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    placeholder="Crie uma senha"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="token">
+                    🔑 Token da Coordenação
+                </label>
+
+                <input
+                    type="password"
+                    id="token"
+                    name="token"
+                    placeholder="Digite o token fornecido pela coordenação"
+                    required
+                >
+            </div>
+
+            <div id="mensagem-erro"></div>
+
+            <button
+                type="submit"
+                class="btn-submit">
+                Criar Conta
+            </button>
+
         </form>
+
+        <p class="cadastro-login">
+            Já possui uma conta?
+
+            <a href="/login.html">
+                Fazer Login
+            </a>
+        </p>
+
     </div>
 
     <script>
-        document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const erroBox = document.getElementById('erro-box');
-            erroBox.style.display = 'none';
+        const formulario =
+            document.getElementById('form-cadastro');
 
-            const nome = document.getElementById('nome-cadastro').value.trim();
-            const email = document.getElementById('email-cadastro').value.trim();
-            const senha = document.getElementById('senha-cadastro').value;
-            const token = document.getElementById('token-cadastro').value.trim();
+        const mensagemErro =
+            document.getElementById('mensagem-erro');
 
-            try {
-                const resposta = await fetch('/api/cadastro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, senha, token })
-                });
+        formulario.addEventListener(
+            'submit',
+            async function(event) {
 
-                if (resposta.ok) {
-                    // CORREÇÃO: Vai direto para o painel de postar avisos, ignorando o login
-                    window.location.href = '/admin.html';
-                } else {
-                    const dadosErro = await resposta.json();
-                    erroBox.textContent = dadosErro.erro || "Falha ao realizar cadastro.";
-                    erroBox.style.display = 'block';
+                event.preventDefault();
+
+                mensagemErro.style.display = 'none';
+                mensagemErro.textContent = '';
+
+                const nome =
+                    document.getElementById('nome')
+                        .value
+                        .trim();
+
+                const email =
+                    document.getElementById('email')
+                        .value
+                        .trim();
+
+                const senha =
+                    document.getElementById('senha')
+                        .value;
+
+                const token =
+                    document.getElementById('token')
+                        .value
+                        .trim();
+
+                try {
+                    const resposta = await fetch(
+                        '/api/cadastro',
+                        {
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                nome,
+                                email,
+                                senha,
+                                token
+                            })
+                        }
+                    );
+
+                    const dados =
+                        await resposta.json();
+
+                    if (!resposta.ok) {
+
+                        mensagemErro.textContent =
+                            dados.erro ||
+                            'Não foi possível realizar o cadastro.';
+
+                        mensagemErro.style.display =
+                            'block';
+
+                        return;
+                    }
+
+                    window.location.href =
+                        '/admin.html';
+
+                } catch (erro) {
+
+                    console.error(erro);
+
+                    mensagemErro.textContent =
+                        'Não foi possível conectar ao servidor.';
+
+                    mensagemErro.style.display =
+                        'block';
                 }
-            } catch (erro) {
-                erroBox.textContent = "Não foi possível estabelecer contato com o servidor.";
-                erroBox.style.display = 'block';
             }
-        });
+        );
     </script>
+
 </body>
 </html>

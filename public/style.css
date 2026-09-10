@@ -1,184 +1,150 @@
-/* ==========================================================================
-   VARIÁVEIS DE DESIGN (PALETA REVISADA E SUAVE)
-   ========================================================================== */
-   :root {
-    --primary: #475569; /* Azul acinzentado suave */
-    --primary-hover: #334155;
-    --success: #16a34a;
-    --danger: #dc2626;
-    --background: #f1f5f9; /* Fundo claro fosco */
-    --surface: #ffffff;
-    --text: #1e293b;
-    --text-muted: #64748b;
-    --radius: 12px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Arial,sans-serif}
+body{color:#0f172a}
+
+body.pagina-inicial{min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:center;padding:30px;background:linear-gradient(135deg,#dff4ff,#f5fbff)}
+.welcome-container{width:100%;max-width:750px;padding:45px 30px;text-align:center}
+.welcome-icon{font-size:90px;line-height:1;margin-bottom:25px}
+.welcome-container h1{margin:0 0 20px;color:#0f172a;font-size:clamp(42px,5vw,62px);line-height:1.1}
+.welcome-description{max-width:650px;margin:0 auto 38px;color:#334e68;font-size:clamp(18px,2vw,21px);line-height:1.6}
+.welcome-button{display:inline-block;padding:17px 34px;background:#0284c7;color:#fff;border-radius:10px;text-decoration:none;font-size:18px;font-weight:bold;box-shadow:0 8px 20px rgba(2,132,199,.2);transition:.2s}
+.welcome-button:hover{background:#0369a1;transform:translateY(-2px)}
+
+body.pagina-mural{min-height:100vh;margin:0;background:#f8fafc;color:#0f172a}
+.mural-header{width:min(94%,1450px);margin:auto;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:25px}
+.mural-header h2{margin:0;color:#0f172a;font-size:clamp(30px,3vw,40px)}
+.botao-professor{display:inline-flex;align-items:center;justify-content:center;padding:13px 23px;background:#1e293b;color:#fff;border-radius:8px;text-decoration:none;font-size:15px;font-weight:bold;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
+.botao-professor:hover{background:#334155;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
+.mural-main{width:min(94%,1450px);margin:auto;padding:10px 0 50px}
+.pesquisa-container{margin-bottom:25px}
+#input-pesquisa{width:100%;height:58px;padding:0 22px;border:1px solid #cbd5e1;border-radius:30px;background:#fff;color:#1e293b;font-size:17px;outline:none}
+#input-pesquisa:focus{border-color:#0284c7}
+.mural-titulo{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:25px}
+.mural-titulo h3{margin:0;color:#0f172a;font-size:clamp(25px,2.5vw,32px)}
+.atualizacao{color:#10b981;font-size:15px;font-weight:bold}
+#container-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:28px}
+.aviso-card{width:100%;min-width:0;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:15px;box-shadow:0 7px 22px rgba(15,23,42,.08);transition:.2s}
+.aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
+.aviso-imagem-container{width:100%;height:350px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;border-bottom:1px solid #e2e8f0}
+.aviso-imagem-container img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;background:#fff}
+.aviso-conteudo-box{flex-grow:1;padding:28px;color:#fff}
+.aviso-card.normal-bg .aviso-conteudo-box{color:#1e293b}
+.aviso-titulo{margin:0 0 15px;font-size:clamp(23px,2vw,28px);line-height:1.25;font-weight:bold}
+.aviso-texto{margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6}
+.aviso-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 22px;background:#f8fafc;border-top:1px solid #e2e8f0;color:#64748b;font-size:14px}
+.aviso-autor-tag{padding:6px 12px;border-radius:20px;background:#e2e8f0;color:#334155;font-size:12px;font-weight:600}
+.sem-avisos{text-align:center;color:#64748b;font-size:17px}
+
+body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1e293b;position:relative}
+.pagina-admin .container{width:100%;max-width:700px;margin:0 auto;padding:38px;background:#fff;border-radius:14px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
+.pagina-admin .container h2{margin:0 0 25px;color:#0284c7;text-align:center;font-size:28px}
+.admin-descricao{text-align:center;color:#64748b;margin:-10px 0 20px}
+.form-group{margin-bottom:22px}
+.pagina-admin label{display:block;margin-bottom:8px;color:#1e293b;font-size:16px;font-weight:bold}
+.pagina-admin input[type=text],.pagina-admin input[type=file],.pagina-admin textarea,.pagina-admin select{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#1e293b;font-size:16px}
+.pagina-admin textarea{min-height:130px;resize:vertical}
+.btn-green{width:100%;padding:16px;border:0;border-radius:8px;background:#10b981;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
+.btn-green:hover{background:#059669}
+.link-voltar{display:block;margin-top:20px;color:#64748b;text-align:center;text-decoration:none;font-size:15px}
+.professor-logado{margin-bottom:20px;padding:12px 15px;border-radius:8px;background:#e0f2fe;color:#0369a1;text-align:center}
+.gestao-container{width:100%;max-width:700px;margin:30px auto 0;padding:30px;background:#fff;border-radius:14px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
+.gestao-container h3{margin:5px 0 20px}
+.gestao-label{font-size:12px;color:#64748b;font-weight:bold;letter-spacing:1px}
+.card-gestao{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:16px;margin-bottom:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px}
+.gestao-info{display:flex;flex-direction:column;gap:6px}
+.gestao-info span{font-size:13px;color:#64748b}
+.btn-apagar{padding:9px 17px;border:0;border-radius:6px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer}
+.btn-apagar:hover{background:#dc2626}
+.nenhum-aviso{color:#64748b;text-align:center}
+
+.btn-sair-professor{position:fixed;top:20px;right:25px;z-index:1000;display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border:0;border-radius:8px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
+.btn-sair-professor:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
+.btn-sair-professor:active{transform:translateY(0)}
+
+.pagina-login{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
+.login-container{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
+.pagina-login h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:28px}
+.pagina-login .form-group{margin-bottom:20px}
+.pagina-login input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+.btn-submit{width:100%;padding:15px;margin-top:8px;border:0;border-radius:8px;background:#4f46e5;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
+.btn-submit:hover{background:#4338ca}
+.login-cadastro{text-align:center;color:#64748b}
+.login-cadastro a{color:#4f46e5;font-weight:bold}
+
+.pagina-cadastro{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
+.box-cadastro{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
+.pagina-cadastro h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:27px}
+.pagina-cadastro .form-group{margin-bottom:20px}
+.pagina-cadastro input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+.pagina-cadastro .btn-submit{width:100%;padding:15px;border:0;border-radius:8px;background:#15803d;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
+
+#mensagem-mural{width:100%;margin:0 0 20px}
+.mensagem-sucesso{padding:14px 18px;border-radius:10px;background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:15px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(15,23,42,.08);transition:.4s}
+.mensagem-sucesso.sumindo{opacity:0;transform:translateY(-6px)}
+
+.caixa-confirmacao{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.45)}
+.caixa-confirmacao.mostrar{display:flex}
+.confirmacao-conteudo{width:100%;max-width:430px;padding:28px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25);text-align:center}
+.confirmacao-conteudo h3{margin:0 0 12px;color:#1e293b;font-size:22px}
+.confirmacao-conteudo p{margin:0 0 22px;color:#475569;font-size:16px;line-height:1.5}
+.confirmacao-botoes{display:flex;gap:12px;justify-content:center}
+.btn-confirmar,.btn-cancelar{border:0;border-radius:8px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-confirmar{background:#10b981;color:#fff}
+.btn-confirmar:hover{background:#059669}
+.btn-cancelar{background:#e2e8f0;color:#334155}
+.btn-cancelar:hover{background:#cbd5e1}
+
+@media(min-width:1600px){
+.mural-header,.mural-main{width:min(92%,1650px)}
+#container-avisos{grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:32px}
+.aviso-imagem-container{height:390px}
 }
 
-* {
-    box-sizing: border-box !important;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+@media(max-width:1000px){
+.mural-header,.mural-main{width:92%}
+#container-avisos{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+.aviso-imagem-container{height:320px}
 }
 
-body {
-    background-color: var(--background);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
+@media(max-width:700px){
+body.pagina-inicial{padding:20px}
+.welcome-container{padding:30px 15px}
+.welcome-icon{font-size:70px}
+.welcome-container h1{font-size:40px}
+.welcome-description{font-size:17px}
+.welcome-button{width:100%;max-width:330px}
+.mural-header{width:92%;padding:22px 0;flex-direction:column;align-items:stretch}
+.mural-header h2{text-align:center;font-size:29px}
+.botao-professor{width:100%}
+.mural-main{width:92%;padding-bottom:30px}
+#input-pesquisa{height:54px;font-size:16px}
+.mural-titulo{flex-direction:column;align-items:flex-start}
+.mural-titulo h3{font-size:25px}
+#container-avisos{grid-template-columns:1fr;gap:22px}
+.aviso-imagem-container{height:270px}
+.aviso-conteudo-box{padding:23px}
+.aviso-titulo{font-size:22px}
+.aviso-texto{font-size:16px}
+.pagina-admin{padding:20px 15px}
+.pagina-admin .container{padding:28px 22px}
+.gestao-container{padding:25px 20px}
+.login-container,.box-cadastro{padding:30px 22px}
+.btn-sair-professor{position:static;width:calc(100% - 30px);margin:15px auto;display:flex;padding:12px 15px}
+.confirmacao-conteudo{max-width:360px;padding:24px 20px}
+.confirmacao-botoes{flex-direction:column}
+.btn-confirmar,.btn-cancelar{width:100%}
 }
 
-/* ==========================================================================
-   🌟 TELA DE BOAS-VINDAS (AZUL MARINHO CLARO + VERMELHO)
-   ========================================================================== */
-.welcome-screen {
-    width: 100vw;
-    height: 100vh;
-    /* Degradê azul-marinho claro e suave (tons médios acinzentados) */
-    background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
+@media(max-width:430px){
+.welcome-icon{font-size:62px}
+.welcome-container h1{font-size:34px}
+.welcome-description{font-size:16px}
+.mural-header h2{font-size:26px}
+.aviso-imagem-container{height:230px}
+.aviso-conteudo-box{padding:20px}
+.aviso-titulo{font-size:20px}
+.aviso-texto{font-size:15px}
+.aviso-footer{flex-direction:column;align-items:flex-start}
+.card-gestao{align-items:flex-start}
+.btn-sair-professor{width:calc(100% - 20px);margin-top:10px;font-size:13px}
 }
-
-.welcome-content {
-    max-width: 750px;
-    color: #f8fafc; /* Branco gelo para os textos contrastarem perfeitamente */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.2rem;
-}
-
-/* Base do megafone com tons quentes integrados */
-.welcome-icon-container {
-    background: linear-gradient(135deg, #e06c88 0%, #c43b5c 100%);
-    width: 90px;
-    height: 90px;
-    border-radius: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 10px 25px rgba(196, 59, 92, 0.2);
-    margin-bottom: 0.5rem;
-}
-
-.welcome-icon {
-    font-size: 3.2rem;
-}
-
-.welcome-content h1 {
-    font-size: clamp(2.8rem, 6vw, 4.2rem);
-    font-weight: 700;
-    color: #ffffff !important; /* Título em branco brilhante */
-    letter-spacing: -0.5px;
-}
-
-.welcome-content p {
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
-    color: #cbd5e1; /* Cinza claro para leitura confortável */
-    line-height: 1.6;
-    max-width: 600px;
-}
-
-/* Botão Vermelho Vivo e Destacado */
-.btn-welcome {
-    display: inline-block;
-    background-color: #dc2626 !important; /* Vermelho vivo */
-    color: white !important;
-    padding: 1.1rem 3.5rem !important;
-    font-size: 1.25rem !important;
-    font-weight: 600 !important;
-    border-radius: 50px !important;
-    text-decoration: none !important;
-    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3) !important; /* Sombra vermelha sutil */
-    transition: transform 0.2s, background-color 0.2s !important;
-    margin-top: 1.5rem;
-}
-
-.btn-welcome:hover {
-    background-color: #b91c1c !important; /* Tom de vermelho ligeiramente mais escuro no hover */
-    transform: translateY(-2px);
-}
-
-/* ==========================================================================
-   INTERFACES INTERNAS DO MURAL
-   ========================================================================== */
-header {
-    background: var(--surface);
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e2e8f0;
-    box-shadow: var(--shadow);
-}
-.logo-area { display: flex; align-items: center; gap: 0.5rem; }
-.logo-area h1 { font-size: 1.5rem; color: #2e446e; font-weight: 700; }
-
-main {
-    width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    flex-grow: 1;
-}
-
-.card-admin {
-    background: var(--surface);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 1rem;
-}
-.form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
-input, textarea { padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; width: 100%; }
-input[type="file"] { display: none; }
-.custom-file-upload { display: inline-block; padding: 0.75rem 1rem; background: #e2e8f0; cursor: pointer; border-radius: 6px; font-weight: 500; text-align: center; }
-
-/* 🔍 BARRA DE PESQUISA */
-.search-section { width: 100%; }
-.search-container { display: flex; align-items: center; background: var(--surface); border: 1px solid #cbd5e1; border-radius: 50px; padding: 0.2rem 1.2rem; box-shadow: var(--shadow); }
-.search-container:focus-within { border-color: #2e446e; box-shadow: 0 0 0 4px rgba(46, 68, 110, 0.1); }
-.search-icon { font-size: 1.2rem; color: var(--text-muted); margin-right: 0.8rem; }
-#busca-aviso { border: none !important; background: transparent !important; padding: 0.8rem 0 !important; font-size: 1.05rem; outline: none !important; }
-
-/* CARDS E GRID DO MURAL */
-.grid-avisos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; width: 100%; }
-.card-aviso { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; border-top: 5px solid #2e446e; overflow: hidden; }
-.aviso-img { width: 100%; height: 220px; object-fit: cover; }
-.aviso-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.aviso-footer { padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
-.aviso-meta { font-size: 0.85rem; color: var(--text-muted); }
-
-.btn-primary, .btn-success, .btn-danger { text-decoration: none; padding: 0.7rem 1.5rem; border-radius: 6px; font-weight: 600; font-size: 0.95rem; display: inline-block; border: none; cursor: pointer; }
-.btn-primary { background: #2e446e; color: white; }
-.btn-success { background: var(--success); color: white; }
-.btn-danger { background: var(--danger); color: white; }
-
-/* ESTRUTURA AUTENTICAÇÃO PÁGINAS PRIVADAS */
-.page-auth-bg { background: radial-gradient(circle, #1e293b 0%, #0f172a 100%) !important; display: flex !important; justify-content: center !important; align-items: center !important; }
-.modal-static { width: 100vw; display: flex; justify-content: center; align-items: center; padding: 1.5rem; }
-.modal-content-fixed { background: #ffffff !important; padding: 2.5rem 2rem !important; border-radius: 12px !important; width: 100% !important; max-width: 440px !important; position: relative !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important; border-top: 5px solid #4f46e5 !important; }
-.modal-content-fixed h3 { text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; }
-.modal-content-fixed form { display: flex; flex-direction: column; gap: 1.2rem; }
-.btn-primary-block, .btn-success-block { width: 100%; padding: 0.85rem; border-radius: 8px; border: none; font-weight: 600; font-size: 1.05rem; color: white; cursor: pointer; }
-.btn-primary-block { background: #4f46e5; }
-.btn-success-block { background: var(--success); }
-.close-auth { position: absolute; top: 1rem; right: 1rem; font-size: 1.8rem; text-decoration: none; color: var(--text-muted); }
-.switch-form { text-align: center; margin-top: 1.2rem; font-size: 0.9rem; }
-.switch-form a { color: #4f46e5; font-weight: bold; text-decoration: none; }
-
-.hidden { display: none !important; }
-.mural-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-#live-indicator { color: var(--success); font-weight: bold; font-size: 0.9rem; }
-.dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
-.loading { text-align: center; color: var(--text-muted); padding: 2rem 0; grid-column: 1/-1; }
-@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
