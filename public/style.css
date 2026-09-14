@@ -23,10 +23,13 @@ body.pagina-mural{min-height:100vh;margin:0;background:#f8fafc;color:#0f172a}
 .mural-titulo h3{margin:0;color:#0f172a;font-size:clamp(25px,2.5vw,32px)}
 .atualizacao{color:#10b981;font-size:15px;font-weight:bold}
 #container-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:28px}
+
 .aviso-card{width:100%;min-width:0;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:15px;box-shadow:0 7px 22px rgba(15,23,42,.08);transition:.2s}
 .aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
+
 .aviso-imagem-container{width:100%;height:350px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;border-bottom:1px solid #e2e8f0}
 .aviso-imagem-container img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;background:#fff}
+
 .aviso-conteudo-box{flex-grow:1;padding:28px;color:#fff}
 .aviso-card.normal-bg .aviso-conteudo-box{color:#1e293b}
 .aviso-titulo{margin:0 0 15px;font-size:clamp(23px,2vw,28px);line-height:1.25;font-weight:bold}
@@ -122,6 +125,7 @@ body.pagina-inicial{padding:20px}
 .mural-titulo h3{font-size:25px}
 #container-avisos{grid-template-columns:1fr;gap:22px}
 .aviso-imagem-container{height:270px}
+.aviso-imagem-container img{width:100%;height:100%;object-fit:contain}
 .aviso-conteudo-box{padding:23px}
 .aviso-titulo{font-size:22px}
 .aviso-texto{font-size:16px}
@@ -141,6 +145,7 @@ body.pagina-inicial{padding:20px}
 .welcome-description{font-size:16px}
 .mural-header h2{font-size:26px}
 .aviso-imagem-container{height:230px}
+.aviso-imagem-container img{width:100%;height:100%;object-fit:contain}
 .aviso-conteudo-box{padding:20px}
 .aviso-titulo{font-size:20px}
 .aviso-texto{font-size:15px}
@@ -148,3 +153,4 @@ body.pagina-inicial{padding:20px}
 .card-gestao{align-items:flex-start}
 .btn-sair-professor{width:calc(100% - 20px);margin-top:10px;font-size:13px}
 }
+
