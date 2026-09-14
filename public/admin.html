@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -84,26 +85,40 @@ document.getElementById('confirmar-acao').addEventListener('click',async()=>{
 });
 
 document.getElementById('caixa-confirmacao').addEventListener('click',(e)=>{
-    if(e.target.id==='caixa-confirmacao'){
-        fecharConfirmacao();
-    }
+    if(e.target.id==='caixa-confirmacao') fecharConfirmacao();
 });
 
 async function verificarSessao(){
+    const elemento=document.getElementById('professor-logado');
+    elemento.innerHTML='<div class="professor-logado">🔄 Verificando acesso...</div>';
+
     try{
         const resposta=await fetch('/api/sessao',{
-            credentials:'include'
+            method:'GET',
+            credentials:'include',
+            cache:'no-store'
         });
+
+        if(!resposta.ok){
+            elemento.innerHTML='<div class="professor-logado">⚠️ Não foi possível verificar seu acesso.</div>';
+            return false;
+        }
+
         const dados=await resposta.json();
 
-        if(!dados.logado){
-            window.location.href='/login.html';
+        if(!dados.logado||!dados.professor){
+            elemento.innerHTML='<div class="professor-logado">⚠️ Sessão não encontrada. Faça login novamente.</div>';
+
+            setTimeout(()=>{
+                window.location.href='/login.html';
+            },1500);
+
             return false;
         }
 
         const professor=dados.professor;
 
-        document.getElementById('professor-logado').innerHTML=`
+        elemento.innerHTML=`
             <div class="professor-logado">
                 👨‍🏫 Logado como:
                 <strong>${professor.nome}</strong>
@@ -112,8 +127,8 @@ async function verificarSessao(){
 
         return true;
     }catch(erro){
-        console.error(erro);
-        window.location.href='/login.html';
+        console.error('Erro ao verificar sessão:',erro);
+        elemento.innerHTML='<div class="professor-logado">⚠️ Erro ao verificar o acesso. Tente novamente.</div>';
         return false;
     }
 }
@@ -187,8 +202,14 @@ document.getElementById('form-aviso').addEventListener('submit',async(e)=>{
 async function carregarAvisosGestao(){
     try{
         const resposta=await fetch('/api/avisos',{
-            credentials:'include'
+            credentials:'include',
+            cache:'no-store'
         });
+
+        if(!resposta.ok){
+            console.error('Erro ao carregar avisos:',resposta.status);
+            return;
+        }
 
         const avisos=await resposta.json();
         const container=document.getElementById('lista-gerenciamento-avisos');
@@ -217,7 +238,7 @@ async function carregarAvisosGestao(){
             container.appendChild(card);
         });
     }catch(erro){
-        console.error(erro);
+        console.error('Erro ao carregar avisos:',erro);
     }
 }
 
@@ -251,11 +272,10 @@ function apagarAviso(id){
 document.addEventListener('DOMContentLoaded',async()=>{
     const logado=await verificarSessao();
 
-    if(logado){
-        carregarAvisosGestao();
-    }
+    if(logado) carregarAvisosGestao();
 });
 </script>
 
 </body>
 </html>
+```
