@@ -469,8 +469,6 @@ app.delete(
     }
 );
 
-app.listen(port,()=>{
-    console.log(
-        `\n🚀 Servidor Rodando na porta ${port}`
-    );
+app.listen(port,'0.0.0.0',()=>{
+    console.log(`🚀 Servidor Rodando na porta ${port}`);
 });
