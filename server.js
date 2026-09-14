@@ -1,4 +1,3 @@
-
 const express=require('express');
 const {Pool}=require('pg');
 const path=require('path');
@@ -17,6 +16,9 @@ const VAPID_PRIVATE_KEY=process.env.VAPID_PRIVATE_KEY;
 webpush.setVapidDetails('mailto:admin@example.com',VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY);
 
 const arquivoNotificacoes=path.join(__dirname,'notificacoes.json');
+const pastaUploads=path.join(__dirname,'public','uploads');
+
+if(!fs.existsSync(pastaUploads))fs.mkdirSync(pastaUploads,{recursive:true});
 
 function lerNotificacoes(){
     try{
@@ -61,16 +63,11 @@ app.use(session({
     secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:false,
-    cookie:{
-        httpOnly:true,
-        secure:true,
-        sameSite:'lax',
-        maxAge:1000*60*60*8
-    }
+    cookie:{httpOnly:true,secure:true,sameSite:'lax',maxAge:1000*60*60*8}
 }));
 
 const storage=multer.diskStorage({
-    destination:(req,file,cb)=>cb(null,'public/uploads/'),
+    destination:(req,file,cb)=>cb(null,pastaUploads),
     filename:(req,file,cb)=>{
         const extensao=path.extname(file.originalname);
         const nomeUnico=Date.now()+'-'+Math.round(Math.random()*1E9)+extensao;
@@ -82,7 +79,7 @@ const upload=multer({storage});
 
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname,'public')));
-app.use('/uploads',express.static(path.join(__dirname,'public','uploads')));
+app.use('/uploads',express.static(pastaUploads));
 
 const pool=new Pool({
     connectionString:process.env.DATABASE_URL,
@@ -103,12 +100,10 @@ app.get('/cadastro.html',(req,res)=>res.sendFile(path.join(__dirname,'public','c
 app.post('/api/cadastro',async(req,res)=>{
     try{
         const {nome,email,senha,token}=req.body;
-
         if(!nome||!email||!senha||!token)return res.status(400).json({erro:'Preencha todos os campos.'});
         if(token!==TOKEN_COORDENACAO)return res.status(403).json({erro:'Token da coordenação inválido.'});
 
         const usuarioExistente=await pool.query('SELECT id FROM usuarios WHERE email=$1',[email]);
-
         if(usuarioExistente.rows.length>0)return res.status(400).json({erro:'Este e-mail já está cadastrado.'});
 
         const resultado=await pool.query(
@@ -117,13 +112,11 @@ app.post('/api/cadastro',async(req,res)=>{
         );
 
         req.session.professor=resultado.rows[0];
-
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
                 return res.status(500).json({erro:'Erro ao criar sessão.'});
             }
-
             res.json({sucesso:true,mensagem:'Cadastro realizado com sucesso!'});
         });
     }catch(erro){
@@ -135,7 +128,6 @@ app.post('/api/cadastro',async(req,res)=>{
 app.post('/api/login',async(req,res)=>{
     try{
         const {email,senha}=req.body;
-
         if(!email||!senha)return res.status(400).json({erro:'Preencha e-mail e senha.'});
 
         const resultado=await pool.query(
@@ -146,13 +138,11 @@ app.post('/api/login',async(req,res)=>{
         if(resultado.rows.length===0)return res.status(401).json({erro:'E-mail ou senha incorretos.'});
 
         req.session.professor=resultado.rows[0];
-
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
                 return res.status(500).json({erro:'Erro ao iniciar sessão.'});
             }
-
             res.json({sucesso:true,mensagem:'Login realizado com sucesso!'});
         });
     }catch(erro){
@@ -162,9 +152,7 @@ app.post('/api/login',async(req,res)=>{
 });
 
 app.get('/api/sessao',(req,res)=>{
-    if(req.session&&req.session.professor){
-        return res.json({logado:true,professor:req.session.professor});
-    }
+    if(req.session&&req.session.professor)return res.json({logado:true,professor:req.session.professor});
     res.json({logado:false});
 });
 
@@ -174,7 +162,6 @@ app.post('/api/logout',(req,res)=>{
             console.error(erro);
             return res.status(500).json({erro:'Erro ao sair.'});
         }
-
         res.clearCookie('connect.sid');
         res.json({sucesso:true,mensagem:'Sessão encerrada.'});
     });
@@ -183,7 +170,6 @@ app.post('/api/logout',(req,res)=>{
 app.get('/api/avisos',async(req,res)=>{
     try{
         const resultado=await pool.query('SELECT * FROM avisos ORDER BY id DESC');
-
         const avisos=resultado.rows.map(aviso=>({
             ...aviso,
             prioridade:aviso.cor_destaque||aviso.prioridade||'Normal',
@@ -191,7 +177,6 @@ app.get('/api/avisos',async(req,res)=>{
             autor:aviso.autor||'Professor',
             data_criacao:aviso.data_criacao||aviso.data||null
         }));
-
         res.json(avisos);
     }catch(erro){
         console.error(erro);
@@ -202,11 +187,9 @@ app.get('/api/avisos',async(req,res)=>{
 app.post('/api/notificacoes/inscrever',(req,res)=>{
     try{
         const inscricao=req.body;
-
         if(!inscricao||!inscricao.endpoint)return res.status(400).json({erro:'Inscrição de notificação inválida.'});
 
         const inscricoes=lerNotificacoes();
-
         const existe=inscricoes.some(item=>item.endpoint===inscricao.endpoint);
 
         if(!existe){
@@ -239,6 +222,7 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
         console.log('PUBLICANDO AVISO:',{
             titulo,
             autor,
+            imagem:nomeImagem,
             professorLogado:req.session.professor
         });
 
@@ -266,7 +250,6 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
 app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
     try{
         const id=parseInt(req.params.id);
-
         if(isNaN(id))return res.status(400).json({erro:'ID do aviso inválido.'});
 
         const autor=req.session.professor.nome;
