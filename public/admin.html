@@ -7,7 +7,7 @@
     <title>Painel do Professor</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="pagina-admin">
+<body class="pagina-admin" style="display:none;">
 
 <button type="button" class="btn-sair-professor" id="btn-sair">🚪 Sair do Acesso Professor</button>
 
@@ -16,7 +16,7 @@
     <p class="admin-descricao">Publique um novo comunicado no mural.</p>
     <div id="professor-logado"></div>
 
-
+```
 <form id="form-aviso">
     <div class="form-group">
         <label for="titulo-aviso">Título do Aviso</label>
@@ -45,7 +45,7 @@
     <button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
     <a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
 </form>
-
+```
 
 </div>
 
@@ -68,6 +68,44 @@
 
 <script>
 let acaoConfirmacao=null;
+
+async function verificarSessao(){
+    try{
+        const resposta=await fetch('/api/sessao',{
+            method:'GET',
+            credentials:'include',
+            cache:'no-store'
+        });
+
+        if(!resposta.ok){
+            window.location.replace('/login.html');
+            return false;
+        }
+
+        const dados=await resposta.json();
+
+        if(!dados.logado||!dados.professor){
+            window.location.replace('/login.html');
+            return false;
+        }
+
+        document.body.style.display='';
+
+        document.getElementById('professor-logado').innerHTML=`
+            <div class="professor-logado">
+                👨‍🏫 Logado como:
+                <strong>${dados.professor.nome}</strong>
+            </div>
+        `;
+
+        return true;
+
+    }catch(erro){
+        console.error('Erro ao verificar sessão:',erro);
+        window.location.replace('/login.html');
+        return false;
+    }
+}
 
 function mostrarConfirmacao(titulo,texto,acao){
     document.getElementById('confirmacao-titulo').textContent=titulo;
@@ -94,48 +132,6 @@ document.getElementById('confirmar-acao').addEventListener('click',async()=>{
 document.getElementById('caixa-confirmacao').addEventListener('click',(e)=>{
     if(e.target.id==='caixa-confirmacao') fecharConfirmacao();
 });
-
-async function verificarSessao(){
-    const elemento=document.getElementById('professor-logado');
-
-    try{
-        const resposta=await fetch('/api/sessao',{
-            credentials:'include',
-            cache:'no-store'
-        });
-
-        if(!resposta.ok){
-            elemento.innerHTML='<div class="professor-logado">⚠️ Não foi possível verificar seu acesso.</div>';
-            return false;
-        }
-
-        const dados=await resposta.json();
-
-        if(!dados.logado||!dados.professor){
-            elemento.innerHTML='<div class="professor-logado">⚠️ Sessão não encontrada. Faça login novamente.</div>';
-
-            setTimeout(()=>{
-                window.location.href='/login.html';
-            },1000);
-
-            return false;
-        }
-
-        elemento.innerHTML=`
-            <div class="professor-logado">
-                👨‍🏫 Logado como:
-                <strong>${dados.professor.nome}</strong>
-            </div>
-        `;
-
-        return true;
-
-    }catch(erro){
-        console.error('Erro ao verificar sessão:',erro);
-        elemento.innerHTML='<div class="professor-logado">⚠️ Erro ao verificar o acesso. Tente novamente.</div>';
-        return false;
-    }
-}
 
 document.getElementById('btn-sair').addEventListener('click',()=>{
     mostrarConfirmacao(
@@ -271,8 +267,6 @@ function apagarAviso(id){
 
                 if(resposta.ok){
                     await carregarAvisosGestao();
-
-                    sessionStorage.setItem('mensagemMural','Aviso apagado com sucesso!');
                     alert('Aviso apagado com sucesso!');
                 }else{
                     alert(dados.erro||dados.error||'Não foi possível apagar o aviso.');
