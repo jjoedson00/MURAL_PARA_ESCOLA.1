@@ -5,13 +5,14 @@ const multer=require('multer');
 const session=require('express-session');
 const webpush=require('web-push');
 const fs=require('fs');
+require('dotenv').config();
 
 const app=express();
-const port=3000;
-const TOKEN_COORDENACAO='COORDENACAO2026';
+const port=process.env.PORT||3000;
+const TOKEN_COORDENACAO=process.env.TOKEN_COORDENACAO;
 
-const VAPID_PUBLIC_KEY='BM5uRR4QlihWfQrul6Tstpz_tEB2Jw4lq3-QTa2aMGuTeO03LExLEXI-voEcolB1N-vyyOAIFbWKZeZu19c2_wA';
-const VAPID_PRIVATE_KEY='WaePFfcc0xKSi64nxOow5Q8ONeCrbsC6zabOXmL1uss';
+const VAPID_PUBLIC_KEY=process.env.VAPID_PUBLIC_KEY;
+const VAPID_PRIVATE_KEY=process.env.VAPID_PRIVATE_KEY;
 
 webpush.setVapidDetails(
     'mailto:admin@example.com',
@@ -63,7 +64,10 @@ async function enviarNotificacao(titulo){
             await webpush.sendNotification(inscricao,payload);
             inscricoesValidas.push(inscricao);
         }catch(erro){
-            console.error('Erro ao enviar notificação:',erro.statusCode||erro.message);
+            console.error(
+                'Erro ao enviar notificação:',
+                erro.statusCode||erro.message
+            );
 
             if(erro.statusCode!==404&&erro.statusCode!==410){
                 inscricoesValidas.push(inscricao);
@@ -78,12 +82,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 app.use(session({
-    secret:'mural-escolar-segredo',
+    secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:false,
     cookie:{
         httpOnly:true,
-        secure:false,
+        secure:process.env.NODE_ENV==='production',
         sameSite:'lax',
         maxAge:1000*60*60*8
     }
@@ -107,11 +111,8 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use('/uploads',express.static(path.join(__dirname,'public','uploads')));
 
 const pool=new Pool({
-    user:'postgres',
-    host:'localhost',
-    database:'Mural_meu-tcc1',
-    password:'1234',
-    port:5432
+    connectionString:process.env.DATABASE_URL,
+    ssl:{rejectUnauthorized:false}
 });
 
 function professorLogado(req,res,next){
@@ -470,6 +471,6 @@ app.delete(
 
 app.listen(port,()=>{
     console.log(
-        `\n🚀 Servidor Rodando em: http://localhost:${port}`
+        `\n🚀 Servidor Rodando na porta ${port}`
     );
 });
