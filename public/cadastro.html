@@ -6,177 +6,90 @@
     <title>Cadastro de Professor</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body class="pagina-cadastro">
-
     <div class="box-cadastro">
-
         <h2>👨‍🏫 Cadastro de Professor</h2>
 
-        <form id="form-cadastro">
-
+        <form id="formCadastro">
             <div class="form-group">
-                <label for="nome">
-                    Nome
-                </label>
-
-                <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    placeholder="Digite seu nome completo"
-                    required
-                >
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required>
             </div>
 
             <div class="form-group">
-                <label for="email">
-                    E-mail
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Digite seu e-mail"
-                    required
-                >
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
             </div>
 
             <div class="form-group">
-                <label for="senha">
-                    Senha
-                </label>
-
-                <input
-                    type="password"
-                    id="senha"
-                    name="senha"
-                    placeholder="Crie uma senha"
-                    required
-                >
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required>
             </div>
 
             <div class="form-group">
-                <label for="token">
-                    🔑 Token da Coordenação
-                </label>
-
-                <input
-                    type="password"
-                    id="token"
-                    name="token"
-                    placeholder="Digite o token fornecido pela coordenação"
-                    required
-                >
+                <label for="token">🔑 Token da Coordenação</label>
+                <input type="password" id="token" name="token" required>
             </div>
 
-            <div id="mensagem-erro"></div>
+            <p id="mensagem"></p>
 
-            <button
-                type="submit"
-                class="btn-submit">
-                Criar Conta
-            </button>
-
+            <button type="submit" class="btn-submit">Criar Conta</button>
         </form>
 
-        <p class="cadastro-login">
+        <p>
             Já possui uma conta?
-
-            <a href="/login.html">
-                Fazer Login
-            </a>
+            <a href="login.html">Fazer Login</a>
         </p>
-
     </div>
 
     <script>
-        const formulario =
-            document.getElementById('form-cadastro');
+        const form=document.getElementById('formCadastro');
+        const mensagem=document.getElementById('mensagem');
 
-        const mensagemErro =
-            document.getElementById('mensagem-erro');
+        form.addEventListener('submit',async(event)=>{
+            event.preventDefault();
 
-        formulario.addEventListener(
-            'submit',
-            async function(event) {
+            mensagem.textContent='Criando conta...';
+            mensagem.style.color='#17243a';
 
-                event.preventDefault();
+            const nome=document.getElementById('nome').value.trim();
+            const email=document.getElementById('email').value.trim();
+            const senha=document.getElementById('senha').value;
+            const token=document.getElementById('token').value.trim();
 
-                mensagemErro.style.display = 'none';
-                mensagemErro.textContent = '';
+            try{
+                const resposta=await fetch('/api/cadastro',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        nome,
+                        email,
+                        senha,
+                        token
+                    })
+                });
 
-                const nome =
-                    document.getElementById('nome')
-                        .value
-                        .trim();
+                const dados=await resposta.json();
 
-                const email =
-                    document.getElementById('email')
-                        .value
-                        .trim();
+                if(resposta.ok){
+                    mensagem.textContent='Cadastro realizado! Entrando no painel...';
+                    mensagem.style.color='#15803d';
 
-                const senha =
-                    document.getElementById('senha')
-                        .value;
-
-                const token =
-                    document.getElementById('token')
-                        .value
-                        .trim();
-
-                try {
-                    const resposta = await fetch(
-                        '/api/cadastro',
-                        {
-                            method: 'POST',
-
-                            headers: {
-                                'Content-Type':
-                                    'application/json'
-                            },
-
-                            body: JSON.stringify({
-                                nome,
-                                email,
-                                senha,
-                                token
-                            })
-                        }
-                    );
-
-                    const dados =
-                        await resposta.json();
-
-                    if (!resposta.ok) {
-
-                        mensagemErro.textContent =
-                            dados.erro ||
-                            'Não foi possível realizar o cadastro.';
-
-                        mensagemErro.style.display =
-                            'block';
-
-                        return;
-                    }
-
-                    window.location.href =
-                        '/admin.html';
-
-                } catch (erro) {
-
-                    console.error(erro);
-
-                    mensagemErro.textContent =
-                        'Não foi possível conectar ao servidor.';
-
-                    mensagemErro.style.display =
-                        'block';
+                    setTimeout(()=>{
+                        window.location.href='/admin.html';
+                    },500);
+                }else{
+                    mensagem.textContent=dados.erro||'Erro ao cadastrar.';
+                    mensagem.style.color='#dc2626';
                 }
+            }catch(erro){
+                console.error(erro);
+                mensagem.textContent='Erro de conexão com o servidor.';
+                mensagem.style.color='#dc2626';
             }
-        );
+        });
     </script>
-
 </body>
 </html>
