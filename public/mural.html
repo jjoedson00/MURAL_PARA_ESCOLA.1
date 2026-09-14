@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -21,20 +22,157 @@
 <main class="mural-main">
     <div id="mensagem-mural"></div>
 
-    <div class="pesquisa-container">
-        <input type="text" id="input-pesquisa" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
-    </div>
+```
+<div class="pesquisa-container">
+    <input type="text" id="input-pesquisa" placeholder="🔍 Pesquisar avisos por título ou conteúdo...">
+</div>
 
-    <div class="mural-titulo">
-        <h3>Avisos Recentes</h3>
-        <span class="atualizacao">● Atualização Automática</span>
-    </div>
+<div class="mural-titulo">
+    <h3>Avisos Recentes</h3>
+    <span class="atualizacao">● Atualização Automática</span>
+</div>
 
-    <div id="container-avisos"></div>
+<div id="container-avisos">
+    <p class="sem-avisos">Carregando avisos...</p>
+</div>
+```
+
 </main>
 
 <script>
 let registroServiceWorker=null;
+let avisosAtuais=[];
+
+async function carregarAvisos(){
+    try{
+        const resposta=await fetch('/api/avisos',{
+            method:'GET',
+            cache:'no-store'
+        });
+
+        if(!resposta.ok){
+            throw new Error('Erro ao buscar dados');
+        }
+
+        const avisos=await resposta.json();
+        avisosAtuais=avisos;
+        renderizarAvisos(avisos);
+
+    }catch(erro){
+        console.error('Erro de conexão:',erro);
+
+        const container=document.getElementById('container-avisos');
+
+        if(container&&avisosAtuais.length===0){
+            container.innerHTML='<p class="sem-avisos">Não foi possível carregar os avisos. Tente novamente.</p>';
+        }
+    }
+}
+
+function renderizarAvisos(avisos){
+    const container=document.getElementById('container-avisos');
+
+    if(!container)return;
+
+    container.innerHTML='';
+
+    if(!avisos||avisos.length===0){
+        container.innerHTML='<p class="sem-avisos">Nenhum comunicado ativo no momento.</p>';
+        return;
+    }
+
+    avisos.forEach(aviso=>{
+        const dataBanco=aviso.data_criacao||aviso.data;
+
+        const dataFormatada=dataBanco
+            ? new Date(dataBanco).toLocaleDateString('pt-BR',{
+                day:'2-digit',
+                month:'2-digit',
+                year:'numeric'
+            })
+            : new Date().toLocaleDateString('pt-BR');
+
+        let corFundo='#ffffff';
+        let classeTexto='normal-bg';
+
+        if(aviso.prioridade==='Importante'){
+            corFundo='#eab308';
+            classeTexto='';
+        }else if(aviso.prioridade==='Urgente'){
+            corFundo='#ef4444';
+            classeTexto='';
+        }
+
+        const card=document.createElement('div');
+        card.className=`aviso-card ${classeTexto}`;
+
+        const imagemHtml=aviso.imagem
+            ? `<div class="aviso-imagem-container"><img src="/uploads/${aviso.imagem}" alt="Imagem do aviso"></div>`
+            : '';
+
+        card.innerHTML=`
+            ${imagemHtml}
+
+            <div class="aviso-conteudo-box" style="background-color:${corFundo};">
+                <h3 class="aviso-titulo">${aviso.titulo}</h3>
+                <p class="aviso-texto">${aviso.conteudo}</p>
+            </div>
+
+            <div class="aviso-footer">
+                <span>🕒 ${dataFormatada}</span>
+                <span class="aviso-autor-tag">✍️ ${aviso.autor}</span>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+    aplicarPesquisa();
+}
+
+function aplicarPesquisa(){
+    const termo=document.getElementById('input-pesquisa').value.toLowerCase().trim();
+
+    document.querySelectorAll('.aviso-card').forEach(card=>{
+        const titulo=card.querySelector('.aviso-titulo').textContent.toLowerCase();
+        const texto=card.querySelector('.aviso-texto').textContent.toLowerCase();
+
+        card.style.display=
+            titulo.includes(termo)||texto.includes(termo)
+            ? 'flex'
+            : 'none';
+    });
+}
+
+document.getElementById('input-pesquisa').addEventListener('input',aplicarPesquisa);
+
+function mostrarMensagem(){
+    const mensagem=sessionStorage.getItem('mensagemMural');
+
+    if(!mensagem)return;
+
+    const container=document.getElementById('mensagem-mural');
+
+    container.innerHTML=`
+        <div class="mensagem-sucesso">
+            ✅ ${mensagem}
+        </div>
+    `;
+
+    sessionStorage.removeItem('mensagemMural');
+
+    setTimeout(()=>{
+        const elemento=document.querySelector('.mensagem-sucesso');
+
+        if(elemento){
+            elemento.classList.add('sumindo');
+
+            setTimeout(()=>{
+                elemento.remove();
+            },400);
+        }
+    },3500);
+}
 
 async function configurarNotificacoes(){
     const botao=document.getElementById('btn-notificacoes');
@@ -74,10 +212,6 @@ async function ativarNotificacoes(){
             return;
         }
 
-        /*
-         * A chave VAPID pública será colocada aqui
-         * na próxima etapa.
-         */
         const chavePublica='BM5uRR4QlihWfQrul6Tstpz_tEB2Jw4lq3-QTa2aMGuTeO03LExLEXI-voEcolB1N-vyyOAIFbWKZeZu19c2_wA';
 
         if(chavePublica==='COLOQUE_A_CHAVE_PUBLICA_AQUI'){
@@ -129,129 +263,14 @@ function converterChave(base64){
 
 document.getElementById('btn-notificacoes').addEventListener('click',ativarNotificacoes);
 
-function mostrarMensagem(){
-    const mensagem=sessionStorage.getItem('mensagemMural');
-
-    if(!mensagem)return;
-
-    const container=document.getElementById('mensagem-mural');
-
-    container.innerHTML=`
-        <div class="mensagem-sucesso">
-            ✅ ${mensagem}
-        </div>
-    `;
-
-    sessionStorage.removeItem('mensagemMural');
-
-    setTimeout(()=>{
-        const elemento=document.querySelector('.mensagem-sucesso');
-
-        if(elemento){
-            elemento.classList.add('sumindo');
-
-            setTimeout(()=>{
-                elemento.remove();
-            },400);
-        }
-    },3500);
-}
-
-async function carregarAvisos(){
-    try{
-        const resposta=await fetch('/api/avisos');
-
-        if(!resposta.ok){
-            throw new Error('Erro ao buscar dados');
-        }
-
-        const avisos=await resposta.json();
-
-        renderizarAvisos(avisos);
-
-    }catch(erro){
-        console.error('Erro de conexão:',erro);
-    }
-}
-
-function renderizarAvisos(avisos){
-    const container=document.getElementById('container-avisos');
-
-    if(!container)return;
-
-    container.innerHTML='';
-
-    if(!avisos||avisos.length===0){
-        container.innerHTML='<p class="sem-avisos">Nenhum comunicado ativo no momento.</p>';
-        return;
-    }
-
-    avisos.forEach(aviso=>{
-        const dataBanco=aviso.data_criacao||aviso.data;
-
-        const dataFormatada=dataBanco
-            ? new Date(dataBanco).toLocaleDateString('pt-BR',{
-                day:'2-digit',
-                month:'2-digit',
-                year:'numeric'
-            })
-            : new Date().toLocaleDateString('pt-BR');
-
-        let corFundo='#ffffff';
-        let classeTexto='normal-bg';
-
-        if(aviso.prioridade==='Importante'){
-            corFundo='#eab308';
-            classeTexto='';
-        }else if(aviso.prioridade==='Urgente'){
-            corFundo='#ef4444';
-            classeTexto='';
-        }
-
-        const card=document.createElement('div');
-
-        card.className=`aviso-card ${classeTexto}`;
-
-        const imagemHtml=aviso.imagem
-            ? `<div class="aviso-imagem-container"><img src="/uploads/${aviso.imagem}" alt="Imagem do aviso"></div>`
-            : '';
-
-        card.innerHTML=`
-            ${imagemHtml}
-
-            <div class="aviso-conteudo-box" style="background-color:${corFundo};">
-                <h3 class="aviso-titulo">${aviso.titulo}</h3>
-                <p class="aviso-texto">${aviso.conteudo}</p>
-            </div>
-
-            <div class="aviso-footer">
-                <span>🕒 ${dataFormatada}</span>
-                <span class="aviso-autor-tag">✍️ ${aviso.autor}</span>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-document.getElementById('input-pesquisa').addEventListener('input',(e)=>{
-    const termo=e.target.value.toLowerCase();
-
-    document.querySelectorAll('.aviso-card').forEach(card=>{
-        const titulo=card.querySelector('.aviso-titulo').textContent.toLowerCase();
-        const texto=card.querySelector('.aviso-texto').textContent.toLowerCase();
-
-        card.style.display=
-            titulo.includes(termo)||texto.includes(termo)
-            ? 'flex'
-            : 'none';
-    });
-});
-
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',async()=>{
     mostrarMensagem();
-    carregarAvisos();
+
+    await carregarAvisos();
+
     configurarNotificacoes();
+
+    setInterval(carregarAvisos,10000);
 });
 </script>
 

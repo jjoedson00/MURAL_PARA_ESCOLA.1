@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -16,30 +16,37 @@
     <p class="admin-descricao">Publique um novo comunicado no mural.</p>
     <div id="professor-logado"></div>
 
-    <form id="form-aviso">
-        <div class="form-group">
-            <label for="titulo-aviso">Título do Aviso</label>
-            <input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
-        </div>
-        <div class="form-group">
-            <label for="conteudo-aviso">Conteúdo / Descrição</label>
-            <textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="prioridade-aviso">Importância / Cor da Etiqueta</label>
-            <select id="prioridade-aviso">
-                <option value="Normal">⚪ Aviso Normal</option>
-                <option value="Importante">🟡 Aviso Importante</option>
-                <option value="Urgente">🔴 Aviso Urgente</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="imagem-aviso">📸 Adicionar Imagem (Opcional)</label>
-            <input type="file" id="imagem-aviso" accept="image/*">
-        </div>
-        <button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
-        <a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
-    </form>
+```
+<form id="form-aviso">
+    <div class="form-group">
+        <label for="titulo-aviso">Título do Aviso</label>
+        <input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
+    </div>
+
+    <div class="form-group">
+        <label for="conteudo-aviso">Conteúdo / Descrição</label>
+        <textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="prioridade-aviso">Importância / Cor da Etiqueta</label>
+        <select id="prioridade-aviso">
+            <option value="Normal">⚪ Aviso Normal</option>
+            <option value="Importante">🟡 Aviso Importante</option>
+            <option value="Urgente">🔴 Aviso Urgente</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="imagem-aviso">📸 Adicionar Imagem (Opcional)</label>
+        <input type="file" id="imagem-aviso" accept="image/*">
+    </div>
+
+    <button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
+    <a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
+</form>
+```
+
 </div>
 
 <div class="gestao-container">
@@ -90,11 +97,9 @@ document.getElementById('caixa-confirmacao').addEventListener('click',(e)=>{
 
 async function verificarSessao(){
     const elemento=document.getElementById('professor-logado');
-    elemento.innerHTML='<div class="professor-logado">🔄 Verificando acesso...</div>';
 
     try{
         const resposta=await fetch('/api/sessao',{
-            method:'GET',
             credentials:'include',
             cache:'no-store'
         });
@@ -111,21 +116,20 @@ async function verificarSessao(){
 
             setTimeout(()=>{
                 window.location.href='/login.html';
-            },1500);
+            },1000);
 
             return false;
         }
 
-        const professor=dados.professor;
-
         elemento.innerHTML=`
             <div class="professor-logado">
                 👨‍🏫 Logado como:
-                <strong>${professor.nome}</strong>
+                <strong>${dados.professor.nome}</strong>
             </div>
         `;
 
         return true;
+
     }catch(erro){
         console.error('Erro ao verificar sessão:',erro);
         elemento.innerHTML='<div class="professor-logado">⚠️ Erro ao verificar o acesso. Tente novamente.</div>';
@@ -152,6 +156,7 @@ document.getElementById('btn-sair').addEventListener('click',()=>{
                 }else{
                     alert(dados.erro||'Não foi possível sair da conta.');
                 }
+
             }catch(erro){
                 console.error(erro);
                 alert('Não foi possível conectar ao servidor.');
@@ -163,6 +168,7 @@ document.getElementById('btn-sair').addEventListener('click',()=>{
 document.getElementById('form-aviso').addEventListener('submit',async(e)=>{
     e.preventDefault();
 
+    const botao=document.getElementById('btn-publicar');
     const titulo=document.getElementById('titulo-aviso').value.trim();
     const conteudo=document.getElementById('conteudo-aviso').value.trim();
     const prioridade=document.getElementById('prioridade-aviso').value;
@@ -177,6 +183,9 @@ document.getElementById('form-aviso').addEventListener('submit',async(e)=>{
         formData.append('imagem',imagemInput.files[0]);
     }
 
+    botao.disabled=true;
+    botao.textContent='Publicando...';
+
     try{
         const resposta=await fetch('/api/avisos',{
             method:'POST',
@@ -187,15 +196,19 @@ document.getElementById('form-aviso').addEventListener('submit',async(e)=>{
         const dados=await resposta.json();
 
         if(resposta.ok){
-            alert(dados.mensagem||'Aviso publicado com sucesso!');
             document.getElementById('form-aviso').reset();
-            carregarAvisosGestao();
+            await carregarAvisosGestao();
+            alert(dados.mensagem||'Aviso publicado com sucesso!');
         }else{
             alert(dados.error||dados.erro||'Erro ao publicar o aviso.');
         }
+
     }catch(erro){
         console.error(erro);
         alert('Não foi possível conectar ao servidor.');
+    }finally{
+        botao.disabled=false;
+        botao.textContent='Publicar no Mural';
     }
 });
 
@@ -237,6 +250,7 @@ async function carregarAvisosGestao(){
 
             container.appendChild(card);
         });
+
     }catch(erro){
         console.error('Erro ao carregar avisos:',erro);
     }
@@ -256,11 +270,14 @@ function apagarAviso(id){
                 const dados=await resposta.json();
 
                 if(resposta.ok){
+                    await carregarAvisosGestao();
+
                     sessionStorage.setItem('mensagemMural','Aviso apagado com sucesso!');
-                    window.location.href='/mural.html';
+                    alert('Aviso apagado com sucesso!');
                 }else{
                     alert(dados.erro||dados.error||'Não foi possível apagar o aviso.');
                 }
+
             }catch(erro){
                 console.error(erro);
                 alert('Não foi possível conectar ao servidor.');
@@ -272,10 +289,11 @@ function apagarAviso(id){
 document.addEventListener('DOMContentLoaded',async()=>{
     const logado=await verificarSessao();
 
-    if(logado) carregarAvisosGestao();
+    if(logado){
+        carregarAvisosGestao();
+    }
 });
 </script>
 
 </body>
 </html>
-
