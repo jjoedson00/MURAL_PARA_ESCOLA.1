@@ -5,6 +5,7 @@ const multer=require('multer');
 const session=require('express-session');
 const webpush=require('web-push');
 const fs=require('fs');
+const {createClient}=require('@supabase/supabase-js');
 require('dotenv').config();
 
 const app=express();
@@ -12,6 +13,10 @@ const port=process.env.PORT||3000;
 const TOKEN_COORDENACAO=process.env.TOKEN_COORDENACAO;
 const VAPID_PUBLIC_KEY=process.env.VAPID_PUBLIC_KEY;
 const VAPID_PRIVATE_KEY=process.env.VAPID_PRIVATE_KEY;
+const SUPABASE_URL=process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY=process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase=createClient(SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY);
 
 webpush.setVapidDetails('mailto:admin@example.com',VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY);
 
@@ -34,15 +39,22 @@ function salvarNotificacoes(inscricoes){
     try{
         fs.writeFileSync(arquivoNotificacoes,JSON.stringify(inscricoes,null,2));
     }catch(erro){
-        console.error('Erro ao salvar notificacoes.json:',erro);
+        console.error('Erro ao salvar notificacoes:',erro);
     }
 }
 
 async function enviarNotificacao(titulo){
     const inscricoes=lerNotificacoes();
     if(inscricoes.length===0)return;
-    const payload=JSON.stringify({titulo:'📢 Novo aviso no Mural',corpo:titulo,url:'/mural.html'});
+
+    const payload=JSON.stringify({
+        titulo:'📢 Novo aviso no Mural',
+        corpo:titulo,
+        url:'/mural.html'
+    });
+
     const inscricoesValidas=[];
+
     for(const inscricao of inscricoes){
         try{
             await webpush.sendNotification(inscricao,payload);
@@ -52,6 +64,7 @@ async function enviarNotificacao(titulo){
             if(erro.statusCode!==404&&erro.statusCode!==410)inscricoesValidas.push(inscricao);
         }
     }
+
     salvarNotificacoes(inscricoesValidas);
 }
 
@@ -63,19 +76,19 @@ app.use(session({
     secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:false,
-    cookie:{httpOnly:true,secure:true,sameSite:'lax',maxAge:1000*60*60*8}
+    cookie:{
+        httpOnly:true,
+        secure:true,
+        sameSite:'lax',
+        maxAge:1000*60*60*8
+    }
 }));
 
-const storage=multer.diskStorage({
-    destination:(req,file,cb)=>cb(null,pastaUploads),
-    filename:(req,file,cb)=>{
-        const extensao=path.extname(file.originalname);
-        const nomeUnico=Date.now()+'-'+Math.round(Math.random()*1E9)+extensao;
-        cb(null,nomeUnico);
-    }
+const storage=multer.memoryStorage();
+const upload=multer({
+    storage,
+    limits:{fileSize:10*1024*1024}
 });
-
-const upload=multer({storage});
 
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname,'public')));
@@ -100,10 +113,12 @@ app.get('/cadastro.html',(req,res)=>res.sendFile(path.join(__dirname,'public','c
 app.post('/api/cadastro',async(req,res)=>{
     try{
         const {nome,email,senha,token}=req.body;
+
         if(!nome||!email||!senha||!token)return res.status(400).json({erro:'Preencha todos os campos.'});
         if(token!==TOKEN_COORDENACAO)return res.status(403).json({erro:'Token da coordenação inválido.'});
 
         const usuarioExistente=await pool.query('SELECT id FROM usuarios WHERE email=$1',[email]);
+
         if(usuarioExistente.rows.length>0)return res.status(400).json({erro:'Este e-mail já está cadastrado.'});
 
         const resultado=await pool.query(
@@ -112,11 +127,13 @@ app.post('/api/cadastro',async(req,res)=>{
         );
 
         req.session.professor=resultado.rows[0];
+
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
                 return res.status(500).json({erro:'Erro ao criar sessão.'});
             }
+
             res.json({sucesso:true,mensagem:'Cadastro realizado com sucesso!'});
         });
     }catch(erro){
@@ -128,6 +145,7 @@ app.post('/api/cadastro',async(req,res)=>{
 app.post('/api/login',async(req,res)=>{
     try{
         const {email,senha}=req.body;
+
         if(!email||!senha)return res.status(400).json({erro:'Preencha e-mail e senha.'});
 
         const resultado=await pool.query(
@@ -138,11 +156,13 @@ app.post('/api/login',async(req,res)=>{
         if(resultado.rows.length===0)return res.status(401).json({erro:'E-mail ou senha incorretos.'});
 
         req.session.professor=resultado.rows[0];
+
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
                 return res.status(500).json({erro:'Erro ao iniciar sessão.'});
             }
+
             res.json({sucesso:true,mensagem:'Login realizado com sucesso!'});
         });
     }catch(erro){
@@ -162,6 +182,7 @@ app.post('/api/logout',(req,res)=>{
             console.error(erro);
             return res.status(500).json({erro:'Erro ao sair.'});
         }
+
         res.clearCookie('connect.sid');
         res.json({sucesso:true,mensagem:'Sessão encerrada.'});
     });
@@ -170,13 +191,23 @@ app.post('/api/logout',(req,res)=>{
 app.get('/api/avisos',async(req,res)=>{
     try{
         const resultado=await pool.query('SELECT * FROM avisos ORDER BY id DESC');
-        const avisos=resultado.rows.map(aviso=>({
-            ...aviso,
-            prioridade:aviso.cor_destaque||aviso.prioridade||'Normal',
-            imagem:aviso.imagem||aviso.imagem_url||null,
-            autor:aviso.autor||'Professor',
-            data_criacao:aviso.data_criacao||aviso.data||null
-        }));
+
+        const avisos=resultado.rows.map(aviso=>{
+            let imagem=aviso.imagem||aviso.imagem_url||null;
+
+            if(imagem&&!imagem.startsWith('http')&&!imagem.startsWith('/uploads/')){
+                imagem='/uploads/'+imagem;
+            }
+
+            return {
+                ...aviso,
+                prioridade:aviso.cor_destaque||aviso.prioridade||'Normal',
+                imagem,
+                autor:aviso.autor||'Professor',
+                data_criacao:aviso.data_criacao||aviso.data||null
+            };
+        });
+
         res.json(avisos);
     }catch(erro){
         console.error(erro);
@@ -187,6 +218,7 @@ app.get('/api/avisos',async(req,res)=>{
 app.post('/api/notificacoes/inscrever',(req,res)=>{
     try{
         const inscricao=req.body;
+
         if(!inscricao||!inscricao.endpoint)return res.status(400).json({erro:'Inscrição de notificação inválida.'});
 
         const inscricoes=lerNotificacoes();
@@ -213,22 +245,44 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
         const titulo=String(req.body.titulo||'').trim();
         const conteudo=String(req.body.conteudo||'').trim();
         const prioridade=String(req.body.prioridade||'Normal').trim();
-        const nomeImagem=req.file?req.file.filename:null;
 
         if(!titulo||!conteudo)return res.status(400).json({error:'Título e Conteúdo são obrigatórios!'});
 
         const autor=req.session.professor.nome;
+        let imagemUrl=null;
+
+        if(req.file){
+            const extensao=path.extname(req.file.originalname).toLowerCase()||'.jpg';
+            const nomeArquivo=Date.now()+'-'+Math.round(Math.random()*1E9)+extensao;
+
+            const {error:uploadErro}=await supabase.storage
+                .from('imagens-mural')
+                .upload(nomeArquivo,req.file.buffer,{
+                    contentType:req.file.mimetype,
+                    upsert:false
+                });
+
+            if(uploadErro){
+                console.error('Erro ao enviar imagem para o Supabase:',uploadErro);
+                return res.status(500).json({error:'Erro ao enviar a imagem para o Storage.'});
+            }
+
+            const {data:urlData}=supabase.storage
+                .from('imagens-mural')
+                .getPublicUrl(nomeArquivo);
+
+            imagemUrl=urlData.publicUrl;
+        }
 
         console.log('PUBLICANDO AVISO:',{
             titulo,
             autor,
-            imagem:nomeImagem,
-            professorLogado:req.session.professor
+            imagem:imagemUrl
         });
 
         const resultado=await pool.query(
             `INSERT INTO avisos (titulo,conteudo,cor_destaque,imagem,autor,data_criacao) VALUES($1,$2,$3,$4,$5,CURRENT_TIMESTAMP) RETURNING *`,
-            [titulo,conteudo,prioridade,nomeImagem,autor]
+            [titulo,conteudo,prioridade,imagemUrl,autor]
         );
 
         console.log('AVISO SALVO NO BANCO:',resultado.rows[0]);
@@ -250,6 +304,7 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
 app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
     try{
         const id=parseInt(req.params.id);
+
         if(isNaN(id))return res.status(400).json({erro:'ID do aviso inválido.'});
 
         const autor=req.session.professor.nome;
@@ -263,6 +318,20 @@ app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
             return res.status(404).json({erro:'Aviso não encontrado ou não pertence a você.'});
         }
 
+        const avisoApagado=resultado.rows[0];
+
+        if(avisoApagado.imagem&&avisoApagado.imagem.startsWith('http')){
+            try{
+                const nomeArquivo=avisoApagado.imagem.split('/').pop().split('?')[0];
+
+                await supabase.storage
+                    .from('imagens-mural')
+                    .remove([nomeArquivo]);
+            }catch(erroImagem){
+                console.error('Erro ao apagar imagem do Storage:',erroImagem);
+            }
+        }
+
         res.json({sucesso:true,mensagem:'Aviso apagado com sucesso!'});
     }catch(erro){
         console.error(erro);
@@ -273,4 +342,3 @@ app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
 app.listen(port,'0.0.0.0',()=>{
     console.log(`🚀 Servidor Rodando na porta ${port}`);
 });
-
