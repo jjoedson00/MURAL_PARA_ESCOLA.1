@@ -1,3 +1,4 @@
+
 const express=require('express');
 const {Pool}=require('pg');
 const path=require('path');
@@ -16,10 +17,9 @@ const VAPID_PRIVATE_KEY=process.env.VAPID_PRIVATE_KEY;
 const SUPABASE_URL=process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY=process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase=createClient(SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY);
-
 webpush.setVapidDetails('mailto:admin@example.com',VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY);
 
+const supabase=createClient(SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY);
 const arquivoNotificacoes=path.join(__dirname,'notificacoes.json');
 const pastaUploads=path.join(__dirname,'public','uploads');
 
@@ -39,12 +39,13 @@ function salvarNotificacoes(inscricoes){
     try{
         fs.writeFileSync(arquivoNotificacoes,JSON.stringify(inscricoes,null,2));
     }catch(erro){
-        console.error('Erro ao salvar notificacoes:',erro);
+        console.error('Erro ao salvar notificacoes.json:',erro);
     }
 }
 
 async function enviarNotificacao(titulo){
     const inscricoes=lerNotificacoes();
+
     if(inscricoes.length===0)return;
 
     const payload=JSON.stringify({
@@ -61,7 +62,10 @@ async function enviarNotificacao(titulo){
             inscricoesValidas.push(inscricao);
         }catch(erro){
             console.error('Erro ao enviar notificação:',erro.statusCode||erro.message);
-            if(erro.statusCode!==404&&erro.statusCode!==410)inscricoesValidas.push(inscricao);
+
+            if(erro.statusCode!==404&&erro.statusCode!==410){
+                inscricoesValidas.push(inscricao);
+            }
         }
     }
 
@@ -85,9 +89,12 @@ app.use(session({
 }));
 
 const storage=multer.memoryStorage();
+
 const upload=multer({
     storage,
-    limits:{fileSize:10*1024*1024}
+    limits:{
+        fileSize:10*1024*1024
+    }
 });
 
 app.use(express.static(path.join(__dirname)));
@@ -101,7 +108,10 @@ const pool=new Pool({
 
 function professorLogado(req,res,next){
     if(req.session&&req.session.professor)return next();
-    res.status(401).json({erro:'Você precisa estar logado como professor.'});
+
+    res.status(401).json({
+        erro:'Você precisa estar logado como professor.'
+    });
 }
 
 app.get('/',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
@@ -114,12 +124,28 @@ app.post('/api/cadastro',async(req,res)=>{
     try{
         const {nome,email,senha,token}=req.body;
 
-        if(!nome||!email||!senha||!token)return res.status(400).json({erro:'Preencha todos os campos.'});
-        if(token!==TOKEN_COORDENACAO)return res.status(403).json({erro:'Token da coordenação inválido.'});
+        if(!nome||!email||!senha||!token){
+            return res.status(400).json({
+                erro:'Preencha todos os campos.'
+            });
+        }
 
-        const usuarioExistente=await pool.query('SELECT id FROM usuarios WHERE email=$1',[email]);
+        if(token!==TOKEN_COORDENACAO){
+            return res.status(403).json({
+                erro:'Token da coordenação inválido.'
+            });
+        }
 
-        if(usuarioExistente.rows.length>0)return res.status(400).json({erro:'Este e-mail já está cadastrado.'});
+        const usuarioExistente=await pool.query(
+            'SELECT id FROM usuarios WHERE email=$1',
+            [email]
+        );
+
+        if(usuarioExistente.rows.length>0){
+            return res.status(400).json({
+                erro:'Este e-mail já está cadastrado.'
+            });
+        }
 
         const resultado=await pool.query(
             `INSERT INTO usuarios (nome,email,senha,tipo) VALUES($1,$2,$3,'professor') RETURNING id,nome,email,tipo`,
@@ -131,14 +157,23 @@ app.post('/api/cadastro',async(req,res)=>{
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
-                return res.status(500).json({erro:'Erro ao criar sessão.'});
+
+                return res.status(500).json({
+                    erro:'Erro ao criar sessão.'
+                });
             }
 
-            res.json({sucesso:true,mensagem:'Cadastro realizado com sucesso!'});
+            res.json({
+                sucesso:true,
+                mensagem:'Cadastro realizado com sucesso!'
+            });
         });
     }catch(erro){
         console.error(erro);
-        res.status(500).json({erro:'Erro ao cadastrar: '+erro.message});
+
+        res.status(500).json({
+            erro:'Erro ao cadastrar: '+erro.message
+        });
     }
 });
 
@@ -146,51 +181,85 @@ app.post('/api/login',async(req,res)=>{
     try{
         const {email,senha}=req.body;
 
-        if(!email||!senha)return res.status(400).json({erro:'Preencha e-mail e senha.'});
+        if(!email||!senha){
+            return res.status(400).json({
+                erro:'Preencha e-mail e senha.'
+            });
+        }
 
         const resultado=await pool.query(
             `SELECT id,nome,email,tipo FROM usuarios WHERE email=$1 AND senha=$2 AND tipo='professor'`,
             [email,senha]
         );
 
-        if(resultado.rows.length===0)return res.status(401).json({erro:'E-mail ou senha incorretos.'});
+        if(resultado.rows.length===0){
+            return res.status(401).json({
+                erro:'E-mail ou senha incorretos.'
+            });
+        }
 
         req.session.professor=resultado.rows[0];
 
         req.session.save(erro=>{
             if(erro){
                 console.error(erro);
-                return res.status(500).json({erro:'Erro ao iniciar sessão.'});
+
+                return res.status(500).json({
+                    erro:'Erro ao iniciar sessão.'
+                });
             }
 
-            res.json({sucesso:true,mensagem:'Login realizado com sucesso!'});
+            res.json({
+                sucesso:true,
+                mensagem:'Login realizado com sucesso!'
+            });
         });
     }catch(erro){
         console.error(erro);
-        res.status(500).json({erro:'Erro ao fazer login: '+erro.message});
+
+        res.status(500).json({
+            erro:'Erro ao fazer login: '+erro.message
+        });
     }
 });
 
 app.get('/api/sessao',(req,res)=>{
-    if(req.session&&req.session.professor)return res.json({logado:true,professor:req.session.professor});
-    res.json({logado:false});
+    if(req.session&&req.session.professor){
+        return res.json({
+            logado:true,
+            professor:req.session.professor
+        });
+    }
+
+    res.json({
+        logado:false
+    });
 });
 
 app.post('/api/logout',(req,res)=>{
     req.session.destroy(erro=>{
         if(erro){
             console.error(erro);
-            return res.status(500).json({erro:'Erro ao sair.'});
+
+            return res.status(500).json({
+                erro:'Erro ao sair.'
+            });
         }
 
         res.clearCookie('connect.sid');
-        res.json({sucesso:true,mensagem:'Sessão encerrada.'});
+
+        res.json({
+            sucesso:true,
+            mensagem:'Sessão encerrada.'
+        });
     });
 });
 
 app.get('/api/avisos',async(req,res)=>{
     try{
-        const resultado=await pool.query('SELECT * FROM avisos ORDER BY id DESC');
+        const resultado=await pool.query(
+            'SELECT * FROM avisos ORDER BY id DESC'
+        );
 
         const avisos=resultado.rows.map(aviso=>{
             let imagem=aviso.imagem||aviso.imagem_url||null;
@@ -211,33 +280,72 @@ app.get('/api/avisos',async(req,res)=>{
         res.json(avisos);
     }catch(erro){
         console.error(erro);
-        res.status(500).json({erro:'Erro ao carregar avisos.'});
+
+        res.status(500).json({
+            erro:'Erro ao carregar avisos.'
+        });
     }
 });
 
-app.post('/api/notificacoes/inscrever',(req,res)=>{
+app.post('/api/notificacoes/inscrever',async(req,res)=>{
     try{
         const inscricao=req.body;
 
-        if(!inscricao||!inscricao.endpoint)return res.status(400).json({erro:'Inscrição de notificação inválida.'});
+        if(!inscricao||!inscricao.endpoint){
+            return res.status(400).json({
+                erro:'Inscrição de notificação inválida.'
+            });
+        }
 
         const inscricoes=lerNotificacoes();
-        const existe=inscricoes.some(item=>item.endpoint===inscricao.endpoint);
+
+        const existe=inscricoes.some(
+            item=>item.endpoint===inscricao.endpoint
+        );
 
         if(!existe){
             inscricoes.push(inscricao);
             salvarNotificacoes(inscricoes);
         }
 
-        res.json({sucesso:true,mensagem:'Notificações ativadas.'});
+        console.log('📱 DISPOSITIVO REGISTRADO PARA NOTIFICAÇÕES');
+
+        try{
+            await webpush.sendNotification(
+                inscricao,
+                JSON.stringify({
+                    titulo:'🔔 Mural Digital',
+                    corpo:'As notificações foram ativadas com sucesso!',
+                    url:'/mural.html'
+                })
+            );
+
+            console.log('✅ NOTIFICAÇÃO DE TESTE ENVIADA');
+        }catch(erro){
+            console.error(
+                '❌ ERRO AO ENVIAR NOTIFICAÇÃO DE TESTE:',
+                erro.statusCode||erro.message
+            );
+        }
+
+        res.json({
+            sucesso:true,
+            mensagem:'Notificações ativadas.'
+        });
+
     }catch(erro){
-        console.error(erro);
-        res.status(500).json({erro:'Erro ao registrar notificações.'});
+        console.error('❌ ERRO AO REGISTRAR NOTIFICAÇÃO:',erro);
+
+        res.status(500).json({
+            erro:'Erro ao registrar notificações.'
+        });
     }
 });
 
 app.get('/api/notificacoes/chave-publica',(req,res)=>{
-    res.json({chavePublica:VAPID_PUBLIC_KEY});
+    res.json({
+        chavePublica:VAPID_PUBLIC_KEY
+    });
 });
 
 app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
@@ -246,25 +354,35 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
         const conteudo=String(req.body.conteudo||'').trim();
         const prioridade=String(req.body.prioridade||'Normal').trim();
 
-        if(!titulo||!conteudo)return res.status(400).json({error:'Título e Conteúdo são obrigatórios!'});
-
-        const autor=req.session.professor.nome;
         let imagemUrl=null;
 
         if(req.file){
-            const extensao=path.extname(req.file.originalname).toLowerCase()||'.jpg';
-            const nomeArquivo=Date.now()+'-'+Math.round(Math.random()*1E9)+extensao;
+            const extensao=
+                path.extname(req.file.originalname).toLowerCase()||'.jpg';
+
+            const nomeArquivo=
+                Date.now()+'-'+Math.round(Math.random()*1E9)+extensao;
 
             const {error:uploadErro}=await supabase.storage
                 .from('imagens-mural')
-                .upload(nomeArquivo,req.file.buffer,{
-                    contentType:req.file.mimetype,
-                    upsert:false
-                });
+                .upload(
+                    nomeArquivo,
+                    req.file.buffer,
+                    {
+                        contentType:req.file.mimetype,
+                        upsert:false
+                    }
+                );
 
             if(uploadErro){
-                console.error('Erro ao enviar imagem para o Supabase:',uploadErro);
-                return res.status(500).json({error:'Erro ao enviar a imagem para o Storage.'});
+                console.error(
+                    'Erro ao enviar imagem para o Supabase:',
+                    uploadErro
+                );
+
+                return res.status(500).json({
+                    error:'Erro ao enviar a imagem para o Storage.'
+                });
             }
 
             const {data:urlData}=supabase.storage
@@ -274,30 +392,55 @@ app.post('/api/avisos',professorLogado,upload.single('imagem'),async(req,res)=>{
             imagemUrl=urlData.publicUrl;
         }
 
+        if(!titulo||!conteudo){
+            return res.status(400).json({
+                error:'Título e Conteúdo são obrigatórios!'
+            });
+        }
+
+        const autor=req.session.professor.nome;
+
         console.log('PUBLICANDO AVISO:',{
             titulo,
             autor,
-            imagem:imagemUrl
+            imagem:imagemUrl,
+            professorLogado:req.session.professor
         });
 
         const resultado=await pool.query(
             `INSERT INTO avisos (titulo,conteudo,cor_destaque,imagem,autor,data_criacao) VALUES($1,$2,$3,$4,$5,CURRENT_TIMESTAMP) RETURNING *`,
-            [titulo,conteudo,prioridade,imagemUrl,autor]
+            [
+                titulo,
+                conteudo,
+                prioridade,
+                imagemUrl,
+                autor
+            ]
         );
 
-        console.log('AVISO SALVO NO BANCO:',resultado.rows[0]);
+        console.log(
+            'AVISO SALVO NO BANCO:',
+            resultado.rows[0]
+        );
 
         enviarNotificacao(titulo).catch(erro=>{
-            console.error('Erro no sistema de notificações:',erro);
+            console.error(
+                'Erro no sistema de notificações:',
+                erro
+            );
         });
 
         res.status(201).json({
             sucesso:true,
             mensagem:'Aviso publicado por '+autor+'!'
         });
+
     }catch(erro){
         console.error(erro);
-        res.status(500).json({error:'Erro ao salvar aviso: '+erro.message});
+
+        res.status(500).json({
+            error:'Erro ao salvar aviso: '+erro.message
+        });
     }
 });
 
@@ -305,7 +448,11 @@ app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
     try{
         const id=parseInt(req.params.id);
 
-        if(isNaN(id))return res.status(400).json({erro:'ID do aviso inválido.'});
+        if(isNaN(id)){
+            return res.status(400).json({
+                erro:'ID do aviso inválido.'
+            });
+        }
 
         const autor=req.session.professor.nome;
 
@@ -315,30 +462,53 @@ app.delete('/api/avisos/:id',professorLogado,async(req,res)=>{
         );
 
         if(resultado.rows.length===0){
-            return res.status(404).json({erro:'Aviso não encontrado ou não pertence a você.'});
+            return res.status(404).json({
+                erro:'Aviso não encontrado ou não pertence a você.'
+            });
         }
 
         const avisoApagado=resultado.rows[0];
 
-        if(avisoApagado.imagem&&avisoApagado.imagem.startsWith('http')){
+        if(
+            avisoApagado.imagem&&
+            avisoApagado.imagem.startsWith('http')
+        ){
             try{
-                const nomeArquivo=avisoApagado.imagem.split('/').pop().split('?')[0];
+                const nomeArquivo=
+                    avisoApagado.imagem
+                    .split('/')
+                    .pop()
+                    .split('?')[0];
 
                 await supabase.storage
                     .from('imagens-mural')
                     .remove([nomeArquivo]);
+
             }catch(erroImagem){
-                console.error('Erro ao apagar imagem do Storage:',erroImagem);
+                console.error(
+                    'Erro ao apagar imagem do Storage:',
+                    erroImagem
+                );
             }
         }
 
-        res.json({sucesso:true,mensagem:'Aviso apagado com sucesso!'});
+        res.json({
+            sucesso:true,
+            mensagem:'Aviso apagado com sucesso!'
+        });
+
     }catch(erro){
         console.error(erro);
-        res.status(500).json({erro:'Erro ao apagar aviso.'});
+
+        res.status(500).json({
+            erro:'Erro ao apagar aviso.'
+        });
     }
 });
 
 app.listen(port,'0.0.0.0',()=>{
-    console.log(`🚀 Servidor Rodando na porta ${port}`);
+    console.log(
+        `🚀 Servidor Rodando na porta ${port}`
+    );
 });
+

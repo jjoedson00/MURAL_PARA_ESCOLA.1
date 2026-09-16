@@ -16,8 +16,6 @@ self.addEventListener('push',event=>{
     event.waitUntil(
         self.registration.showNotification(dados.titulo,{
             body:dados.corpo,
-            icon:'/icon-192.png',
-            badge:'/icon-192.png',
             data:{url:dados.url},
             vibrate:[200,100,200]
         })
@@ -40,6 +38,7 @@ self.addEventListener('notificationclick',event=>{
                     return janela.focus();
                 }
             }
+
             return clients.openWindow(url);
         })
     );
