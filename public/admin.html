@@ -1,291 +1,262 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Professor</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Professor</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body class="pagina-admin" style="display:none;">
 
 <button type="button" class="btn-sair-professor" id="btn-sair">🚪 Sair do Acesso Professor</button>
 
 <div class="container">
-    <h2>📢 Nova Publicação</h2>
-    <p class="admin-descricao">Publique um novo comunicado no mural.</p>
-    <div id="professor-logado"></div>
-
+<h2>📢 Nova Publicação</h2>
+<p class="admin-descricao">Publique um novo comunicado no mural.</p>
+<div id="professor-logado"></div>
+<div id="mensagem-admin"></div>
 
 <form id="form-aviso">
-    <div class="form-group">
-        <label for="titulo-aviso">Título do Aviso</label>
-        <input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
-    </div>
+<div class="form-group">
+<label for="titulo-aviso">Título do Aviso</label>
+<input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
+</div>
 
-    <div class="form-group">
-        <label for="conteudo-aviso">Conteúdo / Descrição</label>
-        <textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
-    </div>
+<div class="form-group">
+<label for="conteudo-aviso">Conteúdo / Descrição</label>
+<textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
+</div>
 
-    <div class="form-group">
-        <label for="prioridade-aviso">Importância / Cor da Etiqueta</label>
-        <select id="prioridade-aviso">
-            <option value="Normal">⚪ Aviso Normal</option>
-            <option value="Importante">🟡 Aviso Importante</option>
-            <option value="Urgente">🔴 Aviso Urgente</option>
-        </select>
-    </div>
+<div class="form-group">
+<label for="prioridade-aviso">Importância / Cor da Etiqueta</label>
+<select id="prioridade-aviso">
+<option value="Normal">⚪ Aviso Normal</option>
+<option value="Importante">🟡 Aviso Importante</option>
+<option value="Urgente">🔴 Aviso Urgente</option>
+</select>
+</div>
 
-    <div class="form-group">
-        <label for="imagem-aviso">📸 Adicionar Imagem (Opcional)</label>
-        <input type="file" id="imagem-aviso" accept="image/*">
-    </div>
+<div class="form-group">
+<label for="imagem-aviso">📸 Adicionar Imagem (Opcional)</label>
+<input type="file" id="imagem-aviso" accept="image/*">
+</div>
 
-    <button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
-    <a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
+<button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
+<a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
 </form>
-
-
 </div>
 
 <div class="gestao-container">
-    <span class="gestao-label">GERENCIAMENTO</span>
-    <h3>Avisos Ativos</h3>
-    <div id="lista-gerenciamento-avisos"></div>
+<span class="gestao-label">GERENCIAMENTO</span>
+<h3>Avisos Ativos</h3>
+<div id="lista-gerenciamento-avisos"></div>
 </div>
 
 <div id="caixa-confirmacao" class="caixa-confirmacao">
-    <div class="confirmacao-conteudo">
-        <h3 id="confirmacao-titulo">Confirmar ação</h3>
-        <p id="confirmacao-texto"></p>
-        <div class="confirmacao-botoes">
-            <button type="button" id="confirmar-acao" class="btn-confirmar">Confirmar</button>
-            <button type="button" id="cancelar-acao" class="btn-cancelar">Cancelar</button>
-        </div>
-    </div>
+<div class="confirmacao-conteudo">
+<h3 id="confirmacao-titulo">Confirmar ação</h3>
+<p id="confirmacao-texto"></p>
+<div class="confirmacao-botoes">
+<button type="button" id="confirmar-acao" class="btn-confirmar">Confirmar</button>
+<button type="button" id="cancelar-acao" class="btn-cancelar">Cancelar</button>
+</div>
+</div>
 </div>
 
 <script>
 let acaoConfirmacao=null;
 
 async function verificarSessao(){
-    try{
-        const resposta=await fetch('/api/sessao',{
-            method:'GET',
-            credentials:'include',
-            cache:'no-store'
-        });
+try{
+const resposta=await fetch('/api/sessao',{method:'GET',credentials:'include',cache:'no-store'});
+if(!resposta.ok){window.location.replace('/login.html');return false;}
+const dados=await resposta.json();
+if(!dados.logado||!dados.professor){window.location.replace('/login.html');return false;}
+document.body.style.display='';
+document.getElementById('professor-logado').innerHTML=`<div class="professor-logado">👨‍🏫 Logado como: <strong>${dados.professor.nome}</strong></div>`;
+return true;
+}catch(erro){
+console.error('Erro ao verificar sessão:',erro);
+window.location.replace('/login.html');
+return false;
+}
+}
 
-        if(!resposta.ok){
-            window.location.replace('/login.html');
-            return false;
-        }
-
-        const dados=await resposta.json();
-
-        if(!dados.logado||!dados.professor){
-            window.location.replace('/login.html');
-            return false;
-        }
-
-        document.body.style.display='';
-
-        document.getElementById('professor-logado').innerHTML=`
-            <div class="professor-logado">
-                👨‍🏫 Logado como:
-                <strong>${dados.professor.nome}</strong>
-            </div>
-        `;
-
-        return true;
-
-    }catch(erro){
-        console.error('Erro ao verificar sessão:',erro);
-        window.location.replace('/login.html');
-        return false;
-    }
+function mostrarMensagem(texto,tipo='sucesso'){
+const container=document.getElementById('mensagem-admin');
+if(!container)return;
+const mensagem=document.createElement('div');
+mensagem.textContent=texto;
+mensagem.style.padding='14px 18px';
+mensagem.style.margin='15px 0';
+mensagem.style.borderRadius='10px';
+mensagem.style.fontWeight='600';
+mensagem.style.textAlign='center';
+mensagem.style.transition='opacity 0.4s ease';
+if(tipo==='erro'){
+mensagem.style.background='#fee2e2';
+mensagem.style.color='#b91c1c';
+mensagem.style.border='1px solid #fca5a5';
+}else{
+mensagem.style.background='#dcfce7';
+mensagem.style.color='#166534';
+mensagem.style.border='1px solid #86efac';
+}
+container.innerHTML='';
+container.appendChild(mensagem);
+setTimeout(()=>{
+mensagem.style.opacity='0';
+setTimeout(()=>{if(mensagem.parentNode)mensagem.remove();},400);
+},4000);
 }
 
 function mostrarConfirmacao(titulo,texto,acao){
-    document.getElementById('confirmacao-titulo').textContent=titulo;
-    document.getElementById('confirmacao-texto').textContent=texto;
-    document.getElementById('caixa-confirmacao').classList.add('mostrar');
-    acaoConfirmacao=acao;
+document.getElementById('confirmacao-titulo').textContent=titulo;
+document.getElementById('confirmacao-texto').textContent=texto;
+document.getElementById('caixa-confirmacao').classList.add('mostrar');
+acaoConfirmacao=acao;
 }
 
 function fecharConfirmacao(){
-    document.getElementById('caixa-confirmacao').classList.remove('mostrar');
-    acaoConfirmacao=null;
+document.getElementById('caixa-confirmacao').classList.remove('mostrar');
+acaoConfirmacao=null;
 }
 
 document.getElementById('cancelar-acao').addEventListener('click',fecharConfirmacao);
 
 document.getElementById('confirmar-acao').addEventListener('click',async()=>{
-    if(acaoConfirmacao){
-        const acao=acaoConfirmacao;
-        fecharConfirmacao();
-        await acao();
-    }
+if(acaoConfirmacao){
+const acao=acaoConfirmacao;
+fecharConfirmacao();
+await acao();
+}
 });
 
-document.getElementById('caixa-confirmacao').addEventListener('click',(e)=>{
-    if(e.target.id==='caixa-confirmacao') fecharConfirmacao();
+document.getElementById('caixa-confirmacao').addEventListener('click',e=>{
+if(e.target.id==='caixa-confirmacao')fecharConfirmacao();
 });
 
 document.getElementById('btn-sair').addEventListener('click',()=>{
-    mostrarConfirmacao(
-        '🚪 Sair do Acesso Professor',
-        'Deseja realmente sair da sua conta?',
-        async()=>{
-            try{
-                const resposta=await fetch('/api/logout',{
-                    method:'POST',
-                    credentials:'include'
-                });
-
-                const dados=await resposta.json();
-
-                if(resposta.ok){
-                    sessionStorage.setItem('mensagemMural','Você saiu do Acesso Professor.');
-                    window.location.href='/mural.html';
-                }else{
-                    alert(dados.erro||'Não foi possível sair da conta.');
-                }
-
-            }catch(erro){
-                console.error(erro);
-                alert('Não foi possível conectar ao servidor.');
-            }
-        }
-    );
+mostrarConfirmacao(
+'🚪 Sair do Acesso Professor',
+'Deseja realmente sair da sua conta?',
+async()=>{
+try{
+const resposta=await fetch('/api/logout',{method:'POST',credentials:'include'});
+const dados=await resposta.json();
+if(resposta.ok){
+sessionStorage.setItem('mensagemMural','Você saiu do Acesso Professor.');
+window.location.href='/mural.html';
+}else{
+mostrarMensagem(dados.erro||'Não foi possível sair da conta.','erro');
+}
+}catch(erro){
+console.error(erro);
+mostrarMensagem('Não foi possível conectar ao servidor.','erro');
+}
+}
+);
 });
 
-document.getElementById('form-aviso').addEventListener('submit',async(e)=>{
-    e.preventDefault();
+document.getElementById('form-aviso').addEventListener('submit',async e=>{
+e.preventDefault();
 
-    const botao=document.getElementById('btn-publicar');
-    const titulo=document.getElementById('titulo-aviso').value.trim();
-    const conteudo=document.getElementById('conteudo-aviso').value.trim();
-    const prioridade=document.getElementById('prioridade-aviso').value;
-    const imagemInput=document.getElementById('imagem-aviso');
-    const formData=new FormData();
+const botao=document.getElementById('btn-publicar');
+const titulo=document.getElementById('titulo-aviso').value.trim();
+const conteudo=document.getElementById('conteudo-aviso').value.trim();
+const prioridade=document.getElementById('prioridade-aviso').value;
+const imagemInput=document.getElementById('imagem-aviso');
+const formData=new FormData();
 
-    formData.append('titulo',titulo);
-    formData.append('conteudo',conteudo);
-    formData.append('prioridade',prioridade);
+formData.append('titulo',titulo);
+formData.append('conteudo',conteudo);
+formData.append('prioridade',prioridade);
 
-    if(imagemInput.files&&imagemInput.files.length>0){
-        formData.append('imagem',imagemInput.files[0]);
-    }
+if(imagemInput.files&&imagemInput.files.length>0)formData.append('imagem',imagemInput.files[0]);
 
-    botao.disabled=true;
-    botao.textContent='Publicando...';
+botao.disabled=true;
+botao.textContent='Publicando...';
 
-    try{
-        const resposta=await fetch('/api/avisos',{
-            method:'POST',
-            credentials:'include',
-            body:formData
-        });
+try{
+const resposta=await fetch('/api/avisos',{method:'POST',credentials:'include',body:formData});
+const dados=await resposta.json();
 
-        const dados=await resposta.json();
-
-        if(resposta.ok){
-            document.getElementById('form-aviso').reset();
-            await carregarAvisosGestao();
-            alert(dados.mensagem||'Aviso publicado com sucesso!');
-        }else{
-            alert(dados.error||dados.erro||'Erro ao publicar o aviso.');
-        }
-
-    }catch(erro){
-        console.error(erro);
-        alert('Não foi possível conectar ao servidor.');
-    }finally{
-        botao.disabled=false;
-        botao.textContent='Publicar no Mural';
-    }
+if(resposta.ok){
+document.getElementById('form-aviso').reset();
+await carregarAvisosGestao();
+mostrarMensagem(dados.mensagem||'Aviso publicado com sucesso!');
+}else{
+mostrarMensagem(dados.error||dados.erro||'Erro ao publicar o aviso.','erro');
+}
+}catch(erro){
+console.error(erro);
+mostrarMensagem('Não foi possível conectar ao servidor.','erro');
+}finally{
+botao.disabled=false;
+botao.textContent='Publicar no Mural';
+}
 });
 
 async function carregarAvisosGestao(){
-    try{
-        const resposta=await fetch('/api/avisos',{
-            credentials:'include',
-            cache:'no-store'
-        });
+try{
+const resposta=await fetch('/api/avisos',{credentials:'include',cache:'no-store'});
+if(!resposta.ok){
+console.error('Erro ao carregar avisos:',resposta.status);
+return;
+}
 
-        if(!resposta.ok){
-            console.error('Erro ao carregar avisos:',resposta.status);
-            return;
-        }
+const avisos=await resposta.json();
+const container=document.getElementById('lista-gerenciamento-avisos');
+container.innerHTML='';
 
-        const avisos=await resposta.json();
-        const container=document.getElementById('lista-gerenciamento-avisos');
+if(!avisos||avisos.length===0){
+container.innerHTML='<p class="nenhum-aviso">Nenhum aviso ativo.</p>';
+return;
+}
 
-        container.innerHTML='';
-
-        if(!avisos||avisos.length===0){
-            container.innerHTML='<p class="nenhum-aviso">Nenhum aviso ativo.</p>';
-            return;
-        }
-
-        avisos.forEach(aviso=>{
-            const card=document.createElement('div');
-            card.className='card-gestao';
-
-            card.innerHTML=`
-                <div class="gestao-info">
-                    <strong>${aviso.titulo}</strong>
-                    <span>✍️ ${aviso.autor}</span>
-                </div>
-                <button class="btn-apagar" onclick="apagarAviso(${aviso.id})">
-                    Apagar
-                </button>
-            `;
-
-            container.appendChild(card);
-        });
-
-    }catch(erro){
-        console.error('Erro ao carregar avisos:',erro);
-    }
+avisos.forEach(aviso=>{
+const card=document.createElement('div');
+card.className='card-gestao';
+card.innerHTML=`
+<div class="gestao-info">
+<strong>${aviso.titulo}</strong>
+<span>✍️ ${aviso.autor}</span>
+</div>
+<button class="btn-apagar" onclick="apagarAviso(${aviso.id})">Apagar</button>
+`;
+container.appendChild(card);
+});
+}catch(erro){
+console.error('Erro ao carregar avisos:',erro);
+}
 }
 
 function apagarAviso(id){
-    mostrarConfirmacao(
-        '🗑️ Apagar aviso',
-        'Tem certeza que deseja apagar este aviso permanentemente?',
-        async()=>{
-            try{
-                const resposta=await fetch(`/api/avisos/${id}`,{
-                    method:'DELETE',
-                    credentials:'include'
-                });
+mostrarConfirmacao(
+'🗑️ Apagar aviso',
+'Tem certeza que deseja apagar este aviso permanentemente?',
+async()=>{
+try{
+const resposta=await fetch(`/api/avisos/${id}`,{method:'DELETE',credentials:'include'});
+const dados=await resposta.json();
 
-                const dados=await resposta.json();
-
-                if(resposta.ok){
-                    await carregarAvisosGestao();
-                    alert('Aviso apagado com sucesso!');
-                }else{
-                    alert(dados.erro||dados.error||'Não foi possível apagar o aviso.');
-                }
-
-            }catch(erro){
-                console.error(erro);
-                alert('Não foi possível conectar ao servidor.');
-            }
-        }
-    );
+if(resposta.ok){
+await carregarAvisosGestao();
+mostrarMensagem('🗑️ Aviso apagado com sucesso!');
+}else{
+mostrarMensagem(dados.erro||dados.error||'Não foi possível apagar o aviso.','erro');
+}
+}catch(erro){
+console.error(erro);
+mostrarMensagem('Não foi possível conectar ao servidor.','erro');
+}
+}
+);
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{
-    const logado=await verificarSessao();
-
-    if(logado){
-        carregarAvisosGestao();
-    }
+const logado=await verificarSessao();
+if(logado)carregarAvisosGestao();
 });
 </script>
 
