@@ -2,262 +2,398 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Painel do Professor</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="pagina-admin" style="display:none;">
 
-<button type="button" class="btn-sair-professor" id="btn-sair">🚪 Sair do Acesso Professor</button>
+<button class="btn-sair-professor" onclick="confirmarLogout()">Sair do Acesso Professor</button>
 
 <div class="container">
-<h2>📢 Nova Publicação</h2>
-<p class="admin-descricao">Publique um novo comunicado no mural.</p>
-<div id="professor-logado"></div>
-<div id="mensagem-admin"></div>
+<h2>👨‍🏫 Painel do Professor</h2>
 
-<form id="form-aviso">
+<div id="professorLogado" class="professor-logado"></div>
+
+<p class="admin-descricao">Publique um novo aviso no Mural Digital.</p>
+
+<form id="formAviso">
+
 <div class="form-group">
-<label for="titulo-aviso">Título do Aviso</label>
-<input type="text" id="titulo-aviso" placeholder="Ex: Reunião de Pais" required>
+<label for="titulo">Título</label>
+<input type="text" id="titulo" name="titulo" required>
 </div>
 
 <div class="form-group">
-<label for="conteudo-aviso">Conteúdo / Descrição</label>
-<textarea id="conteudo-aviso" placeholder="Digite os detalhes do comunicado..." required></textarea>
+<label for="conteudo">Conteúdo</label>
+<textarea id="conteudo" name="conteudo" required></textarea>
 </div>
 
 <div class="form-group">
-<label for="prioridade-aviso">Importância / Cor da Etiqueta</label>
-<select id="prioridade-aviso">
-<option value="Normal">⚪ Aviso Normal</option>
-<option value="Importante">🟡 Aviso Importante</option>
-<option value="Urgente">🔴 Aviso Urgente</option>
+<label for="prioridade">Prioridade</label>
+<select id="prioridade" name="prioridade">
+<option value="Normal">Normal</option>
+<option value="Importante">Importante</option>
+<option value="Urgente">Urgente</option>
 </select>
 </div>
 
 <div class="form-group">
-<label for="imagem-aviso">📸 Adicionar Imagem (Opcional)</label>
-<input type="file" id="imagem-aviso" accept="image/*">
+<label for="imagem">Imagem (opcional)</label>
+<input type="file" id="imagem" name="imagem" accept="image/*">
 </div>
 
-<button type="submit" class="btn-green" id="btn-publicar">Publicar no Mural</button>
-<a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
+<p id="mensagemAdmin"></p>
+
+<button type="submit" class="btn-green">📢 Publicar Aviso</button>
 </form>
+
+<a href="/mural.html" class="link-voltar">← Voltar para o Mural</a>
 </div>
 
 <div class="gestao-container">
-<span class="gestao-label">GERENCIAMENTO</span>
-<h3>Avisos Ativos</h3>
-<div id="lista-gerenciamento-avisos"></div>
+<span class="gestao-label">MEUS AVISOS</span>
+<h3>Gerenciar publicações</h3>
+<div id="listaAvisos">
+<p class="nenhum-aviso">Carregando avisos...</p>
+</div>
 </div>
 
-<div id="caixa-confirmacao" class="caixa-confirmacao">
+<div id="modalConfirmacao" class="caixa-confirmacao">
 <div class="confirmacao-conteudo">
-<h3 id="confirmacao-titulo">Confirmar ação</h3>
-<p id="confirmacao-texto"></p>
+<h3 id="confirmacaoTitulo">Confirmar</h3>
+<p id="confirmacaoTexto"></p>
 <div class="confirmacao-botoes">
-<button type="button" id="confirmar-acao" class="btn-confirmar">Confirmar</button>
-<button type="button" id="cancelar-acao" class="btn-cancelar">Cancelar</button>
+<button id="btnConfirmar" class="btn-confirmar">Confirmar</button>
+<button class="btn-cancelar" onclick="fecharConfirmacao()">Cancelar</button>
 </div>
+</div>
+</div>
+
+<div id="modalEdicao" class="modal-edicao">
+<div class="modal-edicao-conteudo">
+
+<h3>✏️ Editar Aviso</h3>
+
+<form id="formEdicao">
+
+<input type="hidden" id="editarId">
+
+<div class="form-group">
+<label for="editarTitulo">Título</label>
+<input type="text" id="editarTitulo" required>
+</div>
+
+<div class="form-group">
+<label for="editarConteudo">Conteúdo</label>
+<textarea id="editarConteudo" required></textarea>
+</div>
+
+<div class="form-group">
+<label for="editarPrioridade">Prioridade</label>
+<select id="editarPrioridade">
+<option value="Normal">Normal</option>
+<option value="Importante">Importante</option>
+<option value="Urgente">Urgente</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Imagem atual</label>
+<div id="imagemAtual"></div>
+
+<label class="opcao-remover-imagem">
+<input type="checkbox" id="removerImagem">
+Remover imagem atual
+</label>
+</div>
+
+<div class="form-group">
+<label for="editarImagem">Nova imagem</label>
+<input type="file" id="editarImagem" accept="image/*">
+</div>
+
+<p id="mensagemEdicao"></p>
+
+<div class="edicao-botoes">
+<button type="submit" class="btn-green">Salvar alterações</button>
+<button type="button" class="btn-green btn-fechar-edicao" onclick="fecharEdicao()">Cancelar</button>
+</div>
+
+</form>
 </div>
 </div>
 
 <script>
-let acaoConfirmacao=null;
+let avisosAtuais=[];
 
 async function verificarSessao(){
 try{
-const resposta=await fetch('/api/sessao',{method:'GET',credentials:'include',cache:'no-store'});
-if(!resposta.ok){window.location.replace('/login.html');return false;}
+const resposta=await fetch('/api/sessao');
 const dados=await resposta.json();
-if(!dados.logado||!dados.professor){window.location.replace('/login.html');return false;}
-document.body.style.display='';
-document.getElementById('professor-logado').innerHTML=`<div class="professor-logado">👨‍🏫 Logado como: <strong>${dados.professor.nome}</strong></div>`;
-return true;
+
+if(!dados.logado){
+window.location.href='/login.html';
+return;
+}
+
+document.body.style.display='block';
+document.getElementById('professorLogado').textContent='👨‍🏫 Professor: '+dados.professor.nome;
+
+carregarAvisosGestao();
 }catch(erro){
-console.error('Erro ao verificar sessão:',erro);
-window.location.replace('/login.html');
-return false;
+console.error(erro);
+window.location.href='/login.html';
 }
 }
 
-function mostrarMensagem(texto,tipo='sucesso'){
-const container=document.getElementById('mensagem-admin');
-if(!container)return;
-const mensagem=document.createElement('div');
+function mostrarMensagem(texto,cor='#15803d',elemento='mensagemAdmin'){
+const mensagem=document.getElementById(elemento);
 mensagem.textContent=texto;
-mensagem.style.padding='14px 18px';
-mensagem.style.margin='15px 0';
-mensagem.style.borderRadius='10px';
-mensagem.style.fontWeight='600';
-mensagem.style.textAlign='center';
-mensagem.style.transition='opacity 0.4s ease';
-if(tipo==='erro'){
-mensagem.style.background='#fee2e2';
-mensagem.style.color='#b91c1c';
-mensagem.style.border='1px solid #fca5a5';
-}else{
-mensagem.style.background='#dcfce7';
-mensagem.style.color='#166534';
-mensagem.style.border='1px solid #86efac';
+mensagem.style.color=cor;
 }
-container.innerHTML='';
-container.appendChild(mensagem);
+
+document.getElementById('formAviso').addEventListener('submit',async(event)=>{
+event.preventDefault();
+
+mostrarMensagem('Publicando...','#17243a');
+
+const formulario=new FormData();
+formulario.append('titulo',document.getElementById('titulo').value.trim());
+formulario.append('conteudo',document.getElementById('conteudo').value.trim());
+formulario.append('prioridade',document.getElementById('prioridade').value);
+
+const imagem=document.getElementById('imagem').files[0];
+
+if(imagem){
+formulario.append('imagem',imagem);
+}
+
+try{
+const resposta=await fetch('/api/avisos',{
+method:'POST',
+body:formulario
+});
+
+const dados=await resposta.json();
+
+if(resposta.ok){
+mostrarMensagem('Aviso publicado com sucesso!','#15803d');
+document.getElementById('formAviso').reset();
+carregarAvisosGestao();
+
 setTimeout(()=>{
-mensagem.style.opacity='0';
-setTimeout(()=>{if(mensagem.parentNode)mensagem.remove();},400);
-},4000);
-}
-
-function mostrarConfirmacao(titulo,texto,acao){
-document.getElementById('confirmacao-titulo').textContent=titulo;
-document.getElementById('confirmacao-texto').textContent=texto;
-document.getElementById('caixa-confirmacao').classList.add('mostrar');
-acaoConfirmacao=acao;
-}
-
-function fecharConfirmacao(){
-document.getElementById('caixa-confirmacao').classList.remove('mostrar');
-acaoConfirmacao=null;
-}
-
-document.getElementById('cancelar-acao').addEventListener('click',fecharConfirmacao);
-
-document.getElementById('confirmar-acao').addEventListener('click',async()=>{
-if(acaoConfirmacao){
-const acao=acaoConfirmacao;
-fecharConfirmacao();
-await acao();
-}
-});
-
-document.getElementById('caixa-confirmacao').addEventListener('click',e=>{
-if(e.target.id==='caixa-confirmacao')fecharConfirmacao();
-});
-
-document.getElementById('btn-sair').addEventListener('click',()=>{
-mostrarConfirmacao(
-'🚪 Sair do Acesso Professor',
-'Deseja realmente sair da sua conta?',
-async()=>{
-try{
-const resposta=await fetch('/api/logout',{method:'POST',credentials:'include'});
-const dados=await resposta.json();
-if(resposta.ok){
-sessionStorage.setItem('mensagemMural','Você saiu do Acesso Professor.');
-window.location.href='/mural.html';
+document.getElementById('mensagemAdmin').textContent='';
+},2500);
 }else{
-mostrarMensagem(dados.erro||'Não foi possível sair da conta.','erro');
+mostrarMensagem(dados.erro||dados.error||'Erro ao publicar.','#dc2626');
 }
 }catch(erro){
 console.error(erro);
-mostrarMensagem('Não foi possível conectar ao servidor.','erro');
-}
-}
-);
-});
-
-document.getElementById('form-aviso').addEventListener('submit',async e=>{
-e.preventDefault();
-
-const botao=document.getElementById('btn-publicar');
-const titulo=document.getElementById('titulo-aviso').value.trim();
-const conteudo=document.getElementById('conteudo-aviso').value.trim();
-const prioridade=document.getElementById('prioridade-aviso').value;
-const imagemInput=document.getElementById('imagem-aviso');
-const formData=new FormData();
-
-formData.append('titulo',titulo);
-formData.append('conteudo',conteudo);
-formData.append('prioridade',prioridade);
-
-if(imagemInput.files&&imagemInput.files.length>0)formData.append('imagem',imagemInput.files[0]);
-
-botao.disabled=true;
-botao.textContent='Publicando...';
-
-try{
-const resposta=await fetch('/api/avisos',{method:'POST',credentials:'include',body:formData});
-const dados=await resposta.json();
-
-if(resposta.ok){
-document.getElementById('form-aviso').reset();
-await carregarAvisosGestao();
-mostrarMensagem(dados.mensagem||'Aviso publicado com sucesso!');
-}else{
-mostrarMensagem(dados.error||dados.erro||'Erro ao publicar o aviso.','erro');
-}
-}catch(erro){
-console.error(erro);
-mostrarMensagem('Não foi possível conectar ao servidor.','erro');
-}finally{
-botao.disabled=false;
-botao.textContent='Publicar no Mural';
+mostrarMensagem('Erro de conexão com o servidor.','#dc2626');
 }
 });
 
 async function carregarAvisosGestao(){
+const container=document.getElementById('listaAvisos');
+
 try{
-const resposta=await fetch('/api/avisos',{credentials:'include',cache:'no-store'});
-if(!resposta.ok){
-console.error('Erro ao carregar avisos:',resposta.status);
-return;
-}
-
+const resposta=await fetch('/api/avisos');
 const avisos=await resposta.json();
-const container=document.getElementById('lista-gerenciamento-avisos');
-container.innerHTML='';
 
-if(!avisos||avisos.length===0){
-container.innerHTML='<p class="nenhum-aviso">Nenhum aviso ativo.</p>';
+if(!resposta.ok){
+container.innerHTML='<p class="nenhum-aviso">Erro ao carregar avisos.</p>';
 return;
 }
+
+avisosAtuais=avisos;
+
+if(avisos.length===0){
+container.innerHTML='<p class="nenhum-aviso">Você ainda não publicou avisos.</p>';
+return;
+}
+
+container.innerHTML='';
 
 avisos.forEach(aviso=>{
 const card=document.createElement('div');
 card.className='card-gestao';
-card.innerHTML=`
-<div class="gestao-info">
-<strong>${aviso.titulo}</strong>
-<span>✍️ ${aviso.autor}</span>
-</div>
-<button class="btn-apagar" onclick="apagarAviso(${aviso.id})">Apagar</button>
-`;
+
+const info=document.createElement('div');
+info.className='gestao-info';
+
+const titulo=document.createElement('strong');
+titulo.textContent=aviso.titulo;
+
+const autor=document.createElement('span');
+autor.textContent='✍️ '+(aviso.autor||'Professor');
+
+info.appendChild(titulo);
+info.appendChild(autor);
+
+const botoes=document.createElement('div');
+botoes.className='gestao-botoes';
+
+const editar=document.createElement('button');
+editar.className='btn-editar';
+editar.textContent='✏️ Editar';
+editar.onclick=()=>abrirEdicao(aviso.id);
+
+const apagar=document.createElement('button');
+apagar.className='btn-apagar';
+apagar.textContent='Apagar';
+apagar.onclick=()=>apagarAviso(aviso.id);
+
+botoes.appendChild(editar);
+botoes.appendChild(apagar);
+
+card.appendChild(info);
+card.appendChild(botoes);
 container.appendChild(card);
 });
 }catch(erro){
-console.error('Erro ao carregar avisos:',erro);
+console.error(erro);
+container.innerHTML='<p class="nenhum-aviso">Erro ao carregar avisos.</p>';
 }
+}
+
+function abrirEdicao(id){
+const aviso=avisosAtuais.find(item=>Number(item.id)===Number(id));
+
+if(!aviso)return;
+
+document.getElementById('editarId').value=aviso.id;
+document.getElementById('editarTitulo').value=aviso.titulo||'';
+document.getElementById('editarConteudo').value=aviso.conteudo||'';
+document.getElementById('editarPrioridade').value=aviso.prioridade||aviso.cor_destaque||'Normal';
+document.getElementById('removerImagem').checked=false;
+document.getElementById('editarImagem').value='';
+
+const imagemAtual=document.getElementById('imagemAtual');
+
+if(aviso.imagem){
+imagemAtual.innerHTML='<img class="imagem-atual-edicao" src="'+aviso.imagem+'" alt="Imagem atual">';
+}else{
+imagemAtual.innerHTML='<p style="color:#64748b">Este aviso não possui imagem.</p>';
+}
+
+document.getElementById('mensagemEdicao').textContent='';
+document.getElementById('modalEdicao').classList.add('mostrar');
+}
+
+function fecharEdicao(){
+document.getElementById('modalEdicao').classList.remove('mostrar');
+}
+
+document.getElementById('formEdicao').addEventListener('submit',async(event)=>{
+event.preventDefault();
+
+const id=document.getElementById('editarId').value;
+const formulario=new FormData();
+
+formulario.append('titulo',document.getElementById('editarTitulo').value.trim());
+formulario.append('conteudo',document.getElementById('editarConteudo').value.trim());
+formulario.append('prioridade',document.getElementById('editarPrioridade').value);
+formulario.append('removerImagem',document.getElementById('removerImagem').checked?'true':'false');
+
+const imagem=document.getElementById('editarImagem').files[0];
+
+if(imagem){
+formulario.append('imagem',imagem);
+}
+
+const mensagem=document.getElementById('mensagemEdicao');
+mensagem.textContent='Salvando...';
+mensagem.style.color='#17243a';
+
+try{
+const resposta=await fetch('/api/avisos/'+id,{
+method:'PUT',
+body:formulario
+});
+
+const dados=await resposta.json();
+
+if(resposta.ok){
+mensagem.textContent='Alterações salvas!';
+mensagem.style.color='#15803d';
+
+await carregarAvisosGestao();
+
+setTimeout(()=>{
+fecharEdicao();
+},700);
+}else{
+mensagem.textContent=dados.erro||dados.error||'Erro ao editar aviso.';
+mensagem.style.color='#dc2626';
+}
+}catch(erro){
+console.error(erro);
+mensagem.textContent='Erro de conexão com o servidor.';
+mensagem.style.color='#dc2626';
+}
+});
+
+function mostrarConfirmacao(titulo,texto,acao){
+document.getElementById('confirmacaoTitulo').textContent=titulo;
+document.getElementById('confirmacaoTexto').textContent=texto;
+document.getElementById('modalConfirmacao').classList.add('mostrar');
+
+document.getElementById('btnConfirmar').onclick=async()=>{
+fecharConfirmacao();
+await acao();
+};
+}
+
+function fecharConfirmacao(){
+document.getElementById('modalConfirmacao').classList.remove('mostrar');
 }
 
 function apagarAviso(id){
 mostrarConfirmacao(
-'🗑️ Apagar aviso',
-'Tem certeza que deseja apagar este aviso permanentemente?',
+'Apagar aviso?',
+'Tem certeza que deseja apagar esta publicação?',
 async()=>{
 try{
-const resposta=await fetch(`/api/avisos/${id}`,{method:'DELETE',credentials:'include'});
+const resposta=await fetch('/api/avisos/'+id,{
+method:'DELETE'
+});
+
 const dados=await resposta.json();
 
 if(resposta.ok){
-await carregarAvisosGestao();
-mostrarMensagem('🗑️ Aviso apagado com sucesso!');
+sessionStorage.setItem('mensagemMural','Aviso apagado com sucesso!');
+window.location.href='/mural.html';
 }else{
-mostrarMensagem(dados.erro||dados.error||'Não foi possível apagar o aviso.','erro');
+mostrarMensagem(dados.erro||'Erro ao apagar.','#dc2626');
 }
 }catch(erro){
 console.error(erro);
-mostrarMensagem('Não foi possível conectar ao servidor.','erro');
+mostrarMensagem('Erro de conexão com o servidor.','#dc2626');
 }
-}
-);
+});
 }
 
-document.addEventListener('DOMContentLoaded',async()=>{
-const logado=await verificarSessao();
-if(logado)carregarAvisosGestao();
+function confirmarLogout(){
+mostrarConfirmacao(
+'Sair do acesso professor?',
+'Você será desconectado do painel.',
+async()=>{
+try{
+const resposta=await fetch('/api/logout',{method:'POST'});
+
+if(resposta.ok){
+sessionStorage.setItem('mensagemMural','Você saiu do acesso professor.');
+window.location.href='/mural.html';
+}
+}catch(erro){
+console.error(erro);
+}
 });
+}
+
+verificarSessao();
 </script>
 
 </body>

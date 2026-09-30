@@ -1,95 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Professor</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cadastro de Professor</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body class="pagina-cadastro">
-    <div class="box-cadastro">
-        <h2>👨‍🏫 Cadastro de Professor</h2>
+<div class="box-cadastro">
+<h2>👨‍🏫 Cadastro de Professor</h2>
 
-        <form id="formCadastro">
-            <div class="form-group">
-                <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome" required>
-            </div>
+<form id="formCadastro">
 
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+<div class="form-group">
+<label for="nome">Nome</label>
+<input type="text" id="nome" name="nome" required>
+</div>
 
-            <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
+<div class="form-group">
+<label for="email">E-mail</label>
+<input type="email" id="email" name="email" required>
+</div>
 
-            <div class="form-group">
-                <label for="token">🔑 Token da Coordenação</label>
-                <input type="password" id="token" name="token" required>
-            </div>
+<div class="form-group">
+<label for="senha">Senha</label>
+<div class="campo-senha">
+<input type="password" id="senha" name="senha" minlength="8" required>
+<button type="button" class="olho-senha" onclick="mostrarSenha('senha',this)">◉</button>
+</div>
+<small>Use pelo menos 8 caracteres, com letra maiúscula, minúscula e número.</small>
+</div>
 
-            <p id="mensagem"></p>
+<div class="form-group">
+<label for="confirmarSenha">Confirmar senha</label>
+<div class="campo-senha">
+<input type="password" id="confirmarSenha" name="confirmarSenha" minlength="8" required>
+<button type="button" class="olho-senha" onclick="mostrarSenha('confirmarSenha',this)">◉</button>
+</div>
+</div>
 
-            <button type="submit" class="btn-submit">Criar Conta</button>
-        </form>
+<div class="form-group">
+<label for="token">🔑 Token da Coordenação</label>
+<div class="campo-senha">
+<input type="password" id="token" name="token" required>
+<button type="button" class="olho-senha" onclick="mostrarSenha('token',this)">◉</button>
+</div>
+</div>
 
-        <p>
-            Já possui uma conta?
-            <a href="login.html">Fazer Login</a>
-        </p>
-    </div>
+<p id="mensagem"></p>
 
-    <script>
-        const form=document.getElementById('formCadastro');
-        const mensagem=document.getElementById('mensagem');
+<button type="submit" class="btn-submit">Criar Conta</button>
+</form>
 
-        form.addEventListener('submit',async(event)=>{
-            event.preventDefault();
+<p>
+Já possui uma conta?
+<a href="login.html">Fazer Login</a>
+</p>
+</div>
 
-            mensagem.textContent='Criando conta...';
-            mensagem.style.color='#17243a';
+<script>
+const form=document.getElementById('formCadastro');
+const mensagem=document.getElementById('mensagem');
 
-            const nome=document.getElementById('nome').value.trim();
-            const email=document.getElementById('email').value.trim();
-            const senha=document.getElementById('senha').value;
-            const token=document.getElementById('token').value.trim();
+function mostrarSenha(id,botao){
+const campo=document.getElementById(id);
 
-            try{
-                const resposta=await fetch('/api/cadastro',{
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json'
-                    },
-                    body:JSON.stringify({
-                        nome,
-                        email,
-                        senha,
-                        token
-                    })
-                });
+if(campo.type==='password'){
+campo.type='text';
+botao.textContent='○';
+}else{
+campo.type='password';
+botao.textContent='◉';
+}
+}
 
-                const dados=await resposta.json();
+form.addEventListener('submit',async(event)=>{
+event.preventDefault();
 
-                if(resposta.ok){
-                    mensagem.textContent='Cadastro realizado! Entrando no painel...';
-                    mensagem.style.color='#15803d';
+mensagem.textContent='Criando conta...';
+mensagem.style.color='#17243a';
 
-                    setTimeout(()=>{
-                        window.location.href='/admin.html';
-                    },500);
-                }else{
-                    mensagem.textContent=dados.erro||'Erro ao cadastrar.';
-                    mensagem.style.color='#dc2626';
-                }
-            }catch(erro){
-                console.error(erro);
-                mensagem.textContent='Erro de conexão com o servidor.';
-                mensagem.style.color='#dc2626';
-            }
-        });
-    </script>
+const nome=document.getElementById('nome').value.trim();
+const email=document.getElementById('email').value.trim();
+const senha=document.getElementById('senha').value;
+const confirmarSenha=document.getElementById('confirmarSenha').value;
+const token=document.getElementById('token').value.trim();
+
+const senhaForte=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+if(!senhaForte.test(senha)){
+mensagem.textContent='A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
+mensagem.style.color='#dc2626';
+return;
+}
+
+if(senha!==confirmarSenha){
+mensagem.textContent='As senhas não coincidem.';
+mensagem.style.color='#dc2626';
+return;
+}
+
+try{
+const resposta=await fetch('/api/cadastro',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({nome,email,senha,token})
+});
+
+const dados=await resposta.json();
+
+if(resposta.ok){
+mensagem.textContent='Cadastro realizado! Entrando no painel...';
+mensagem.style.color='#15803d';
+
+setTimeout(()=>{
+window.location.href='/admin.html';
+},500);
+}else{
+mensagem.textContent=dados.erro||'Erro ao cadastrar.';
+mensagem.style.color='#dc2626';
+}
+}catch(erro){
+console.error(erro);
+mensagem.textContent='Erro de conexão com o servidor.';
+mensagem.style.color='#dc2626';
+}
+});
+</script>
 </body>
 </html>

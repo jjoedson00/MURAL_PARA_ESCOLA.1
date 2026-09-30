@@ -153,4 +153,24 @@ body.pagina-inicial{padding:20px}
 .card-gestao{align-items:flex-start}
 .btn-sair-professor{width:calc(100% - 20px);margin-top:10px;font-size:13px}
 }
+.campo-senha{position:relative;display:flex;align-items:center}
+.campo-senha input{padding-right:48px!important}
+.olho-senha{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:transparent;color:#64748b;font-size:18px;cursor:pointer;padding:0}
+.olho-senha:hover{color:#334155}
+.pagina-cadastro small{display:block;margin-top:6px;color:#64748b;font-size:12px}
+.pagina-admin .campo-senha{width:100%}
 
+.btn-editar{padding:9px 17px;border:0;border-radius:6px;background:#0284c7;color:#fff;font-weight:bold;cursor:pointer}
+.btn-editar:hover{background:#0369a1}
+.gestao-botoes{display:flex;gap:8px;flex-wrap:wrap}
+
+.modal-edicao{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.45)}
+.modal-edicao.mostrar{display:flex}
+.modal-edicao-conteudo{width:100%;max-width:600px;max-height:90vh;overflow:auto;padding:28px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25)}
+.modal-edicao-conteudo h3{margin:0 0 20px;color:#0284c7;text-align:center}
+.edicao-botoes{display:flex;gap:10px;margin-top:20px}
+.edicao-botoes button{flex:1}
+.btn-fechar-edicao{background:#e2e8f0!important;color:#334155!important}
+.imagem-atual-edicao{width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:8px;background:#f8fafc}
+.opcao-remover-imagem{display:flex!important;align-items:center;gap:8px;margin-top:10px!important;font-weight:normal!important}
+.opcao-remover-imagem input{width:auto!important}
