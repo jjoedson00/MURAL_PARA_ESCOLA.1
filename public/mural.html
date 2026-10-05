@@ -141,14 +141,20 @@ info.appendChild(autor);
 info.appendChild(data);
 
 const prioridadeElemento=document.createElement('span');
-prioridadeElemento.className='prioridade';
-prioridadeElemento.textContent=prioridade;
+
+const prioridadeTexto=String(prioridade).trim();
+const prioridadeClasse=prioridadeTexto.toLowerCase();
+
+prioridadeElemento.className=
+'prioridade '+prioridadeClasse;
+
+prioridadeElemento.textContent=prioridadeTexto;
 
 card.appendChild(titulo);
-card.appendChild(conteudo);
 
 if(aviso.imagem){
 const imagem=document.createElement('img');
+
 imagem.src=aviso.imagem;
 imagem.alt='Imagem do aviso';
 imagem.className='imagem-aviso';
@@ -156,6 +162,7 @@ imagem.className='imagem-aviso';
 card.appendChild(imagem);
 }
 
+card.appendChild(conteudo);
 card.appendChild(info);
 card.appendChild(prioridadeElemento);
 
@@ -185,9 +192,11 @@ return;
 }
 
 try{
-const registro=await navigator.serviceWorker.register('/service-worker.js');
+const registro=
+await navigator.serviceWorker.register('/service-worker.js');
 
-const resposta=await fetch('/api/notificacoes/chave-publica');
+const resposta=
+await fetch('/api/notificacoes/chave-publica');
 
 const dados=await resposta.json();
 
@@ -207,9 +216,11 @@ erro
 }
 }
 
-inscricao=await registro.pushManager.subscribe({
+inscricao=
+await registro.pushManager.subscribe({
 userVisibleOnly:true,
-applicationServerKey:converterChave(chavePublica)
+applicationServerKey:
+converterChave(chavePublica)
 });
 
 await fetch('/api/notificacoes/inscrever',{
@@ -220,7 +231,8 @@ headers:{
 body:JSON.stringify(inscricao)
 });
 
-botaoNotificacoes.textContent='🔄 Renovar notificações';
+botaoNotificacoes.textContent=
+'🔄 Renovar notificações';
 
 }catch(erro){
 console.error(
@@ -236,12 +248,14 @@ if(
 !('PushManager'in window)||
 !('Notification'in window)
 ){
-botaoNotificacoes.textContent='🔔 Notificações não disponíveis';
+botaoNotificacoes.textContent=
+'🔔 Notificações não disponíveis';
 return;
 }
 
 try{
-const permissao=await Notification.requestPermission();
+const permissao=
+await Notification.requestPermission();
 
 if(permissao!=='granted'){
 mostrarMensagem(
@@ -277,24 +291,31 @@ const base64Final=
 .replace(/-/g,'+')
 .replace(/_/g,'/');
 
-const rawData=window.atob(base64Final);
+const rawData=
+window.atob(base64Final);
 
 return Uint8Array.from(
-[...rawData].map(char=>char.charCodeAt(0))
+[...rawData].map(char=>
+char.charCodeAt(0)
+)
 );
 }
 
-window.addEventListener('beforeinstallprompt',event=>{
+window.addEventListener(
+'beforeinstallprompt',
+event=>{
 event.preventDefault();
 
 eventoInstalacao=event;
 
-const botao=document.getElementById('btn-instalar');
+const botao=
+document.getElementById('btn-instalar');
 
 if(botao){
 botao.style.display='inline-flex';
 }
-});
+}
+);
 
 async function instalarApp(){
 if(!eventoInstalacao)return;
@@ -305,7 +326,8 @@ const resultado=
 await eventoInstalacao.userChoice;
 
 if(resultado.outcome==='accepted'){
-const botao=document.getElementById('btn-instalar');
+const botao=
+document.getElementById('btn-instalar');
 
 if(botao){
 botao.style.display='none';
@@ -316,7 +338,8 @@ eventoInstalacao=null;
 }
 
 window.addEventListener('appinstalled',()=>{
-const botao=document.getElementById('btn-instalar');
+const botao=
+document.getElementById('btn-instalar');
 
 if(botao){
 botao.style.display='none';
@@ -324,10 +347,13 @@ botao.style.display='none';
 });
 
 if(
-window.matchMedia('(display-mode: standalone)').matches||
+window.matchMedia(
+'(display-mode: standalone)'
+).matches||
 window.navigator.standalone===true
 ){
-const botao=document.getElementById('btn-instalar');
+const botao=
+document.getElementById('btn-instalar');
 
 if(botao){
 botao.style.display='none';
