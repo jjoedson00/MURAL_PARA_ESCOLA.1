@@ -29,9 +29,6 @@ body.pagina-mural #pesquisa{width:350px;height:50px;padding:0 18px;border:1px so
 body.pagina-mural #pesquisa:focus{border-color:#0284c7}
 body.pagina-mural #lista-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:25px}
 body.pagina-mural .aviso-card{width:100%;min-width:0;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:18px;overflow:hidden;box-shadow:0 7px 22px rgba(15,23,42,.08);padding:22px}
-body.pagina-mural .aviso-card.normal{background:#f0fdf4;border-color:#bbf7d0}
-body.pagina-mural .aviso-card.importante{background:#fffbeb;border-color:#fde68a}
-body.pagina-mural .aviso-card.urgente{background:#fef2f2;border-color:#fecaca}
 body.pagina-mural .aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
 body.pagina-mural .aviso-card h3{margin:0 0 18px;color:#0f172a;font-size:25px;line-height:1.3}
 body.pagina-mural .aviso-card p{margin:0 0 20px;color:#334155;font-size:17px;line-height:1.6}
