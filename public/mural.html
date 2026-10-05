@@ -88,13 +88,21 @@ card.className='aviso-card';
 const titulo=document.createElement('h3');
 titulo.textContent=aviso.titulo;
 
-const prioridade=
-aviso.cor_destaque||
-aviso.prioridade||
-'Normal';
+/* PRIORIDADE */
 
-const prioridadeTexto=String(prioridade).trim();
-const prioridadeClasse=prioridadeTexto.toLowerCase();
+const prioridadeTexto=String(
+aviso.prioridade||
+aviso.cor_destaque||
+'Normal'
+).trim();
+
+let prioridadeClasse='normal';
+
+if(prioridadeTexto.toLowerCase()==='importante'){
+prioridadeClasse='importante';
+}else if(prioridadeTexto.toLowerCase()==='urgente'){
+prioridadeClasse='urgente';
+}
 
 const prioridadeElemento=document.createElement('span');
 prioridadeElemento.className='prioridade '+prioridadeClasse;
