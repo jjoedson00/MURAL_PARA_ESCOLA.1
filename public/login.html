@@ -1,74 +1,106 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login do Professor</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login do Professor</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body class="pagina-login">
-    <div class="login-container">
-        <a href="/index.html" class="fechar-login">✕</a>
-        <h2>👨‍🏫 Acesso do Professor</h2>
-        <form id="form-login">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-            </div>
-            <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-            </div>
-            <div id="mensagem-erro"></div>
-            <button type="submit" class="btn-submit">Entrar</button>
-        </form>
-        <p class="login-cadastro">
-            Ainda não possui uma conta?
-            <a href="/cadastro.html">Cadastre-se</a>
-        </p>
-    </div>
-    <script>
-        const formulario = document.getElementById('form-login');
-        const mensagemErro = document.getElementById('mensagem-erro');
 
-        formulario.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            mensagemErro.style.display = 'none';
-            mensagemErro.textContent = '';
+<div class="login-container">
 
-            const email = document.getElementById('email').value.trim();
-            const senha = document.getElementById('senha').value;
+<a href="/index.html" class="fechar-login">✕</a>
 
-            try {
-                const resposta = await fetch('/api/login', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email,
-                        senha
-                    })
-                });
+<h2>👨‍🏫 Acesso do Professor</h2>
 
-                const dados = await resposta.json();
+<form id="form-login">
 
-                if (!resposta.ok) {
-                    mensagemErro.textContent = dados.erro || 'E-mail ou senha incorretos.';
-                    mensagemErro.style.display = 'block';
-                    return;
-                }
+<div class="form-group">
+<label for="email">E-mail</label>
+<input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+</div>
 
-                window.location.href = '/admin.html';
-            } catch (erro) {
-                console.error(erro);
-                mensagemErro.textContent = 'Não foi possível conectar ao servidor.';
-                mensagemErro.style.display = 'block';
-            }
-        });
-    </script>
+<div class="form-group">
+<label for="senha">Senha</label>
+<input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+</div>
+
+<div id="mensagem-erro"></div>
+
+<button type="submit" class="btn-submit">Entrar</button>
+
+</form>
+
+<p class="login-cadastro">
+Ainda não possui uma conta?
+<a href="/cadastro.html">Cadastre-se</a>
+</p>
+
+</div>
+
+<script>
+const formulario=document.getElementById('form-login');
+const mensagemErro=document.getElementById('mensagem-erro');
+
+async function verificarSessao(){
+try{
+const resposta=await fetch('/api/sessao',{
+credentials:'include'
+});
+
+const dados=await resposta.json();
+
+if(dados.logado){
+window.location.href='/admin.html';
+}
+}catch(erro){
+console.error(erro);
+}
+}
+
+formulario.addEventListener('submit',async function(event){
+event.preventDefault();
+
+mensagemErro.style.display='none';
+mensagemErro.textContent='';
+
+const email=document.getElementById('email').value.trim();
+const senha=document.getElementById('senha').value;
+
+try{
+const resposta=await fetch('/api/login',{
+method:'POST',
+credentials:'include',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+email,
+senha
+})
+});
+
+const dados=await resposta.json();
+
+if(!resposta.ok){
+mensagemErro.textContent=dados.erro||'E-mail ou senha incorretos.';
+mensagemErro.style.display='block';
+return;
+}
+
+window.location.href='/admin.html';
+
+}catch(erro){
+console.error(erro);
+mensagemErro.textContent='Não foi possível conectar ao servidor.';
+mensagemErro.style.display='block';
+}
+});
+
+verificarSessao();
+</script>
+
 </body>
 </html>
-
