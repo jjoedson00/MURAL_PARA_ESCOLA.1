@@ -5,11 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Mural Digital</title>
 <link rel="stylesheet" href="style.css">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0f172a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 
 <body class="pagina-mural">
@@ -17,7 +12,7 @@
 <header class="mural-header">
 <div>
 <h1>📌 Mural Digital</h1>
-<p>Comunicados e avisos da escola</p>
+<p>Informações e avisos da escola</p>
 </div>
 
 <div class="mural-acoes">
@@ -38,7 +33,7 @@
 <input
 type="search"
 id="pesquisa"
-placeholder="Pesquisar avisos por título ou conteúdo"
+placeholder="Pesquisar avisos por título ou conteúdo..."
 >
 </div>
 
@@ -49,78 +44,75 @@ placeholder="Pesquisar avisos por título ou conteúdo"
 </main>
 
 <script>
-const listaAvisos=document.getElementById('lista-avisos');
-const pesquisa=document.getElementById('pesquisa');
-const mensagemMural=document.getElementById('mensagem-mural');
-const botaoNotificacoes=document.getElementById('btn-notificacoes');
-
-let todosAvisos=[];
-let eventoInstalacao=null;
+let avisosAtuais=[];
 
 function mostrarMensagem(texto,cor='#15803d'){
-mensagemMural.textContent=texto;
-mensagemMural.style.color=cor;
-
-setTimeout(()=>{
-mensagemMural.textContent='';
-},4000);
-}
-
-const mensagemSalva=sessionStorage.getItem('mensagemMural');
-
-if(mensagemSalva){
-mostrarMensagem(mensagemSalva);
-sessionStorage.removeItem('mensagemMural');
+const mensagem=document.getElementById('mensagem-mural');
+mensagem.textContent=texto;
+mensagem.style.color=cor;
 }
 
 async function carregarAvisos(){
 try{
 const resposta=await fetch('/api/avisos');
+const avisos=await resposta.json();
 
-if(!resposta.ok)throw new Error('Erro ao carregar avisos.');
+if(!resposta.ok){
+mostrarAvisos([]);
+return;
+}
 
-todosAvisos=await resposta.json();
-mostrarAvisos(todosAvisos);
+avisosAtuais=avisos;
+mostrarAvisos(avisos);
 
 }catch(erro){
 console.error(erro);
-listaAvisos.innerHTML=
-'<p class="mensagem-erro">Não foi possível carregar os avisos.</p>';
+mostrarAvisos([]);
 }
 }
 
 function mostrarAvisos(avisos){
-const termo=pesquisa.value.trim().toLowerCase();
+const lista=document.getElementById('lista-avisos');
+lista.innerHTML='';
 
-const filtrados=avisos.filter(aviso=>{
-const titulo=String(aviso.titulo||'').toLowerCase();
-const conteudo=String(aviso.conteudo||'').toLowerCase();
-
-return titulo.includes(termo)||conteudo.includes(termo);
-});
-
-if(filtrados.length===0){
-listaAvisos.innerHTML=
-'<p class="mensagem-vazia">Nenhum aviso encontrado.</p>';
+if(!avisos.length){
+lista.innerHTML='<p class="mensagem-vazia">Nenhum aviso encontrado.</p>';
 return;
 }
 
-listaAvisos.innerHTML='';
+avisos.forEach(aviso=>{
 
-filtrados.forEach(aviso=>{
-const card=document.createElement('article');
+const card=document.createElement('div');
 card.className='aviso-card';
+
+const titulo=document.createElement('h3');
+titulo.textContent=aviso.titulo;
 
 const prioridade=
 aviso.cor_destaque||
 aviso.prioridade||
 'Normal';
 
-const titulo=document.createElement('h3');
-titulo.textContent=aviso.titulo||'Sem título';
+const prioridadeTexto=String(prioridade).trim();
+const prioridadeClasse=prioridadeTexto.toLowerCase();
+
+const prioridadeElemento=document.createElement('span');
+prioridadeElemento.className='prioridade '+prioridadeClasse;
+prioridadeElemento.textContent=prioridadeTexto;
+
+if(aviso.imagem){
+const imagem=document.createElement('img');
+imagem.src=aviso.imagem;
+imagem.alt='Imagem do aviso';
+imagem.className='imagem-aviso';
+card.appendChild(titulo);
+card.appendChild(imagem);
+}else{
+card.appendChild(titulo);
+}
 
 const conteudo=document.createElement('p');
-conteudo.textContent=aviso.conteudo||'';
+conteudo.textContent=aviso.conteudo;
 
 const info=document.createElement('div');
 info.className='aviso-info';
@@ -129,237 +121,150 @@ const autor=document.createElement('span');
 autor.textContent='✍️ '+(aviso.autor||'Professor');
 
 const data=document.createElement('span');
-
-if(aviso.data_criacao){
-const dataFormatada=new Date(aviso.data_criacao);
-
-data.textContent=
-'📅 '+dataFormatada.toLocaleDateString('pt-BR');
-}
+data.textContent=aviso.data_criacao
+?new Date(aviso.data_criacao).toLocaleString('pt-BR')
+:'';
 
 info.appendChild(autor);
 info.appendChild(data);
-
-const prioridadeElemento=document.createElement('span');
-
-const prioridadeTexto=String(prioridade).trim();
-const prioridadeClasse=prioridadeTexto.toLowerCase();
-
-prioridadeElemento.className=
-'prioridade '+prioridadeClasse;
-
-prioridadeElemento.textContent=prioridadeTexto;
-
-card.appendChild(titulo);
-
-if(aviso.imagem){
-const imagem=document.createElement('img');
-
-imagem.src=aviso.imagem;
-imagem.alt='Imagem do aviso';
-imagem.className='imagem-aviso';
-
-card.appendChild(imagem);
-}
 
 card.appendChild(conteudo);
 card.appendChild(info);
 card.appendChild(prioridadeElemento);
 
-listaAvisos.appendChild(card);
+lista.appendChild(card);
 });
 }
 
-pesquisa.addEventListener('input',()=>{
-mostrarAvisos(todosAvisos);
+document.getElementById('pesquisa').addEventListener('input',function(){
+const texto=this.value.toLowerCase().trim();
+
+const filtrados=avisosAtuais.filter(aviso=>
+String(aviso.titulo||'').toLowerCase().includes(texto)||
+String(aviso.conteudo||'').toLowerCase().includes(texto)
+);
+
+mostrarAvisos(filtrados);
 });
 
+const mensagemSalva=sessionStorage.getItem('mensagemMural');
+
+if(mensagemSalva){
+mostrarMensagem(mensagemSalva);
+sessionStorage.removeItem('mensagemMural');
+
+setTimeout(()=>{
+document.getElementById('mensagem-mural').textContent='';
+},4000);
+}
+
 carregarAvisos();
 
-setInterval(()=>{
-carregarAvisos();
-},10000);
+setInterval(carregarAvisos,10000);
+
+
+/* NOTIFICAÇÕES */
+
+let registroServiceWorker=null;
+let deferredPrompt=null;
 
 async function configurarNotificacoes(){
-if(
-!('serviceWorker'in navigator)||
-!('PushManager'in window)||
-!('Notification'in window)
-){
-botaoNotificacoes.textContent='🔔 Notificações não disponíveis';
-botaoNotificacoes.disabled=true;
+
+if(!('serviceWorker' in navigator)||!('PushManager' in window)){
+document.getElementById('btn-notificacoes').textContent='🔔 Notificações não disponíveis';
 return;
 }
 
 try{
-const registro=
-await navigator.serviceWorker.register('/service-worker.js');
+registroServiceWorker=await navigator.serviceWorker.register('/service-worker.js');
 
-const resposta=
-await fetch('/api/notificacoes/chave-publica');
+let subscription=await registroServiceWorker.pushManager.getSubscription();
 
-const dados=await resposta.json();
+if(subscription){
+document.getElementById('btn-notificacoes').textContent='🔔 Notificações ativadas';
+}
 
-const chavePublica=dados.chavePublica;
-
-let inscricao=
-await registro.pushManager.getSubscription();
-
-if(inscricao){
-try{
-await inscricao.unsubscribe();
 }catch(erro){
-console.error(
-'Erro ao renovar inscrição:',
-erro
-);
+console.error(erro);
 }
 }
 
-inscricao=
-await registro.pushManager.subscribe({
+document.getElementById('btn-notificacoes').addEventListener('click',async()=>{
+
+if(!registroServiceWorker){
+await configurarNotificacoes();
+}
+
+try{
+
+const permissao=await Notification.requestPermission();
+
+if(permissao!=='granted'){
+mostrarMensagem('Permissão para notificações não concedida.','#dc2626');
+return;
+}
+
+let subscription=await registroServiceWorker.pushManager.getSubscription();
+
+if(!subscription){
+
+const chavePublica='SUA_CHAVE_PUBLICA_VAPID';
+
+const chaveUint8Array=Uint8Array.from(
+atob(chavePublica.replace(/-/g,'+').replace(/_/g,'/')),
+c=>c.charCodeAt(0)
+);
+
+subscription=await registroServiceWorker.pushManager.subscribe({
 userVisibleOnly:true,
-applicationServerKey:
-converterChave(chavePublica)
+applicationServerKey:chaveUint8Array
 });
 
-await fetch('/api/notificacoes/inscrever',{
+}
+
+await fetch('/api/notificacoes',{
 method:'POST',
 headers:{
 'Content-Type':'application/json'
 },
-body:JSON.stringify(inscricao)
+body:JSON.stringify(subscription)
 });
 
-botaoNotificacoes.textContent=
-'🔄 Renovar notificações';
-
-}catch(erro){
-console.error(
-'Erro ao configurar notificações:',
-erro
-);
-}
-}
-
-botaoNotificacoes.addEventListener('click',async()=>{
-if(
-!('serviceWorker'in navigator)||
-!('PushManager'in window)||
-!('Notification'in window)
-){
-botaoNotificacoes.textContent=
-'🔔 Notificações não disponíveis';
-return;
-}
-
-try{
-const permissao=
-await Notification.requestPermission();
-
-if(permissao!=='granted'){
-mostrarMensagem(
-'Permissão para notificações não concedida.',
-'#dc2626'
-);
-return;
-}
-
-await configurarNotificacoes();
-
-mostrarMensagem(
-'🔔 Notificações ativadas com sucesso!'
-);
+document.getElementById('btn-notificacoes').textContent='🔔 Notificações ativadas';
 
 }catch(erro){
 console.error(erro);
-
-mostrarMensagem(
-'Não foi possível ativar as notificações.',
-'#dc2626'
-);
+mostrarMensagem('Não foi possível ativar as notificações.','#dc2626');
 }
 });
 
-function converterChave(base64){
-const padding='='.repeat(
-(4-base64.length%4)%4
-);
+configurarNotificacoes();
 
-const base64Final=
-(base64+padding)
-.replace(/-/g,'+')
-.replace(/_/g,'/');
 
-const rawData=
-window.atob(base64Final);
+/* INSTALAÇÃO */
 
-return Uint8Array.from(
-[...rawData].map(char=>
-char.charCodeAt(0)
-)
-);
-}
-
-window.addEventListener(
-'beforeinstallprompt',
-event=>{
+window.addEventListener('beforeinstallprompt',event=>{
 event.preventDefault();
-
-eventoInstalacao=event;
-
-const botao=
-document.getElementById('btn-instalar');
-
-if(botao){
-botao.style.display='inline-flex';
-}
-}
-);
+deferredPrompt=event;
+document.getElementById('btn-instalar').style.display='block';
+});
 
 async function instalarApp(){
-if(!eventoInstalacao)return;
 
-eventoInstalacao.prompt();
+if(!deferredPrompt)return;
 
-const resultado=
-await eventoInstalacao.userChoice;
+deferredPrompt.prompt();
 
-if(resultado.outcome==='accepted'){
-const botao=
-document.getElementById('btn-instalar');
+await deferredPrompt.userChoice;
 
-if(botao){
-botao.style.display='none';
-}
-}
+deferredPrompt=null;
 
-eventoInstalacao=null;
+document.getElementById('btn-instalar').style.display='none';
 }
 
 window.addEventListener('appinstalled',()=>{
-const botao=
-document.getElementById('btn-instalar');
-
-if(botao){
-botao.style.display='none';
-}
+document.getElementById('btn-instalar').style.display='none';
 });
-
-if(
-window.matchMedia(
-'(display-mode: standalone)'
-).matches||
-window.navigator.standalone===true
-){
-const botao=
-document.getElementById('btn-instalar');
-
-if(botao){
-botao.style.display='none';
-}
-}
-
 </script>
 
 </body>
