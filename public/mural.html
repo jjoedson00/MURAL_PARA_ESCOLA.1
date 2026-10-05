@@ -172,7 +172,6 @@ setInterval(carregarAvisos,10000);
 /* NOTIFICAÇÕES */
 
 let registroServiceWorker=null;
-let deferredPrompt=null;
 
 function urlBase64ToUint8Array(base64String){
 const padding='='.repeat((4-base64String.length%4)%4);
@@ -201,6 +200,7 @@ return;
 }
 
 try{
+
 registroServiceWorker=
 await navigator.serviceWorker.register('/service-worker.js');
 
@@ -333,12 +333,15 @@ mostrarMensagem(
 'Não foi possível ativar as notificações.',
 '#dc2626'
 );
+}
 });
 
 configurarNotificacoes();
 
 
 /* INSTALAÇÃO */
+
+let deferredPrompt=null;
 
 window.addEventListener('beforeinstallprompt',event=>{
 event.preventDefault();
