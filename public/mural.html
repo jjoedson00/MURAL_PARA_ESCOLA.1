@@ -174,61 +174,131 @@ setInterval(carregarAvisos,10000);
 let registroServiceWorker=null;
 let deferredPrompt=null;
 
+function urlBase64ToUint8Array(base64String){
+const padding='='.repeat((4-base64String.length%4)%4);
+const base64=(base64String+padding)
+.replace(/-/g,'+')
+.replace(/_/g,'/');
+
+const rawData=atob(base64);
+
+return Uint8Array.from(
+[...rawData].map(char=>char.charCodeAt(0))
+);
+}
+
 async function configurarNotificacoes(){
 
-if(!('serviceWorker' in navigator)||!('PushManager' in window)){
-document.getElementById('btn-notificacoes').textContent='🔔 Notificações não disponíveis';
+const botao=document.getElementById('btn-notificacoes');
+
+if(
+!('serviceWorker' in navigator)||
+!('PushManager' in window)||
+!('Notification' in window)
+){
+botao.textContent='🔔 Notificações não disponíveis';
 return;
 }
 
 try{
-registroServiceWorker=await navigator.serviceWorker.register('/service-worker.js');
+registroServiceWorker=
+await navigator.serviceWorker.register('/service-worker.js');
 
-let subscription=await registroServiceWorker.pushManager.getSubscription();
+registroServiceWorker=
+await navigator.serviceWorker.ready;
+
+const subscription=
+await registroServiceWorker.pushManager.getSubscription();
 
 if(subscription){
-document.getElementById('btn-notificacoes').textContent='🔔 Notificações ativadas';
+botao.textContent='🔔 Notificações ativadas';
 }
 
 }catch(erro){
-console.error(erro);
+
+console.error(
+'Erro ao configurar notificações:',
+erro
+);
+
+botao.textContent='🔔 Notificações não disponíveis';
 }
 }
 
 document.getElementById('btn-notificacoes').addEventListener('click',async()=>{
 
+const botao=document.getElementById('btn-notificacoes');
+
+try{
+
 if(!registroServiceWorker){
 await configurarNotificacoes();
 }
 
-try{
-
-const permissao=await Notification.requestPermission();
-
-if(permissao!=='granted'){
-mostrarMensagem('Permissão para notificações não concedida.','#dc2626');
+if(!registroServiceWorker){
+mostrarMensagem(
+'Não foi possível preparar as notificações.',
+'#dc2626'
+);
 return;
 }
 
-let subscription=await registroServiceWorker.pushManager.getSubscription();
+if(Notification.permission==='denied'){
+mostrarMensagem(
+'As notificações estão bloqueadas neste dispositivo. Ative a permissão nas configurações do navegador.',
+'#dc2626'
+);
+return;
+}
+
+const permissao=
+await Notification.requestPermission();
+
+if(permissao!=='granted'){
+mostrarMensagem(
+'Permissão para notificações não concedida.',
+'#dc2626'
+);
+return;
+}
+
+let subscription=
+await registroServiceWorker.pushManager.getSubscription();
 
 if(!subscription){
 
-const chavePublica='SUA_CHAVE_PUBLICA_VAPID';
+const respostaChave=
+await fetch('/api/notificacoes/chave-publica');
 
-const chaveUint8Array=Uint8Array.from(
-atob(chavePublica.replace(/-/g,'+').replace(/_/g,'/')),
-c=>c.charCodeAt(0)
+if(!respostaChave.ok){
+throw new Error(
+'Não foi possível obter a chave pública VAPID.'
+);
+}
+
+const dadosChave=
+await respostaChave.json();
+
+if(!dadosChave.chavePublica){
+throw new Error(
+'Chave pública VAPID não encontrada.'
+);
+}
+
+const chaveUint8Array=
+urlBase64ToUint8Array(
+dadosChave.chavePublica
 );
 
-subscription=await registroServiceWorker.pushManager.subscribe({
+subscription=
+await registroServiceWorker.pushManager.subscribe({
 userVisibleOnly:true,
 applicationServerKey:chaveUint8Array
 });
-
 }
 
-await fetch('/api/notificacoes',{
+const resposta=
+await fetch('/api/notificacoes/inscrever',{
 method:'POST',
 headers:{
 'Content-Type':'application/json'
@@ -236,12 +306,33 @@ headers:{
 body:JSON.stringify(subscription)
 });
 
-document.getElementById('btn-notificacoes').textContent='🔔 Notificações ativadas';
+const dados=await resposta.json();
+
+if(!resposta.ok){
+throw new Error(
+dados.erro||
+'Erro ao registrar notificações.'
+);
+}
+
+botao.textContent='🔔 Notificações ativadas';
+
+mostrarMensagem(
+'Notificações ativadas com sucesso!',
+'#15803d'
+);
 
 }catch(erro){
-console.error(erro);
-mostrarMensagem('Não foi possível ativar as notificações.','#dc2626');
-}
+
+console.error(
+'Erro ao ativar notificações:',
+erro
+);
+
+mostrarMensagem(
+'Não foi possível ativar as notificações.',
+'#dc2626'
+);
 });
 
 configurarNotificacoes();
