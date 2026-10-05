@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="pagina-login">
+<body class="pagina-login" style="visibility:hidden;">
 
 <div class="login-container">
 
@@ -54,9 +54,14 @@ const dados=await resposta.json();
 
 if(dados.logado){
 window.location.href='/admin.html';
+return;
 }
+
+document.body.style.visibility='visible';
+
 }catch(erro){
 console.error(erro);
+document.body.style.visibility='visible';
 }
 }
 
