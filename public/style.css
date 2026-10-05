@@ -2,6 +2,7 @@
 html,body{margin:0;padding:0;font-family:Arial,sans-serif}
 body{color:#0f172a}
 
+/* INÍCIO */
 body.pagina-inicial{min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:center;padding:30px;background:linear-gradient(135deg,#dff4ff,#f5fbff)}
 .welcome-container{width:100%;max-width:750px;padding:45px 30px;text-align:center}
 .welcome-icon{font-size:90px;line-height:1;margin-bottom:25px}
@@ -10,34 +11,37 @@ body.pagina-inicial{min-height:100vh;min-height:100dvh;display:flex;justify-cont
 .welcome-button{display:inline-block;padding:17px 34px;background:#0284c7;color:#fff;border-radius:10px;text-decoration:none;font-size:18px;font-weight:bold;box-shadow:0 8px 20px rgba(2,132,199,.2);transition:.2s}
 .welcome-button:hover{background:#0369a1;transform:translateY(-2px)}
 
+/* MURAL */
 body.pagina-mural{min-height:100vh;margin:0;background:#f8fafc;color:#0f172a}
 .mural-header{width:min(94%,1450px);margin:auto;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:25px}
-.mural-header h2{margin:0;color:#0f172a;font-size:clamp(30px,3vw,40px)}
-.botao-professor{display:inline-flex;align-items:center;justify-content:center;padding:13px 23px;background:#1e293b;color:#fff;border-radius:8px;text-decoration:none;font-size:15px;font-weight:bold;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
-.botao-professor:hover{background:#334155;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
+.mural-header h1{margin:0;color:#0f172a;font-size:clamp(30px,3vw,40px);line-height:1.2}
+.mural-header p{margin:8px 0 0;color:#64748b;font-size:16px}
+.mural-acoes{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.mural-acoes button,.mural-acoes a{display:inline-flex;align-items:center;justify-content:center;padding:12px 17px;border:0;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;transition:.2s}
+.mural-acoes button{background:#0284c7;color:#fff;box-shadow:0 4px 10px rgba(15,23,42,.12)}
+.mural-acoes button:hover{background:#0369a1;transform:translateY(-1px)}
+.mural-acoes button:disabled{background:#94a3b8;cursor:not-allowed}
+.mural-acoes a{background:#1e293b;color:#fff;text-decoration:none;box-shadow:0 4px 10px rgba(15,23,42,.15)}
+.mural-acoes a:hover{background:#334155;transform:translateY(-1px)}
 .mural-main{width:min(94%,1450px);margin:auto;padding:10px 0 50px}
-.pesquisa-container{margin-bottom:25px}
-#input-pesquisa{width:100%;height:58px;padding:0 22px;border:1px solid #cbd5e1;border-radius:30px;background:#fff;color:#1e293b;font-size:17px;outline:none}
-#input-pesquisa:focus{border-color:#0284c7}
-.mural-titulo{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:25px}
-.mural-titulo h3{margin:0;color:#0f172a;font-size:clamp(25px,2.5vw,32px)}
-.atualizacao{color:#10b981;font-size:15px;font-weight:bold}
-#container-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:28px}
-
+.mural-topo{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:25px}
+.mural-topo h2{margin:0 0 7px;color:#0f172a;font-size:clamp(25px,2.5vw,32px)}
+.status-atualizacao{color:#10b981;font-size:15px;font-weight:bold}
+#pesquisa{width:430px;max-width:100%;height:52px;padding:0 20px;border:1px solid #cbd5e1;border-radius:28px;background:#fff;color:#1e293b;font-size:16px;outline:none;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+#pesquisa:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.1)}
+#mensagem-mural{width:100%;margin:0 0 20px;min-height:0}
+#lista-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:28px}
 .aviso-card{width:100%;min-width:0;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:15px;box-shadow:0 7px 22px rgba(15,23,42,.08);transition:.2s}
 .aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
+.aviso-card h3{margin:0;padding:24px 25px 10px;color:#0f172a;font-size:clamp(22px,2vw,28px);line-height:1.25}
+.aviso-card p{margin:0;padding:0 25px 20px;color:#334155;font-size:16px;line-height:1.6}
+.imagem-aviso{width:100%;max-height:350px;display:block;object-fit:contain;object-position:center;background:#fff;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}
+.aviso-info{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 22px;background:#f8fafc;border-top:1px solid #e2e8f0;color:#64748b;font-size:14px}
+.prioridade{align-self:flex-start;margin:0 22px 18px;padding:6px 12px;border-radius:20px;background:#e0f2fe;color:#0369a1;font-size:12px;font-weight:bold}
+.mensagem-vazia,.mensagem-erro{text-align:center;padding:30px;color:#64748b;font-size:17px;grid-column:1/-1}
+.mensagem-erro{color:#dc2626}
 
-.aviso-imagem-container{width:100%;height:350px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;border-bottom:1px solid #e2e8f0}
-.aviso-imagem-container img{width:100%;height:100%;display:block;object-fit:contain;object-position:center;background:#fff}
-
-.aviso-conteudo-box{flex-grow:1;padding:28px;color:#fff}
-.aviso-card.normal-bg .aviso-conteudo-box{color:#1e293b}
-.aviso-titulo{margin:0 0 15px;font-size:clamp(23px,2vw,28px);line-height:1.25;font-weight:bold}
-.aviso-texto{margin:0;font-size:clamp(16px,1.4vw,18px);line-height:1.6}
-.aviso-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 22px;background:#f8fafc;border-top:1px solid #e2e8f0;color:#64748b;font-size:14px}
-.aviso-autor-tag{padding:6px 12px;border-radius:20px;background:#e2e8f0;color:#334155;font-size:12px;font-weight:600}
-.sem-avisos{text-align:center;color:#64748b;font-size:17px}
-
+/* ADMIN */
 body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1e293b;position:relative}
 .pagina-admin .container{width:100%;max-width:700px;margin:0 auto;padding:38px;background:#fff;border-radius:14px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
 .pagina-admin .container h2{margin:0 0 25px;color:#0284c7;text-align:center;font-size:28px}
@@ -59,11 +63,11 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .btn-apagar{padding:9px 17px;border:0;border-radius:6px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer}
 .btn-apagar:hover{background:#dc2626}
 .nenhum-aviso{color:#64748b;text-align:center}
-
 .btn-sair-professor{position:fixed;top:20px;right:25px;z-index:1000;display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border:0;border-radius:8px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
 .btn-sair-professor:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
 .btn-sair-professor:active{transform:translateY(0)}
 
+/* LOGIN/CADASTRO */
 .pagina-login{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
 .login-container{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
 .pagina-login h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:28px}
@@ -73,7 +77,6 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .btn-submit:hover{background:#4338ca}
 .login-cadastro{text-align:center;color:#64748b}
 .login-cadastro a{color:#4f46e5;font-weight:bold}
-
 .pagina-cadastro{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
 .box-cadastro{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
 .pagina-cadastro h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:27px}
@@ -81,10 +84,9 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .pagina-cadastro input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
 .pagina-cadastro .btn-submit{width:100%;padding:15px;border:0;border-radius:8px;background:#15803d;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
 
-#mensagem-mural{width:100%;margin:0 0 20px}
+/* OUTROS */
 .mensagem-sucesso{padding:14px 18px;border-radius:10px;background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:15px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(15,23,42,.08);transition:.4s}
 .mensagem-sucesso.sumindo{opacity:0;transform:translateY(-6px)}
-
 .caixa-confirmacao{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.45)}
 .caixa-confirmacao.mostrar{display:flex}
 .confirmacao-conteudo{width:100%;max-width:430px;padding:28px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25);text-align:center}
@@ -96,74 +98,15 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .btn-confirmar:hover{background:#059669}
 .btn-cancelar{background:#e2e8f0;color:#334155}
 .btn-cancelar:hover{background:#cbd5e1}
-
-@media(min-width:1600px){
-.mural-header,.mural-main{width:min(92%,1650px)}
-#container-avisos{grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:32px}
-.aviso-imagem-container{height:390px}
-}
-
-@media(max-width:1000px){
-.mural-header,.mural-main{width:92%}
-#container-avisos{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
-.aviso-imagem-container{height:320px}
-}
-
-@media(max-width:700px){
-body.pagina-inicial{padding:20px}
-.welcome-container{padding:30px 15px}
-.welcome-icon{font-size:70px}
-.welcome-container h1{font-size:40px}
-.welcome-description{font-size:17px}
-.welcome-button{width:100%;max-width:330px}
-.mural-header{width:92%;padding:22px 0;flex-direction:column;align-items:stretch}
-.mural-header h2{text-align:center;font-size:29px}
-.botao-professor{width:100%}
-.mural-main{width:92%;padding-bottom:30px}
-#input-pesquisa{height:54px;font-size:16px}
-.mural-titulo{flex-direction:column;align-items:flex-start}
-.mural-titulo h3{font-size:25px}
-#container-avisos{grid-template-columns:1fr;gap:22px}
-.aviso-imagem-container{height:270px}
-.aviso-imagem-container img{width:100%;height:100%;object-fit:contain}
-.aviso-conteudo-box{padding:23px}
-.aviso-titulo{font-size:22px}
-.aviso-texto{font-size:16px}
-.pagina-admin{padding:20px 15px}
-.pagina-admin .container{padding:28px 22px}
-.gestao-container{padding:25px 20px}
-.login-container,.box-cadastro{padding:30px 22px}
-.btn-sair-professor{position:static;width:calc(100% - 30px);margin:15px auto;display:flex;padding:12px 15px}
-.confirmacao-conteudo{max-width:360px;padding:24px 20px}
-.confirmacao-botoes{flex-direction:column}
-.btn-confirmar,.btn-cancelar{width:100%}
-}
-
-@media(max-width:430px){
-.welcome-icon{font-size:62px}
-.welcome-container h1{font-size:34px}
-.welcome-description{font-size:16px}
-.mural-header h2{font-size:26px}
-.aviso-imagem-container{height:230px}
-.aviso-imagem-container img{width:100%;height:100%;object-fit:contain}
-.aviso-conteudo-box{padding:20px}
-.aviso-titulo{font-size:20px}
-.aviso-texto{font-size:15px}
-.aviso-footer{flex-direction:column;align-items:flex-start}
-.card-gestao{align-items:flex-start}
-.btn-sair-professor{width:calc(100% - 20px);margin-top:10px;font-size:13px}
-}
 .campo-senha{position:relative;display:flex;align-items:center}
 .campo-senha input{padding-right:48px!important}
 .olho-senha{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:transparent;color:#64748b;font-size:18px;cursor:pointer;padding:0}
 .olho-senha:hover{color:#334155}
 .pagina-cadastro small{display:block;margin-top:6px;color:#64748b;font-size:12px}
 .pagina-admin .campo-senha{width:100%}
-
 .btn-editar{padding:9px 17px;border:0;border-radius:6px;background:#0284c7;color:#fff;font-weight:bold;cursor:pointer}
 .btn-editar:hover{background:#0369a1}
 .gestao-botoes{display:flex;gap:8px;flex-wrap:wrap}
-
 .modal-edicao{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.45)}
 .modal-edicao.mostrar{display:flex}
 .modal-edicao-conteudo{width:100%;max-width:600px;max-height:90vh;overflow:auto;padding:28px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25)}
@@ -174,3 +117,58 @@ body.pagina-inicial{padding:20px}
 .imagem-atual-edicao{width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:8px;background:#f8fafc}
 .opcao-remover-imagem{display:flex!important;align-items:center;gap:8px;margin-top:10px!important;font-weight:normal!important}
 .opcao-remover-imagem input{width:auto!important}
+
+/* RESPONSIVO */
+@media(min-width:1600px){
+.mural-header,.mural-main{width:min(92%,1650px)}
+#lista-avisos{grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:32px}
+.imagem-aviso{max-height:390px}
+}
+@media(max-width:1000px){
+.mural-header,.mural-main{width:92%}
+#lista-avisos{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+.imagem-aviso{max-height:320px}
+}
+@media(max-width:700px){
+body.pagina-inicial{padding:20px}
+.welcome-container{padding:30px 15px}
+.welcome-icon{font-size:70px}
+.welcome-container h1{font-size:40px}
+.welcome-description{font-size:17px}
+.welcome-button{width:100%;max-width:330px}
+.mural-header{width:92%;padding:22px 0;flex-direction:column;align-items:stretch}
+.mural-header h1{text-align:center;font-size:29px}
+.mural-header p{text-align:center}
+.mural-acoes{flex-direction:column}
+.mural-acoes button,.mural-acoes a{width:100%}
+.mural-main{width:92%;padding-bottom:30px}
+.mural-topo{flex-direction:column;align-items:stretch;gap:18px}
+.mural-topo h2{font-size:25px}
+#pesquisa{width:100%;height:54px;font-size:16px}
+#lista-avisos{grid-template-columns:1fr;gap:22px}
+.aviso-card h3{font-size:22px;padding:21px 20px 9px}
+.aviso-card p{font-size:16px;padding:0 20px 18px}
+.imagem-aviso{max-height:270px}
+.aviso-info{padding:14px 18px}
+.prioridade{margin-left:18px;margin-right:18px}
+.pagina-admin{padding:20px 15px}
+.pagina-admin .container{padding:28px 22px}
+.gestao-container{padding:25px 20px}
+.login-container,.box-cadastro{padding:30px 22px}
+.btn-sair-professor{position:static;width:calc(100% - 30px);margin:15px auto;display:flex;padding:12px 15px}
+.confirmacao-conteudo{max-width:360px;padding:24px 20px}
+.confirmacao-botoes{flex-direction:column}
+.btn-confirmar,.btn-cancelar{width:100%}
+}
+@media(max-width:430px){
+.welcome-icon{font-size:62px}
+.welcome-container h1{font-size:34px}
+.welcome-description{font-size:16px}
+.mural-header h1{font-size:26px}
+.aviso-card h3{font-size:20px}
+.aviso-card p{font-size:15px}
+.imagem-aviso{max-height:230px}
+.aviso-info{flex-direction:column;align-items:flex-start}
+.card-gestao{align-items:flex-start}
+.btn-sair-professor{width:calc(100% - 20px);margin-top:10px;font-size:13px}
+}
