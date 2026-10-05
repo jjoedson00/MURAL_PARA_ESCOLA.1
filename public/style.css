@@ -28,92 +28,22 @@ body.pagina-mural .status-atualizacao{display:block;margin-top:8px;color:#10b981
 body.pagina-mural #pesquisa{width:350px;height:50px;padding:0 18px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#1e293b;font-size:16px;outline:none}
 body.pagina-mural #pesquisa:focus{border-color:#0284c7}
 body.pagina-mural #lista-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:25px}
-
-body.pagina-mural .aviso-card{
-width:100%;
-min-width:0;
-display:flex;
-flex-direction:column;
-background:#fff;
-border:1px solid #dbe3ec;
-border-radius:18px;
-overflow:hidden;
-box-shadow:0 7px 22px rgba(15,23,42,.08);
-padding:22px
-}
-
-body.pagina-mural .aviso-card:hover{
-transform:translateY(-3px);
-box-shadow:0 12px 30px rgba(15,23,42,.12)
-}
-
-body.pagina-mural .aviso-card h3{
-margin:0 0 18px;
-color:#0f172a;
-font-size:25px;
-line-height:1.3
-}
-
-body.pagina-mural .aviso-card p{
-margin:0 0 20px;
-color:#334155;
-font-size:17px;
-line-height:1.6
-}
-
-body.pagina-mural .imagem-aviso{
-width:100%;
-max-height:350px;
-display:block;
-object-fit:contain;
-border-radius:10px;
-margin:5px 0 18px
-}
-
-body.pagina-mural .aviso-info{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:15px;
-margin-top:auto;
-padding-top:15px;
-border-top:1px solid #e2e8f0;
-color:#64748b;
-font-size:14px
-}
+body.pagina-mural .aviso-card{width:100%;min-width:0;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:18px;overflow:hidden;box-shadow:0 7px 22px rgba(15,23,42,.08);padding:22px}
+body.pagina-mural .aviso-card.normal{background:#f0fdf4;border-color:#bbf7d0}
+body.pagina-mural .aviso-card.importante{background:#fffbeb;border-color:#fde68a}
+body.pagina-mural .aviso-card.urgente{background:#fef2f2;border-color:#fecaca}
+body.pagina-mural .aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
+body.pagina-mural .aviso-card h3{margin:0 0 18px;color:#0f172a;font-size:25px;line-height:1.3}
+body.pagina-mural .aviso-card p{margin:0 0 20px;color:#334155;font-size:17px;line-height:1.6}
+body.pagina-mural .imagem-aviso{width:100%;max-height:350px;display:block;object-fit:contain;border-radius:10px;margin:5px 0 18px}
+body.pagina-mural .aviso-info{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:auto;padding-top:15px;border-top:1px solid #e2e8f0;color:#64748b;font-size:14px}
 
 /* PRIORIDADE */
-body.pagina-mural .prioridade{
-align-self:flex-start;
-margin-top:12px;
-padding:7px 13px;
-border-radius:20px;
-font-size:13px;
-font-weight:bold
-}
-
-body.pagina-mural .prioridade.normal{
-background:#dcfce7;
-color:#15803d
-}
-
-body.pagina-mural .prioridade.importante{
-background:#fef3c7;
-color:#b45309
-}
-
-body.pagina-mural .prioridade.urgente{
-background:#fee2e2;
-color:#b91c1c
-}
-
-body.pagina-mural .mensagem-vazia,
-body.pagina-mural .mensagem-erro{
-text-align:center;
-padding:30px;
-color:#64748b;
-font-size:17px
-}
+body.pagina-mural .prioridade{align-self:flex-start;margin-top:12px;padding:7px 13px;border-radius:20px;font-size:13px;font-weight:bold}
+body.pagina-mural .prioridade.normal{background:#dcfce7;color:#15803d}
+body.pagina-mural .prioridade.importante{background:#fef3c7;color:#b45309}
+body.pagina-mural .prioridade.urgente{background:#fee2e2;color:#b91c1c}
+body.pagina-mural .mensagem-vazia,body.pagina-mural .mensagem-erro{text-align:center;padding:30px;color:#64748b;font-size:17px}
 
 /* ADMIN */
 body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1e293b;position:relative}
@@ -122,10 +52,7 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .admin-descricao{text-align:center;color:#64748b;margin:-10px 0 20px}
 .form-group{margin-bottom:22px}
 .pagina-admin label{display:block;margin-bottom:8px;color:#1e293b;font-size:16px;font-weight:bold}
-.pagina-admin input[type=text],
-.pagina-admin input[type=file],
-.pagina-admin textarea,
-.pagina-admin select{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#1e293b;font-size:16px}
+.pagina-admin input[type=text],.pagina-admin input[type=file],.pagina-admin textarea,.pagina-admin select{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#1e293b;font-size:16px}
 .pagina-admin textarea{min-height:130px;resize:vertical}
 .btn-green{width:100%;padding:16px;border:0;border-radius:8px;background:#10b981;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
 .btn-green:hover{background:#059669}
@@ -143,36 +70,9 @@ body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1
 .btn-editar{padding:9px 17px;border:0;border-radius:6px;background:#0284c7;color:#fff;font-weight:bold;cursor:pointer}
 .btn-editar:hover{background:#0369a1}
 .nenhum-aviso{color:#64748b;text-align:center}
-
-.btn-sair-professor{
-position:fixed;
-top:20px;
-right:25px;
-z-index:1000;
-display:inline-flex;
-align-items:center;
-justify-content:center;
-padding:11px 17px;
-border:0;
-border-radius:8px;
-background:#ef4444;
-color:#fff;
-font-size:14px;
-font-weight:700;
-cursor:pointer;
-box-shadow:0 4px 10px rgba(15,23,42,.15);
-transition:.2s
-}
-
-.btn-sair-professor:hover{
-background:#dc2626;
-transform:translateY(-1px);
-box-shadow:0 6px 14px rgba(15,23,42,.2)
-}
-
-.btn-sair-professor:active{
-transform:translateY(0)
-}
+.btn-sair-professor{position:fixed;top:20px;right:25px;z-index:1000;display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border:0;border-radius:8px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
+.btn-sair-professor:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
+.btn-sair-professor:active{transform:translateY(0)}
 
 /* LOGIN */
 .pagina-login{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
@@ -205,8 +105,7 @@ transform:translateY(0)
 .confirmacao-conteudo h3{margin:0 0 12px;color:#1e293b;font-size:22px}
 .confirmacao-conteudo p{margin:0 0 22px;color:#475569;font-size:16px;line-height:1.5}
 .confirmacao-botoes{display:flex;gap:12px;justify-content:center}
-.btn-confirmar,
-.btn-cancelar{border:0;border-radius:8px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-confirmar,.btn-cancelar{border:0;border-radius:8px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer}
 .btn-confirmar{background:#10b981;color:#fff}
 .btn-confirmar:hover{background:#059669}
 .btn-cancelar{background:#e2e8f0;color:#334155}
@@ -225,17 +124,13 @@ transform:translateY(0)
 
 /* RESPONSIVO */
 @media(min-width:1600px){
-body.pagina-mural .mural-header,
-body.pagina-mural .mural-main{width:min(92%,1650px)}
+body.pagina-mural .mural-header,body.pagina-mural .mural-main{width:min(92%,1650px)}
 body.pagina-mural #lista-avisos{grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:32px}
 }
-
 @media(max-width:1000px){
-body.pagina-mural .mural-header,
-body.pagina-mural .mural-main{width:92%}
+body.pagina-mural .mural-header,body.pagina-mural .mural-main{width:92%}
 body.pagina-mural #lista-avisos{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
 }
-
 @media(max-width:700px){
 body.pagina-inicial{padding:20px}
 .welcome-container{padding:30px 15px}
@@ -243,150 +138,42 @@ body.pagina-inicial{padding:20px}
 .welcome-container h1{font-size:40px}
 .welcome-description{font-size:17px}
 .welcome-button{width:100%;max-width:330px}
-
-body.pagina-mural .mural-header{
-width:92%;
-padding:22px 0;
-flex-direction:column;
-align-items:stretch
-}
-
-body.pagina-mural .mural-header h1{
-text-align:center;
-font-size:32px
-}
-
-body.pagina-mural .mural-header p{
-text-align:center;
-font-size:16px
-}
-
-body.pagina-mural .mural-acoes{
-flex-direction:column
-}
-
-body.pagina-mural .mural-acoes button,
-body.pagina-mural .mural-acoes a{
-width:100%;
-text-align:center
-}
-
-body.pagina-mural .mural-main{
-width:92%;
-padding-bottom:30px
-}
-
-body.pagina-mural .mural-topo{
-flex-direction:column;
-align-items:stretch
-}
-
-body.pagina-mural .mural-topo h2{
-font-size:27px
-}
-
-body.pagina-mural #pesquisa{
-width:100%
-}
-
-body.pagina-mural #lista-avisos{
-grid-template-columns:1fr;
-gap:20px
-}
-
-body.pagina-mural .aviso-card{
-padding:20px
-}
-
-body.pagina-mural .aviso-card h3{
-font-size:22px
-}
-
-body.pagina-mural .aviso-card p{
-font-size:16px
-}
-
-body.pagina-mural .imagem-aviso{
-max-height:270px
-}
-
+body.pagina-mural .mural-header{width:92%;padding:22px 0;flex-direction:column;align-items:stretch}
+body.pagina-mural .mural-header h1{text-align:center;font-size:32px}
+body.pagina-mural .mural-header p{text-align:center;font-size:16px}
+body.pagina-mural .mural-acoes{flex-direction:column}
+body.pagina-mural .mural-acoes button,body.pagina-mural .mural-acoes a{width:100%;text-align:center}
+body.pagina-mural .mural-main{width:92%;padding-bottom:30px}
+body.pagina-mural .mural-topo{flex-direction:column;align-items:stretch}
+body.pagina-mural .mural-topo h2{font-size:27px}
+body.pagina-mural #pesquisa{width:100%}
+body.pagina-mural #lista-avisos{grid-template-columns:1fr;gap:20px}
+body.pagina-mural .aviso-card{padding:20px}
+body.pagina-mural .aviso-card h3{font-size:22px}
+body.pagina-mural .aviso-card p{font-size:16px}
+body.pagina-mural .imagem-aviso{max-height:270px}
 .pagina-admin{padding:20px 15px}
 .pagina-admin .container{padding:28px 22px}
 .gestao-container{padding:25px 20px}
-.login-container,
-.box-cadastro{padding:30px 22px}
-
-.btn-sair-professor{
-position:static;
-width:calc(100% - 30px);
-margin:15px auto;
-display:flex;
-padding:12px 15px
+.login-container,.box-cadastro{padding:30px 22px}
+.btn-sair-professor{position:static;width:calc(100% - 30px);margin:15px auto;display:flex;padding:12px 15px}
+.confirmacao-conteudo{max-width:360px;padding:24px 20px}
+.confirmacao-botoes{flex-direction:column}
+.btn-confirmar,.btn-cancelar{width:100%}
+.edicao-botoes{flex-direction:column}
+.card-gestao{align-items:flex-start}
+.gestao-botoes{flex-direction:column;width:100%}
+.gestao-botoes button{width:100%}
 }
-
-.confirmacao-conteudo{
-max-width:360px;
-padding:24px 20px
-}
-
-.confirmacao-botoes{
-flex-direction:column
-}
-
-.btn-confirmar,
-.btn-cancelar{
-width:100%
-}
-
-.edicao-botoes{
-flex-direction:column
-}
-
-.card-gestao{
-align-items:flex-start
-}
-
-.gestao-botoes{
-flex-direction:column;
-width:100%
-}
-
-.gestao-botoes button{
-width:100%
-}
-}
-
 @media(max-width:430px){
 .welcome-icon{font-size:62px}
 .welcome-container h1{font-size:34px}
 .welcome-description{font-size:16px}
-
-body.pagina-mural .mural-header h1{
-font-size:29px
-}
-
-body.pagina-mural .mural-topo h2{
-font-size:25px
-}
-
-body.pagina-mural .status-atualizacao{
-font-size:14px
-}
-
-body.pagina-mural .aviso-card h3{
-font-size:20px
-}
-
-body.pagina-mural .aviso-card p{
-font-size:15px
-}
-
-body.pagina-mural .aviso-info{
-flex-direction:column;
-align-items:flex-start
-}
-
-.imagem-atual-edicao{
-max-height:180px
-}
+body.pagina-mural .mural-header h1{font-size:29px}
+body.pagina-mural .mural-topo h2{font-size:25px}
+body.pagina-mural .status-atualizacao{font-size:14px}
+body.pagina-mural .aviso-card h3{font-size:20px}
+body.pagina-mural .aviso-card p{font-size:15px}
+body.pagina-mural .aviso-info{flex-direction:column;align-items:flex-start}
+.imagem-atual-edicao{max-height:180px}
 }

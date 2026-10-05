@@ -82,14 +82,6 @@ return;
 
 avisos.forEach(aviso=>{
 
-const card=document.createElement('div');
-card.className='aviso-card';
-
-const titulo=document.createElement('h3');
-titulo.textContent=aviso.titulo;
-
-/* PRIORIDADE */
-
 const prioridadeTexto=String(
 aviso.prioridade||
 aviso.cor_destaque||
@@ -103,6 +95,12 @@ prioridadeClasse='importante';
 }else if(prioridadeTexto.toLowerCase()==='urgente'){
 prioridadeClasse='urgente';
 }
+
+const card=document.createElement('div');
+card.className='aviso-card '+prioridadeClasse;
+
+const titulo=document.createElement('h3');
+titulo.textContent=aviso.titulo;
 
 const prioridadeElemento=document.createElement('span');
 prioridadeElemento.className='prioridade '+prioridadeClasse;
