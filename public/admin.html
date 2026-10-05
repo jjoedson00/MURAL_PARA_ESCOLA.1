@@ -363,8 +363,8 @@ method:'DELETE'
 const dados=await resposta.json();
 
 if(resposta.ok){
-sessionStorage.setItem('mensagemMural','Aviso apagado com sucesso!');
-window.location.href='/mural.html';
+mostrarMensagem('Aviso apagado com sucesso!','#15803d');
+await carregarAvisosGestao();
 }else{
 mostrarMensagem(dados.erro||'Erro ao apagar.','#dc2626');
 }
