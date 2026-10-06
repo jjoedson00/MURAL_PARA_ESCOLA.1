@@ -7,9 +7,11 @@
 <link rel="stylesheet" href="style.css">
 <style>
 .campo-senha{position:relative}
-.campo-senha input{padding-right:55px}
-.btn-ver-senha{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:38px;height:32px;padding:0;border:1px solid #cbd5e1;border-radius:5px;background:#fff;color:#334155;font-size:18px;cursor:pointer}
+.campo-senha input{padding-right:58px}
+.btn-ver-senha{position:absolute;right:1px;bottom:1px;width:56px;height:calc(100% - 2px);padding:0;border:0;border-left:1px solid #d1d5db;border-radius:0 8px 8px 0;background:#f8fafc;color:#aeb7c5;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-ver-senha:hover{background:#f1f5f9}
+.icone-olho{width:22px;height:14px;border:3px solid #aeb7c5;border-radius:50%/60%;position:relative;display:block}
+.icone-olho::after{content:'';position:absolute;width:7px;height:7px;background:#aeb7c5;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
 </style>
 </head>
 
@@ -31,7 +33,9 @@
 <div class="form-group campo-senha">
 <label for="senha">Senha</label>
 <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-<button type="button" class="btn-ver-senha" id="btn-ver-senha">○</button>
+<button type="button" class="btn-ver-senha" id="btn-ver-senha" aria-label="Mostrar senha">
+<span class="icone-olho"></span>
+</button>
 </div>
 
 <div id="mensagem-erro"></div>
@@ -56,10 +60,10 @@ const btnVerSenha=document.getElementById('btn-ver-senha');
 btnVerSenha.addEventListener('click',()=>{
 if(senha.type==='password'){
 senha.type='text';
-btnVerSenha.textContent='●';
+btnVerSenha.setAttribute('aria-label','Esconder senha');
 }else{
 senha.type='password';
-btnVerSenha.textContent='○';
+btnVerSenha.setAttribute('aria-label','Mostrar senha');
 }
 });
 
