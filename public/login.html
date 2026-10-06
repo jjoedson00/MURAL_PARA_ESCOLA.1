@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Login do Professor</title>
 <link rel="stylesheet" href="style.css">
+<style>
+.campo-senha{position:relative}
+.campo-senha input{padding-right:55px}
+.btn-ver-senha{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:38px;height:32px;padding:0;border:1px solid #cbd5e1;border-radius:5px;background:#fff;color:#334155;font-size:18px;cursor:pointer}
+.btn-ver-senha:hover{background:#f1f5f9}
+</style>
 </head>
 
 <body class="pagina-login" style="visibility:hidden;">
@@ -22,9 +28,10 @@
 <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
 </div>
 
-<div class="form-group">
+<div class="form-group campo-senha">
 <label for="senha">Senha</label>
 <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+<button type="button" class="btn-ver-senha" id="btn-ver-senha">○</button>
 </div>
 
 <div id="mensagem-erro"></div>
@@ -43,6 +50,18 @@ Ainda não possui uma conta?
 <script>
 const formulario=document.getElementById('form-login');
 const mensagemErro=document.getElementById('mensagem-erro');
+const senha=document.getElementById('senha');
+const btnVerSenha=document.getElementById('btn-ver-senha');
+
+btnVerSenha.addEventListener('click',()=>{
+if(senha.type==='password'){
+senha.type='text';
+btnVerSenha.textContent='●';
+}else{
+senha.type='password';
+btnVerSenha.textContent='○';
+}
+});
 
 async function verificarSessao(){
 try{
@@ -72,7 +91,7 @@ mensagemErro.style.display='none';
 mensagemErro.textContent='';
 
 const email=document.getElementById('email').value.trim();
-const senha=document.getElementById('senha').value;
+const senhaValor=senha.value;
 
 try{
 const resposta=await fetch('/api/login',{
@@ -83,7 +102,7 @@ headers:{
 },
 body:JSON.stringify({
 email,
-senha
+senha:senhaValor
 })
 });
 
