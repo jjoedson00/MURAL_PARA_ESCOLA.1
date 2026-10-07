@@ -6,7 +6,6 @@
 <title>Mural Digital</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body class="pagina-mural">
 
 <header class="mural-header">
@@ -18,7 +17,15 @@
 <div class="mural-acoes">
 <button id="btn-notificacoes">🔔 Ativar notificações</button>
 <button id="btn-instalar" style="display:none;" onclick="instalarApp()">📲 Instalar na tela inicial</button>
+<button id="btn-aparencia">🎨 Aparência</button>
 <a href="login.html">Acesso Professor</a>
+</div>
+
+<div id="menu-aparencia" class="menu-aparencia">
+<button data-tema="claro">☀️ Claro</button>
+<button data-tema="escuro">🌙 Escuro</button>
+<button data-tema="azul">💙 Azul</button>
+<button data-tema="verde">🌿 Verde</button>
 </div>
 </header>
 
@@ -30,11 +37,7 @@
 <span class="status-atualizacao">● Atualização Automática</span>
 </div>
 
-<input
-type="search"
-id="pesquisa"
-placeholder="Pesquisar avisos por título ou conteúdo..."
->
+<input type="search" id="pesquisa" placeholder="Pesquisar avisos por título ou conteúdo...">
 </div>
 
 <p id="mensagem-mural"></p>
@@ -45,6 +48,40 @@ placeholder="Pesquisar avisos por título ou conteúdo..."
 
 <script>
 let avisosAtuais=[];
+
+/* APARÊNCIA */
+
+const btnAparencia=document.getElementById('btn-aparencia');
+const menuAparencia=document.getElementById('menu-aparencia');
+
+btnAparencia.addEventListener('click',()=>{
+menuAparencia.classList.toggle('mostrar');
+});
+
+document.querySelectorAll('#menu-aparencia button').forEach(botao=>{
+botao.addEventListener('click',()=>{
+const tema=botao.dataset.tema;
+
+document.body.classList.remove('tema-claro','tema-escuro','tema-azul','tema-verde');
+document.body.classList.add('tema-'+tema);
+
+localStorage.setItem('temaMural',tema);
+menuAparencia.classList.remove('mostrar');
+});
+});
+
+const temaSalvo=localStorage.getItem('temaMural')||'claro';
+
+document.body.classList.add('tema-'+temaSalvo);
+
+document.addEventListener('click',event=>{
+if(!menuAparencia.contains(event.target)&&event.target!==btnAparencia){
+menuAparencia.classList.remove('mostrar');
+}
+});
+
+
+/* MENSAGENS */
 
 function mostrarMensagem(texto,cor='#15803d'){
 const mensagem=document.getElementById('mensagem-mural');

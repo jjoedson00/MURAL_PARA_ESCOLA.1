@@ -1,176 +1,173 @@
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:Arial,sans-serif}
-body{color:#0f172a}
+/* APARÊNCIA DO MURAL */
 
-/* INÍCIO */
-body.pagina-inicial{min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:center;padding:30px;background:linear-gradient(135deg,#dff4ff,#f5fbff)}
-.welcome-container{width:100%;max-width:750px;padding:45px 30px;text-align:center}
-.welcome-icon{font-size:90px;line-height:1;margin-bottom:25px}
-.welcome-container h1{margin:0 0 20px;color:#0f172a;font-size:clamp(42px,5vw,62px);line-height:1.1}
-.welcome-description{max-width:650px;margin:0 auto 38px;color:#334e68;font-size:clamp(18px,2vw,21px);line-height:1.6}
-.welcome-button{display:inline-block;padding:17px 34px;background:#0284c7;color:#fff;border-radius:10px;text-decoration:none;font-size:18px;font-weight:bold;box-shadow:0 8px 20px rgba(2,132,199,.2);transition:.2s}
-.welcome-button:hover{background:#0369a1;transform:translateY(-2px)}
-
-/* MURAL */
-body.pagina-mural{min-height:100vh;margin:0;background:#f8fafc;color:#0f172a}
-body.pagina-mural .mural-header{width:min(94%,1450px);margin:auto;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:25px}
-body.pagina-mural .mural-header h1{margin:0;color:#0f172a;font-size:clamp(30px,3vw,40px)}
-body.pagina-mural .mural-header p{margin:10px 0 0;color:#334155;font-size:18px}
-body.pagina-mural .mural-acoes{display:flex;align-items:center;gap:12px}
-body.pagina-mural .mural-acoes button{padding:11px 17px;border:1px solid #cbd5e1;border-radius:8px;background:#0284c7;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}
-body.pagina-mural .mural-acoes button:hover{background:#0369a1}
-body.pagina-mural .mural-acoes a{padding:11px 17px;background:#1e293b;color:#fff;border-radius:8px;text-decoration:none;font-size:15px;font-weight:bold}
-body.pagina-mural .mural-acoes a:hover{background:#334155}
-body.pagina-mural .mural-main{width:min(94%,1450px);margin:auto;padding:10px 0 50px}
-body.pagina-mural .mural-topo{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:25px}
-body.pagina-mural .mural-topo h2{margin:0;color:#0f172a;font-size:30px}
-body.pagina-mural .status-atualizacao{display:block;margin-top:8px;color:#10b981;font-size:15px;font-weight:bold}
-body.pagina-mural #pesquisa{width:350px;height:50px;padding:0 18px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#1e293b;font-size:16px;outline:none}
-body.pagina-mural #pesquisa:focus{border-color:#0284c7}
-body.pagina-mural #lista-avisos{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:25px}
-body.pagina-mural .aviso-card{width:100%;min-width:0;display:flex;flex-direction:column;background:#fff;border:1px solid #dbe3ec;border-radius:18px;overflow:hidden;box-shadow:0 7px 22px rgba(15,23,42,.08);padding:22px}
-body.pagina-mural .aviso-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.12)}
-body.pagina-mural .aviso-card h3{margin:0 0 18px;color:#0f172a;font-size:25px;line-height:1.3}
-body.pagina-mural .aviso-card p{margin:0 0 20px;color:#334155;font-size:17px;line-height:1.6}
-body.pagina-mural .imagem-aviso{width:100%;max-height:350px;display:block;object-fit:contain;border-radius:10px;margin:5px 0 18px}
-body.pagina-mural .aviso-info{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:auto;padding-top:15px;border-top:1px solid #e2e8f0;color:#64748b;font-size:14px}
-
-/* PRIORIDADE */
-body.pagina-mural .prioridade{align-self:flex-start;margin-top:12px;padding:7px 13px;border-radius:20px;font-size:13px;font-weight:bold}
-body.pagina-mural .prioridade.normal{background:#dcfce7;color:#15803d}
-body.pagina-mural .prioridade.importante{background:#fef3c7;color:#b45309}
-body.pagina-mural .prioridade.urgente{background:#fee2e2;color:#b91c1c}
-body.pagina-mural .mensagem-vazia,body.pagina-mural .mensagem-erro{text-align:center;padding:30px;color:#64748b;font-size:17px}
-
-/* ADMIN */
-body.pagina-admin{min-height:100vh;padding:35px 20px;background:#f8fafc;color:#1e293b;position:relative}
-.pagina-admin .container{width:100%;max-width:700px;margin:0 auto;padding:38px;background:#fff;border-radius:14px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
-.pagina-admin .container h2{margin:0 0 25px;color:#0284c7;text-align:center;font-size:28px}
-.admin-descricao{text-align:center;color:#64748b;margin:-10px 0 20px}
-.form-group{margin-bottom:22px}
-.pagina-admin label{display:block;margin-bottom:8px;color:#1e293b;font-size:16px;font-weight:bold}
-.pagina-admin input[type=text],.pagina-admin input[type=file],.pagina-admin textarea,.pagina-admin select{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#1e293b;font-size:16px}
-.pagina-admin textarea{min-height:130px;resize:vertical}
-.btn-green{width:100%;padding:16px;border:0;border-radius:8px;background:#10b981;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
-.btn-green:hover{background:#059669}
-.link-voltar{display:block;margin-top:20px;color:#64748b;text-align:center;text-decoration:none;font-size:15px}
-.professor-logado{margin-bottom:20px;padding:12px 15px;border-radius:8px;background:#e0f2fe;color:#0369a1;text-align:center}
-.gestao-container{width:100%;max-width:700px;margin:30px auto 0;padding:30px;background:#fff;border-radius:14px;box-shadow:0 8px 25px rgba(15,23,42,.08)}
-.gestao-container h3{margin:5px 0 20px}
-.gestao-label{font-size:12px;color:#64748b;font-weight:bold;letter-spacing:1px}
-.card-gestao{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:16px;margin-bottom:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px}
-.gestao-info{display:flex;flex-direction:column;gap:6px}
-.gestao-info span{font-size:13px;color:#64748b}
-.gestao-botoes{display:flex;gap:8px;align-items:center}
-.btn-apagar{padding:9px 17px;border:0;border-radius:6px;background:#ef4444;color:#fff;font-weight:bold;cursor:pointer}
-.btn-apagar:hover{background:#dc2626}
-.btn-editar{padding:9px 17px;border:0;border-radius:6px;background:#0284c7;color:#fff;font-weight:bold;cursor:pointer}
-.btn-editar:hover{background:#0369a1}
-.nenhum-aviso{color:#64748b;text-align:center}
-.btn-sair-professor{position:fixed;top:20px;right:25px;z-index:1000;display:inline-flex;align-items:center;justify-content:center;padding:11px 17px;border:0;border-radius:8px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(15,23,42,.15);transition:.2s}
-.btn-sair-professor:hover{background:#dc2626;transform:translateY(-1px);box-shadow:0 6px 14px rgba(15,23,42,.2)}
-.btn-sair-professor:active{transform:translateY(0)}
-
-/* LOGIN */
-.pagina-login{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
-.login-container{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
-.pagina-login h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:28px}
-.pagina-login .form-group{margin-bottom:20px}
-.pagina-login input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
-.btn-submit{width:100%;padding:15px;margin-top:8px;border:0;border-radius:8px;background:#4f46e5;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
-.btn-submit:hover{background:#4338ca}
-.login-cadastro{text-align:center;color:#64748b}
-.login-cadastro a{color:#4f46e5;font-weight:bold}
-
-/* CADASTRO */
-.pagina-cadastro{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:#0f172a}
-.box-cadastro{width:100%;max-width:480px;padding:38px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.3)}
-.pagina-cadastro h2{margin:0 0 28px;text-align:center;color:#1e293b;font-size:27px}
-.pagina-cadastro .form-group{margin-bottom:20px}
-.pagina-cadastro input{width:100%;padding:14px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
-.pagina-cadastro .btn-submit{width:100%;padding:15px;border:0;border-radius:8px;background:#15803d;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
-
-/* MENSAGENS */
-#mensagem-mural{width:100%;margin:0 0 20px}
-.mensagem-sucesso{padding:14px 18px;border-radius:10px;background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:15px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(15,23,42,.08);transition:.4s}
-.mensagem-sucesso.sumindo{opacity:0;transform:translateY(-6px)}
-
-/* CONFIRMAÇÃO */
-.caixa-confirmacao{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.45)}
-.caixa-confirmacao.mostrar{display:flex}
-.confirmacao-conteudo{width:100%;max-width:430px;padding:28px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25);text-align:center}
-.confirmacao-conteudo h3{margin:0 0 12px;color:#1e293b;font-size:22px}
-.confirmacao-conteudo p{margin:0 0 22px;color:#475569;font-size:16px;line-height:1.5}
-.confirmacao-botoes{display:flex;gap:12px;justify-content:center}
-.btn-confirmar,.btn-cancelar{border:0;border-radius:8px;padding:11px 22px;font-size:15px;font-weight:700;cursor:pointer}
-.btn-confirmar{background:#10b981;color:#fff}
-.btn-confirmar:hover{background:#059669}
-.btn-cancelar{background:#e2e8f0;color:#334155}
-.btn-cancelar:hover{background:#cbd5e1}
-
-/* EDIÇÃO */
-.modal-edicao{position:fixed;inset:0;z-index:2100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.5)}
-.modal-edicao.mostrar{display:flex}
-.modal-edicao-conteudo{width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:30px;background:#fff;border-radius:14px;box-shadow:0 15px 40px rgba(0,0,0,.25)}
-.modal-edicao-conteudo h3{margin:0 0 22px;color:#1e293b;text-align:center}
-.edicao-botoes{display:flex;gap:10px;margin-top:20px}
-.edicao-botoes button{flex:1;padding:12px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}
-.btn-fechar-edicao{background:#e2e8f0;color:#334155}
-.imagem-atual-edicao{width:100%;max-height:220px;object-fit:contain;border-radius:8px;margin:10px 0}
-.opcao-remover-imagem{display:flex;align-items:center;gap:8px;margin-top:10px;color:#475569;font-size:14px}
-
-/* RESPONSIVO */
-@media(min-width:1600px){
-body.pagina-mural .mural-header,body.pagina-mural .mural-main{width:min(92%,1650px)}
-body.pagina-mural #lista-avisos{grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:32px}
-}
-@media(max-width:1000px){
-body.pagina-mural .mural-header,body.pagina-mural .mural-main{width:92%}
-body.pagina-mural #lista-avisos{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
-}
-@media(max-width:700px){
-body.pagina-inicial{padding:20px}
-.welcome-container{padding:30px 15px}
-.welcome-icon{font-size:70px}
-.welcome-container h1{font-size:40px}
-.welcome-description{font-size:17px}
-.welcome-button{width:100%;max-width:330px}
-body.pagina-mural .mural-header{width:92%;padding:22px 0;flex-direction:column;align-items:stretch}
-body.pagina-mural .mural-header h1{text-align:center;font-size:32px}
-body.pagina-mural .mural-header p{text-align:center;font-size:16px}
-body.pagina-mural .mural-acoes{flex-direction:column}
-body.pagina-mural .mural-acoes button,body.pagina-mural .mural-acoes a{width:100%;text-align:center}
-body.pagina-mural .mural-main{width:92%;padding-bottom:30px}
-body.pagina-mural .mural-topo{flex-direction:column;align-items:stretch}
-body.pagina-mural .mural-topo h2{font-size:27px}
-body.pagina-mural #pesquisa{width:100%}
-body.pagina-mural #lista-avisos{grid-template-columns:1fr;gap:20px}
-body.pagina-mural .aviso-card{padding:20px}
-body.pagina-mural .aviso-card h3{font-size:22px}
-body.pagina-mural .aviso-card p{font-size:16px}
-body.pagina-mural .imagem-aviso{max-height:270px}
-.pagina-admin{padding:20px 15px}
-.pagina-admin .container{padding:28px 22px}
-.gestao-container{padding:25px 20px}
-.login-container,.box-cadastro{padding:30px 22px}
-.btn-sair-professor{position:static;width:calc(100% - 30px);margin:15px auto;display:flex;padding:12px 15px}
-.confirmacao-conteudo{max-width:360px;padding:24px 20px}
-.confirmacao-botoes{flex-direction:column}
-.btn-confirmar,.btn-cancelar{width:100%}
-.edicao-botoes{flex-direction:column}
-.card-gestao{align-items:flex-start}
-.gestao-botoes{flex-direction:column;width:100%}
-.gestao-botoes button{width:100%}
-}
-@media(max-width:430px){
-.welcome-icon{font-size:62px}
-.welcome-container h1{font-size:34px}
-.welcome-description{font-size:16px}
-body.pagina-mural .mural-header h1{font-size:29px}
-body.pagina-mural .mural-topo h2{font-size:25px}
-body.pagina-mural .status-atualizacao{font-size:14px}
-body.pagina-mural .aviso-card h3{font-size:20px}
-body.pagina-mural .aviso-card p{font-size:15px}
-body.pagina-mural .aviso-info{flex-direction:column;align-items:flex-start}
-.imagem-atual-edicao{max-height:180px}
-}
+body.pagina-mural{
+    transition:background .25s,color .25s;
+    }
+    
+    body.pagina-mural .menu-aparencia{
+    position:absolute;
+    top:85px;
+    right:3%;
+    z-index:1000;
+    display:none;
+    flex-direction:column;
+    gap:7px;
+    padding:10px;
+    background:#fff;
+    border:1px solid #dbe3ec;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(15,23,42,.15);
+    }
+    
+    body.pagina-mural .menu-aparencia.mostrar{
+    display:flex;
+    }
+    
+    body.pagina-mural .menu-aparencia button{
+    width:150px;
+    padding:10px 12px;
+    border:0;
+    border-radius:7px;
+    background:#f8fafc;
+    color:#1e293b;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    text-align:left;
+    }
+    
+    body.pagina-mural .menu-aparencia button:hover{
+    background:#e2e8f0;
+    }
+    
+    /* TEMA CLARO */
+    
+    body.pagina-mural.tema-claro{
+    background:#f8fafc;
+    color:#0f172a;
+    }
+    
+    /* TEMA ESCURO */
+    
+    body.pagina-mural.tema-escuro{
+    background:#0f172a;
+    color:#f8fafc;
+    }
+    
+    body.pagina-mural.tema-escuro .mural-header h1,
+    body.pagina-mural.tema-escuro .mural-topo h2{
+    color:#f8fafc;
+    }
+    
+    body.pagina-mural.tema-escuro .mural-header p{
+    color:#cbd5e1;
+    }
+    
+    body.pagina-mural.tema-escuro .aviso-card{
+    background:#1e293b;
+    border-color:#334155;
+    box-shadow:0 7px 22px rgba(0,0,0,.25);
+    }
+    
+    body.pagina-mural.tema-escuro .aviso-card h3{
+    color:#f8fafc;
+    }
+    
+    body.pagina-mural.tema-escuro .aviso-card p{
+    color:#cbd5e1;
+    }
+    
+    body.pagina-mural.tema-escuro .aviso-info{
+    border-color:#334155;
+    color:#94a3b8;
+    }
+    
+    body.pagina-mural.tema-escuro #pesquisa{
+    background:#1e293b;
+    border-color:#475569;
+    color:#f8fafc;
+    }
+    
+    body.pagina-mural.tema-escuro #pesquisa::placeholder{
+    color:#94a3b8;
+    }
+    
+    body.pagina-mural.tema-escuro .menu-aparencia{
+    background:#1e293b;
+    border-color:#475569;
+    }
+    
+    body.pagina-mural.tema-escuro .menu-aparencia button{
+    background:#334155;
+    color:#f8fafc;
+    }
+    
+    body.pagina-mural.tema-escuro .menu-aparencia button:hover{
+    background:#475569;
+    }
+    
+    /* TEMA AZUL */
+    
+    body.pagina-mural.tema-azul{
+    background:#eff6ff;
+    color:#172554;
+    }
+    
+    body.pagina-mural.tema-azul .mural-header h1,
+    body.pagina-mural.tema-azul .mural-topo h2{
+    color:#1e3a8a;
+    }
+    
+    body.pagina-mural.tema-azul .aviso-card{
+    background:#fff;
+    border-color:#bfdbfe;
+    }
+    
+    body.pagina-mural.tema-azul #pesquisa{
+    border-color:#93c5fd;
+    background:#fff;
+    }
+    
+    body.pagina-mural.tema-azul .menu-aparencia{
+    border-color:#bfdbfe;
+    }
+    
+    /* TEMA VERDE */
+    
+    body.pagina-mural.tema-verde{
+    background:#f0fdf4;
+    color:#14532d;
+    }
+    
+    body.pagina-mural.tema-verde .mural-header h1,
+    body.pagina-mural.tema-verde .mural-topo h2{
+    color:#166534;
+    }
+    
+    body.pagina-mural.tema-verde .aviso-card{
+    background:#fff;
+    border-color:#bbf7d0;
+    }
+    
+    body.pagina-mural.tema-verde #pesquisa{
+    border-color:#86efac;
+    background:#fff;
+    }
+    
+    body.pagina-mural.tema-verde .menu-aparencia{
+    border-color:#bbf7d0;
+    }
+    
+    /* RESPONSIVO DO MENU */
+    
+    @media(max-width:700px){
+    body.pagina-mural .menu-aparencia{
+    position:static;
+    width:100%;
+    margin-top:5px;
+    }
+    
+    body.pagina-mural .menu-aparencia button{
+    width:100%;
+    }
+    }
